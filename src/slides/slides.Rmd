@@ -1,0 +1,59 @@
+---
+title: "e-ticket Spillovers UY"
+subtitle: ""
+author:
+  - "Guillermo Sánchez Laguardia$^1$"
+institute:
+   - $^1$Instituto de Economía, Universidad de la República
+date: "`r Sys.Date()`"
+output:
+  beamer_presentation:
+    latex_engine: xelatex
+    theme: "default"
+    colortheme: "default"
+    fonttheme: "default"
+    slide_level: 2
+    #keep_tex: TRUE
+    includes: 
+      in_header: preamble.tex
+classoption: "aspectratio=169"
+fig_width: 6.5 
+fig_height: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+wd <- getwd()
+ROOT <- ""
+if (grepl("src/slides", wd, fixed = T)) {
+  ROOT <- "../../../"
+}
+```
+
+```{r libraries_functions_theme, message=FALSE, warning=FALSE, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(magrittr)
+library(tidyr)
+library(dplyr)
+library(viridis)
+library(cowplot)
+library(forcats)
+library(purrr)
+library(kableExtra)
+
+# funciones
+source(paste0(ROOT, "src/lib/fun_notin.R"))
+source(paste0(ROOT, "src/lib/gg_point_line.R"))
+not_na <- \(x) !x & !is.na(x)
+# theme
+source(paste0(ROOT, "src/lib/theme_set.R"))
+```
+
+```{r dictionaries, echo=TRUE, include=FALSE}
+```
+
+```{r data_input, echo=TRUE, include=FALSE}
+```
+

@@ -1,0 +1,6 @@
+{
+	"SRC_LIB": "src/CFE Spillovers/lib",
+	"SRC_DATA": "src/CFE Spillovers/data",
+	"SRC_DATA_SPECS": "src/CFE Spillovers/data_specs",
+	"VERSION": "0.1.0"
+}

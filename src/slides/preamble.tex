@@ -1,0 +1,50 @@
+% presentation options
+\usepackage{pgfpages}
+\mode<presentation>
+{
+    \usetheme{default}
+	\usefonttheme{professionalfonts}  % or try serif, structurebold, ...
+	\definecolor{burgundy}{rgb}{0.5, 0.0, 0.13}
+	\usecolortheme{beaver}
+	\setbeamercolor{item projected}{bg=burgundy}
+	\setbeamercolor{block title}{bg=burgundy, fg=white}
+	\setbeamercolor{caption name}{fg=burgundy}
+	\setbeamertemplate{navigation symbols}{}
+	\setbeamertemplate{caption}[numbered]
+	\setbeamertemplate{frametitle}[default][center]
+	% \setbeamerfont{frametitle}{series=\bfseries}
+}
+% idioma
+\usepackage[spanish]{babel}
+\addto\captionsspanish{\renewcommand{\figurename}{Fig.}}
+\addto\captionsspanish{\renewcommand{\tablename}{Tab.}}
+% change bullets
+\usepackage{enumitem}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\cdot$}
+\renewcommand{\labelitemiii}{$\diamond$}
+\renewcommand{\labelitemiv}{$\ast$}
+% packages
+\usepackage{dcolumn}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage{setspace} % adjust line space on the fly
+\usepackage{enumitem}
+% figure note environment
+\newenvironment{fignote}{\begin{quote}\footnotesize}{\end{quote}}
+\makeatother
+% transition frame environment
+\newenvironment{transitionframe}{\setbeamercolor{background canvas}{bg=burgundy}\begin{frame}}{\end{frame}}

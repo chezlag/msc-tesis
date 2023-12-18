@@ -1,0 +1,16 @@
+# R & RStudio files
+.Rproj.user
+.Rhistory
+Rplots*
+packrat/lib*/
+packrat/src/*
+# Workflow files
+.snakemake
+out/
+logs/
+sandbox/
+.vscode/
+*.pdf
+*.log
+*.html
+*.xls
