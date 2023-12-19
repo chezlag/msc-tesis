@@ -1,0 +1,3 @@
+[submodule "src/data/dgi_firmas"]
+	path = src/data/dgi_firmas
+	url = ..\\data_dgi_firmas\\
