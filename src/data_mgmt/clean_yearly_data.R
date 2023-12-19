@@ -38,10 +38,39 @@ csls <- sls |>
 
 # Pagos de IVA -----------------------------------------------------------------
 
-vat <- read_fst("src/data/dgi_firmas/out/data/vat_payments.fst", as.data.table = TRUE)
-vat[, year := lubridate::year(date)]
-cvat <- vat |>
-    collap(vatPaid ~ fid + year)
+tax <- read_fst("src/data/dgi_firmas/out/data/tax_paid_retained.fst", as.data.table = TRUE)
+tax[, year := lubridate::year(date)]
+
+taxvarlist <- grep("Paid$|Retained$", names(tax), value = TRUE)
+for (v in taxvarlist) tax[, (v) := get(v) / 1e03]
+
+ctax <- tax |>
+    collap(
+        vatPaid + corpTaxPaid + otherTaxPaid + totalTaxPaid +
+        vatRetained + corpTaxRetained + otherTaxRetained + totalTaxRetained ~ fid + year, 
+        fsum
+)
+for (v in taxvarlist) ctax[, (v) := get(v) * 1e03]
+
+# e-ticket ---------------------------------------------------------------------
+
+cfe <- read_fst("src/data/dgi_firmas/out/data/eticket_transactions.fst", as.data.table = TRUE)
+
+ntickets <- merge(
+    collap(cfe, nTickets ~ id_receptor + year, fsum) |>
+        setnames(c("id_receptor", "nTickets"), c("fid", "nTicketsReceived")),
+    collap(cfe, nTickets ~ id_emisor + year, fsum) |>
+        setnames(c("id_emisor", "nTickets"), c("fid", "nTicketsEmitted")),
+    by = c("fid", "year"), all = TRUE
+)
+
+amount <- merge(
+    collap(cfe[(positiveAmount)], grossAmount + netAmount ~ id_receptor + year, fsum) |>
+        setnames(c("id_receptor", "grossAmount", "netAmount"), c("fid", "grossAmountReceived", "netAmountReceived")),
+    collap(cfe[(positiveAmount)], grossAmount + netAmount ~ id_emisor + year, fsum) |>
+        setnames(c("id_emisor", "grossAmount", "netAmount"), c("fid", "grossAmountEmitted", "netAmountEmitted")),
+    by = c("fid", "year"), all = TRUE
+)
 
 # Merge ------------------------------------------------------------------------
 
@@ -49,9 +78,11 @@ ipcy <- fread("src/data/ipc_deflactor_2016m12.csv") %>%
     .[lubridate::month(date) == 12] %>%
     .[, year := lubridate::year(date)]
 
-lapply(list(cbal, csls, cvat), setkeyv, c("fid", "year")) |> invisible()
+lapply(list(cbal, csls, ctax), setkeyv, c("fid", "year")) |> invisible()
 dt <- merge(cbal, csls, all = TRUE) %>%
-    merge(cvat, all = TRUE) %>%
+    merge(ctax, all = TRUE) %>%
+    merge(ntickets, all.x = TRUE) %>%
+    merge(amount, all.x = TRUE) %>%
     .[inrange(year, 2010, 2016)] %>%
     merge(fread("src/data/ui.csv"), all.x = TRUE, by = "year") |>
     merge(ipcy[, .(year, defl)], by = "year") 
@@ -60,7 +91,7 @@ dt <- merge(cbal, csls, all = TRUE) %>%
 varlist <- c(
     "turnover", "Revenue", "Cost", "Profit", "CorpTaxDue", 
     "vatSales", "vatPurchases", "vatDue", "vatLiability", "turnoverNetOfTax", "taxableTurnover",
-    "vatPaid"
+    taxvarlist, names(ntickets)[-(1:2)], names(amount)[-(1:2)]
 )
 for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
