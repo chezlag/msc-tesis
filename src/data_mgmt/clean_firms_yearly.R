@@ -62,7 +62,7 @@ rm(tax)
 
 # e-ticket ---------------------------------------------------------------------
 
-message("Processing e-ticket transaction data.")
+message("Reading e-ticket transaction data.")
 
 cfetab <- read_fst("out/data/eticket_yearly.fst", as.data.table = TRUE)
 
@@ -87,7 +87,7 @@ dt <- dtlist |>
 varlist <- c(
     "turnover", "Revenue", "Cost", "Profit", "CorpTaxDue", 
     "vatSales", "vatPurchases", "vatDue", "vatLiability", "turnoverNetOfTax", "taxableTurnover",
-    taxvarlist, names(ntickets)[-(1:2)], names(amount)[-(1:2)]
+    taxvarlist, names(cfetab)[-(1:2)]
 )
 for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
