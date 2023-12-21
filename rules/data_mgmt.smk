@@ -6,8 +6,7 @@
 
 rule Tdata:
     input: 
-        "out/data/firms_yearly.fst",
-        "out/data/firms_static.fst"
+        "out/data/firms_yearly.fst"
 
 # --- Build Rules --- #
 
@@ -33,7 +32,7 @@ rule clean_firms_static:
     output:
         data = "out/data/" + "firms_static.fst"
     log:
-        "logs/data_mgmt" + "clean_firms_static.log"
+        "logs/data_mgmt/" + "clean_firms_static.log"
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
 
@@ -43,7 +42,8 @@ rule clean_firms_yearly:
         data_bal = "src/data/dgi_firmas/out/data/balances_allF_allY.fst", 
         data_sls = "src/data/dgi_firmas/out/data/sales_allF_allY.fst", 
         data_tax = "src/data/dgi_firmas/out/data/tax_paid_retained.fst", 
-        data_cfe = "out/data/eticket_yearly.fst"
+        data_cfe = "out/data/eticket_yearly.fst",
+        data_static = "out/data/firms_static.fst"
     output:
         data = "out/data/" + "firms_yearly.fst"
     log:

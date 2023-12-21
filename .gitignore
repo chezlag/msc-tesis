@@ -14,3 +14,5 @@ sandbox/
 *.log
 *.html
 *.xls
+# Private data
+src/data/bcs_covariates.csv
