@@ -1,13 +1,13 @@
 # Rules: data-management
-#
-# Contributors: @lachlandeer, @julianlanger, @bergmul
 
 # --- Dictionaries --- #
 
 # --- Target Rules --- #
 
 rule Tdata:
-    input: "out/data/firms_yearly.fst"
+    input: 
+        "out/data/firms_yearly.fst",
+        "out/data/firms_static.fst"
 
 # --- Build Rules --- #
 
@@ -24,6 +24,18 @@ rule collapse_eticket:
     threads: 16
     shell:
         "{runR} {input.script} > {log} {logAll}"
+
+rule clean_firms_static:
+    input:
+        script = "src/data_mgmt/" + "clean_firms_static.R",
+        databcs = "src/data/" + "bcs_covariates.csv",
+        datacfe = "out/data/" + "eticket_static.fst"
+    output:
+        data = "out/data/" + "firms_static.fst"
+    log:
+        "logs/data_mgmt" + "clean_firms_static.log"
+    shell:
+        "{runR} {input.script} -o {output.data} > {log} {logAll}"
 
 rule clean_firms_yearly:
     input:
