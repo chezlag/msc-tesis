@@ -33,9 +33,8 @@ bal[irae > CorpTaxDue, CorpTaxDue := CorpTaxDue + 1]
 idvars <- c("fid", "year")
 balvarlist <- c("turnover", "Revenue", "Cost", "Profit", "CorpTaxDue")
 balformula <- arsenal::formulize(balvarlist, idvars)
-
 cbal <- collap(bal, balformula, fsum) |>
-    merge(bal[, .(djFict =fmax(djFict) |> as.logical()), by = idvars])
+    merge(bal[, .(djFict = fmax(djFict) |> as.logical()), by = idvars])
 rm(bal)
 
 # DJ de ventas por IVA ---------------------------------------------------------
@@ -45,7 +44,7 @@ message("Processing VAT affidavits and taxable sales/purchases.")
 slsvarlist <- c("vatSales", "vatPurchases", "vatDue", "vatLiability", "turnoverNetOfTax", "taxableTurnover")
 slsformula <- arsenal::formulize(slsvarlist, idvars)
 
-csls <-  read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst", as.data.table = TRUE) |>
+csls <- read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst", as.data.table = TRUE) |>
     collap(slsformula, fsum)
 
 
@@ -69,44 +68,91 @@ rm(tax)
 message("Reading e-ticket transaction data.")
 
 cfetab <- read_fst("out/data/eticket_yearly.fst", as.data.table = TRUE)
+cfetab[, inCFE := TRUE]
 
 # Merge ------------------------------------------------------------------------
 
 message("Merging all data sources.")
 
-ipcy <- fread("src/data/ipc_deflactor_2016m12.csv") %>% 
+ipcy <- fread("src/data/ipc_deflactor_2016m12.csv") %>%
     .[lubridate::month(date) == 12] %>%
     .[, year := lubridate::year(date)]
 
 static <- read_fst("out/data/firms_static.fst", as.data.table = TRUE)
+static[, inStatic := TRUE]
 
 dtlist <- list(cbal, csls, ctax)
 lapply(dtlist, setkeyv, idvars) |> invisible()
+map2(dtlist, c("in214", "in217", "inPay"), ~ .x[, (.y) := TRUE])
 dt <- dtlist |>
     purrr::reduce(merge, all = TRUE) %>%
     merge(cfetab, all.x = TRUE) %>%
     merge(static, all.x = TRUE) %>%
-    .[inrange(year, 2010, 2016)] %>%
+    .[inrange(year, 2009, 2016)] %>%
     merge(fread("src/data/ui.csv"), all.x = TRUE, by = "year") |>
-    merge(ipcy[, .(year, defl)], by = "year") 
+    merge(ipcy[, .(year, defl)], by = "year")
 
 # Define new variables --------------------------------------------------------
 
-dt[, firm_age := year - birth_year]
-
-# Base sample: DJ ficta
-dt[, inSample1 := (djFict)]
+message("Defining new variables.")
 
 # Deflacto y paso a Millones de UI
-cfevarlist <- names(cfetab)[-(1:2)]
-varlist <- c(balvarlist, slsvarlist, taxvarlist, taxvarlist, cfevarlist)
+cfevarlist <- c(
+    "grossAmountReceived", "netAmountReceived", "grossAmountEmitted",
+    "netAmountEmitted"
+)
+varlist <- c(balvarlist, slsvarlist, taxvarlist, cfevarlist)
 for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
-for (v in varlist) dt[, (paste0(v, "MUI")) := get(v) / ui]
+for (v in varlist) dt[, (paste0(v, "MUI")) := get(paste0(v, "M")) / ui]
+
+# Reescalo usando turnover de 2009-2010 y de los dos años anteriores
+create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
+    dt[eval(parse(text = condition)), (newvarname) := get(oldvarname)]
+    dt[, (newvarname) := fmax(get(newvarname)), by = idvars]
+}
+create_lag_by_group(dt, "year == 2009", "turnoverK", "TempTurnover2009", "fid")
+create_lag_by_group(dt, "year == 2010", "turnoverK", "TempTurnover2010", "fid")
+dt[, Scaler1 := (TempTurnover2009 + TempTurnover2010) / 2]
+dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2]
+for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
+for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
 
 # tratamiento A: recepción de primer eticket
 dt[, yearFirstReception := lubridate::year(dateFirstReception)]
-dt[, eventtimeA := year - yearFirstReception]
+
+# covariables
+dt[, firm_age := year - birth_year]
+
+# Define analysis sample ------------------------------------------------------
+
+message("Defining analysis sample.")
+
+## Muestra 1: DJ ficta en todos los períodos y tiene covariables
+
+# presenta djFicta en todos los períodos
+lookup_djFictAllT <- dt[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8, .(fid)]
+lookup_djFictAllT[, djFictAllT := TRUE]
+dt <- merge(dt, lookup_djFictAllT, by = "fid", all.x = TRUE)
+
+# tiene covariables
+dt[, hasCovariates := !is.na(sector) & !is.na(firm_age)]
+
+dt[, inSample1 := djFictAllT & hasCovariates]
+
+## Muestra 2: Presente en todos los períodods y DJ ficta en algún período
+
+# aparece en todos los períodos
+lookup_inAllT <- dt[year %in% 2009:2016, .N, fid][N == 8, .(fid)]
+lookup_inAllT[, inAllT := TRUE]
+dt <- merge(dt, lookup_inAllT, by = "fid", all.x = TRUE)
+
+# presenta djFicta en algún período
+lookup_djFictAnyT <- dt[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
+lookup_djFictAnyT[, djFictAnyT := TRUE]
+dt <- merge(dt, lookup_djFictAnyT, by = "fid", all.x = TRUE)
+
+dt[, inSample2 := inAllT & djFictAnyT & hasCovariates]
 
 # Export ----------------------------------------------------------------------
 

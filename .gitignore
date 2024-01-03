@@ -1,4 +1,5 @@
 # R & RStudio files
+*.Rproj
 .Rproj.user
 .Rhistory
 Rplots*
@@ -9,6 +10,8 @@ packrat/src/*
 out/
 logs/
 sandbox/
+resources/
+notebooks/
 .vscode/
 *.pdf
 *.log
