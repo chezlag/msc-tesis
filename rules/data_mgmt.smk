@@ -19,7 +19,7 @@ rule collapse_eticket:
         "out/data/" + "eticket_yearly.fst",
         "out/data/" + "eticket_quarterly.fst"
     log:
-        "logs/data_mgmt" + "collapse_eticket.log"
+        "logs/data_mgmt/" + "collapse_eticket.log"
     threads: 16
     shell:
         "{runR} {input.script} > {log} {logAll}"
