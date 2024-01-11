@@ -6,7 +6,8 @@
 
 rule Tdata:
     input: 
-        "out/data/firms_yearly.fst"
+        "out/data/firms_yearly.fst",
+        "out/data/samples.fst"
 
 # --- Build Rules --- #
 
@@ -48,6 +49,18 @@ rule clean_firms_yearly:
         data = "out/data/" + "firms_yearly.fst"
     log:
         "logs/data_mgmt/" + "clean_firms_yearly.log"
+    threads: 16
+    shell:
+        "{runR} {input.script} -o {output.data} > {log} {logAll}"
+
+rule define_samples:
+    input:
+        script = "src/data_mgmt/" + "define_samples.R",
+        data = "out/data/" + "firms_yearly.fst"
+    output:
+        data = "out/data/" + "samples.fst"
+    log:
+        "logs/data_mgmt/" + "define_samples.log"
     threads: 16
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
