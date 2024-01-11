@@ -8,4 +8,7 @@ cfe <- read_fst("out/data/eticket_static.fst", as.data.table = TRUE)
 
 dt <- merge(bcs, cfe, by = "fid", all = TRUE)
 
+dt[, received := !is.na(dateFirstReception)]
+dt[, emitted := !is.na(dateFirstEmission)]
+
 write_fst(dt, opt$output)
