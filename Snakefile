@@ -40,7 +40,7 @@ rule help_main:
 # Include all other Snakefiles that contain rules that are part of the project
 # 1. project specific
 include: config["rules"] + "data_mgmt.smk"
-# include: config["rules"] + "analysis.smk"
+include: config["rules"] + "analysis.smk"
 # include: config["rules"] + "figures.smk"
 #include: config["rules"] + "tables.smk"
 #include: config["rules"] + "paper.smk"
