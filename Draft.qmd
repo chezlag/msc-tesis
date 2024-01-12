@@ -1,0 +1,585 @@
+---
+title: "Nuevas tecnologías y evasión de impuestos: La recepción de facturas electrónicas en Uruguay"
+date: "`r Sys.Date()`"
+author: 
+  - name: "Guillermo Sánchez Laguardia"
+    orcid: 0000-0002-7511-6062
+lang: es
+format: html
+bibliography: zotero.bib
+toc: true
+code-fold: true
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r lib-fcn}
+library(fastverse)
+library(fst)
+library(did)
+library(ggplot2)
+library(ggsci)
+library(purrr)
+library(stringr)
+library(forcats)
+library(fixest)
+library(gtsummary)
+library(kableExtra)
+source("src/lib/tidy_did.R")
+source("src/lib/theme_set.R")
+```
+
+```{r read-data}
+samples <- read_fst("out/data/samples.fst", as.data.table = TRUE)
+dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
+  .[samples[(in214AnyT | in217AnyT)], on = "fid"]
+dts <- read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
+  .[samples[(in214AnyT | in217AnyT)], on = "fid"]
+# fix sample NAs
+walk(paste0("inSample", 0:2), ~ dts[is.na(get(.x)), (.x) := FALSE])
+walk(paste0("inSample", 0:2), ~ dty[is.na(get(.x)), (.x) := FALSE])
+dts[, neverTreated := is.na(nonAbsorbing)]
+dty[, neverTreated := is.na(nonAbsorbing)]
+```
+
+```{r read-estimates}
+# estimation specifications
+estname <- c("S1.base", "S1.ctrl", "S1.wt", "S0.unbal", "S2.base")
+# read simple overall att
+filelist <- estname %>% paste0("out/analysis/did_yearly_", ., "_aggte.simple.RDS")
+simple_est <- lapply(filelist, readRDS)
+simple <- map(filelist,
+              ~ .x %>%
+                readRDS() %>%
+                map(tidy_did) %>%
+                reduce(rbind) %>%
+                setDT() %>%
+                .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>% as_factor()])
+# read dynamic att
+filelist <- str_replace(filelist, "simple", "dynamic")
+dynamic_est <- map(filelist, readRDS)
+dynamic <- map(filelist,
+              ~ .x %>%
+                readRDS() %>%
+                map(tidy_did) %>%
+                reduce(rbind) %>%
+                setDT() %>%
+                .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>% as_factor()])
+# name estimations
+names(simple) <- estname
+names(dynamic) <- estname
+# set data.table
+walk(simple, setDT)
+walk(dynamic, setDT)
+# add column with specification name
+walk2(simple, estname, ~ .x[, sample := .y])
+walk2(dynamic, estname, ~ .x[, sample := .y])
+```
+
+# Introducción
+
+# Marco teórico
+
+La evasión de impuestos ha sido muy estudiada en economía, desde una perspectiva tanto teórica como empírica. Los modelos tradicionales estudiaban la evasión de impuestos considerando el riesgo de auditoría como mecanismo principal para asegurar el cumplimiento impositivo [@allinghamIncomeTaxEvasion1972; @yitzhakiNoteIncomeTax1974]. Una literatura reciente ha desplazado el foco hacia la "información reportada por terceros", es decir, fuentes de información que permitan corroborar y validar las declaraciones de los contribuyentes.
+
+Intuitivamente, la verificación de información pone restricciones a los comportamientos evasivos de los contribuyentes. Por ejemplo, puede ser muy riesgoso para un empleado sub-declarar ingresos salariales cuando la firma que le emplea hace un reporte periódico de la nómina a la autoridad tributaria [^1]. Por otra parte, varios estudios han mostrado que en ausencia de información reportada por terceros la evasión alcanza niveles muy importantes. Por ejemplo, @klevenUnwillingUnableCheat2011 realizan un experimento con contribuyentes individuales en Dinamarca. Encuentran una evasión casi nula en el ingreso sujeto a reportes de terceros y evasión sustancial en el ingreso autorreportado. @usinternalrevenueserviceTaxGapTax2012 encuentran resultados cualitativamente similares en Estados Unidos.
+
+[^1]: Al menos en ausencia de colusión, ver @feinmannPaymentsTable2022 .
+
+En lo que respecta a la evasión de impuestos en firmas, se han estudiado varias fuentes de información reportada por terceros, como los reportes de socios comerciales, compras con tarjetas de crédito o información de importaciones y exportaciones de las aduanas [@kopczukPuttingFirmsOptimal2006; @carrilloDodgingTaxmanFirm2017; @slemrodDoesCreditcardInformation2017]. Por su parte, @klevenWhyCanModern2016 remarcan la importancia del *volumen de transacciones registradas* para el cumplimiento tributario. \## Modelo de Carrillo, Pomeranz y Singhal (2007)
+
+Partimos del modelo de @carrilloDodgingTaxmanFirm2017 . Las firmas tienen ingresos y costos, y pagan impuestos a una tasa fija por las ganancias reportadas (ingresos reportados menos costos reportados). Tanto los ingresos --$R$-- como los costos --$C$-- tienen un componente reportado por terceros y un componente autorreportado: $R = R_{T}+R_{A}$ y $C = C_{T}+ C_{A}$. Los ingresos y los costos reportados se denotan $\hat{R}$ y $\hat{C}$. Las firmas eligen el *nivel* de ganancias reportadas $\hat\pi=\hat R + \hat C$ que maximiza su pago esperado, teniendo en consideración que la probabilidad de detección es endógena y creciente con el *margen* de ganancia reportado.[^2]
+
+[^2]: Como la autoridad tributaria tiene cierto conocimiento sobre la verdadera distribución de ganancias, tiene un marco para evaluar la coherencia en las declaraciones de $\hat\pi,\ \hat R$ y $\hat C$. Que una firma reporte \$10.000 de ganancia con una facturación de \$100.000, es más coherente a que reporte esa ganancia con una facturación de \$1.000.000.
+
+Las firmas tienen dos formas de alcanzar su nivel deseado de $\hat\pi$: subreportando sus ingresos, $\hat R<R$, o sobrerreportando sus costos, $\hat C>C$. Crucialmente, la autoridad tributaria tiene conocimiento parcial sobre los ingresos y costos de las firmas, ya que una porción de su actividad es reportada por terceros. Siguiendo a @klevenUnwillingUnableCheat2011, se asume que la probabilidad de detección salta a su valor máximo en caso de que los ingresos reportados estén por debajo de los ingresos verificados por terceros, $\hat{R}<R$. Si las firmas conocen el valor del ingreso verificado por terceros, el ingreso que declaren va a concentrarse en el punto de la discontinuidad de la probabilidad de detección, $R_{T}$. Luego, van a elegir el valor de $\hat C$ que resulte en el margen de ganancia que maximice su pago esperado.
+
+Hay una asimetría entre ingresos y costos que es central para las hipótesis del modelo. Aunque los costos reportados por terceros $C_{T}$ operan como un piso en la declaración total de costos, las firmas tienen incentivos a declarar $\hat C >C_{T}$ porque así pueden disminuir tanto su deuda tributaria como su probabilidad de detección. En general, $C_{T}$ sería un restricción no activa en el problema de optimización de las firmas; y $\hat C$ sería la variable predilecta de ajuste de $\hat\pi$ dado que $\hat{R} = R_{T}$.
+
+## Aplicación a la recepción de facturas electrónicas
+
+Si la recepción de facturas electrónicas fuera a tener un impacto en los comportamientos evasivos de las firmas, sería a través de un aumento en los costos reportados por terceros, $\hat{C_{T}'}>\hat{C_{T}}$. Sería esperable que haya un aumento en las facturas "en blanco" que la firma se ve forzada a recibir. Como ya discutimos, sin embargo, esto debería ser un incentivo relativamente débil ya que en general $\hat C> C_{T}$ se debería cumplir holgadamente.
+
+¿Hay algún caso en que los costos reportados por terceros sí sean una restricción activa para el problema de evasión racional de la firma? Podríamos pensar que si lo serían en el caso de una firma que esté subreportando el volumen real de sus actividades de forma muy importante.
+
+En tal caso deberíamos esperar que las firmas aumenten sus costos reportados, y que este efecto sea creciente con el volumen de facturas electrónicas recibidas. Por otra parte, reportar más costos podría generar un empuje sobre los ingresos reportados, si la combinación $\hat R, \hat C'$ genera sospechas de evasión. Yendo a un caso límite, las firmas saben que reportar una ganancia no positiva --implicando una deuda tributaria nula-- puede ponerlas bajo mayor escrutinio de la autoridad tributaria.
+
+Un candidato ideal para testear estas hipótesis es el grupo de firmas que no presentan una declaración real de sus operaciones. Varios trabajos han encontrado que este tipo de firmas tienen elevados niveles de evasión [@almuniaRadarEffectsMonitoring2018]. En el caso uruguayo, se tratan de firmas pequeñas y poco fiscalizadas. En el Anexo XX se muestra evidencia sugerente de una prevalencia de altos niveles de evasión entre este grupo de firmas.
+
+# Contexto institucional
+
+La autoridad tributaria central de Uruguay (Dirección General Impositiva, DGI) recauda alrededor del 19% del PIB por concepto de impuestos y el IVA representa alrededor del 50% de los ingresos tributarios (DGI 2019). La tasa de evasión del IVA en 2012 se estimó cercana al 13%, una tasa de evasión baja para la región [^3] y comparable a las estimadas para algunos países desarrollados. [^4]
+
+[^3]: @gomezsabainiTaxStructureTax2012, 34-36 estimó que la brecha de cumplimiento del IVA en América Latina promedió 25,9% en 2006, oscilando entre 11,0% en Chile y 38,1% en Nicaragua. La brecha estimada para Uruguay en 2006 era del 26,3%, muy próxima a la media regional en ese momento.
+
+[^4]: La brecha de cumplimiento del IVA en la Unión Europea fue del 11% en 2018, con una amplia variación entre países. Las brechas más bajas se encontraron en Suecia (0,7%), Croacia (3,5%) y Finlandia (3,6%), y las más altas en Rumanía (33,8%), Grecia (30,1%) y Lituania (25,9%) [@europeancommissiondgtaxudStudyReportsVAT2020].
+
+Además del IVA, las empresas están sujetas a diferentes impuestos según sus características. Hay dos impuestos que gravan a todas las empresas: el Impuesto a las Rentas de las Actividades Económicas (IRAE) , que grava los beneficios empresariales a un tipo del 25%; y el Impuesto al Patrimonio (IPAT), que grava los activos de las empresas a un tipo del 1,5%. Además, hay impuestos específicos, como un impuesto de suma fija que sólo deben pagar las sociedades anónimas (ICOSA, 560 USD en 2022); un impuesto sobre la venta de bienes agrícolas (IMEBA) de hasta el 2,5% del valor de las ventas de las pequeñas empresas agrícolas; y el Impuesto Específico Interno (IMESI) que grava determinados productos. Por otra parte, los individuos están sujetos al Impuesto sobre la Renta de las Personas Físicas (IRPF), que grava tanto las rentas del capital como las del trabajo, aunque utilizando diferentes esquemas contributivos.
+
+La facturación electrónica comenzó en Uruguay en 2012. Desde entonces, las empresas que lo solicitaron pudieron adherirse al régimen. El sistema contempla registros tanto para transacciones entre contribuyentes (facturas electrónicas) como para transacciones con consumidores finales (recibos electrónicos). En 2015 se anunció un calendario para la adopción obligatoria de la facturación electrónica. Se incluyeron ocho plazos, que se fijaron en función del volumen de negocios de las empresas en UI[^5] (Cuadro 1).
+
+[^5]: Las Unidades Indexadas (UI) son una moneda administrativa utilizada por el gobierno uruguayo para el ajuste de diversas políticas.
+
+# Método
+
+En este trabajo exploto la variación en la fecha de comienzo de recepción de facturas electrónicas entre empresas para estimar el impacto de la política sobre distintos desempeños de la firma. Comparo la variación en los resultados de las firmas que reciben comprobantes electrónicos (tratadas) con la variación en los resultados de las firmas que aún no lo reciben (controles).
+
+Utilizo un diseño de diferencias en diferencias con tratamiento escalonado. Para la identificación asumimos que, en ausencia de tratamiento, los resultados de tratados y controles habrían evolucionado en paralelo; y que no hay anticipación al tratamiento, es decir, que el tratamiento no tiene efecto antes del período en que se aplica.
+
+La literatura de diferencias en diferencias ha tenido desarrollos importantes en el último tiempo, avanzando sobre varios frentes. En lo que respecta a los diseños de tratamiento escalonado, se han detallado varios problemas con la forma más extendida de estimación: panel con efectos fijos bidireccionales. Siendo breve, esta forma de estimación puede realizar "comparaciones indebidas" cuando el tratamiento es escalonado en el tiempo –comparando tratados tempranos y tardíos–; y es poco transparente en la forma en que agrega las comparaciones para calcular efectos agregados. Se han desarrollado tests para medir la gravedad del primer problema [@goodman-baconDifferenceindifferencesVariationTreatment2021] y métodos alternativos de estimación que eluden el segundo problema [@dechaisemartinTwoWayFixedEffects2020; @sunEstimatingDynamicTreatment2021; @callawayDifferenceinDifferencesMultipleTime2021; ver reseñas de @rothWhatTrendingDifferenceindifferences2023 y @dechaisemartinTwowayFixedEffects2023]. 
+
+En este trabajo, sigo la propuesta de @callawayDifferenceinDifferencesMultipleTime2021 para escenarios de adopción escalonada de tratamiento. En pocas palabras, los autores plantean estimar individualmente efectos de tratamiento por cohorte y distancia de tratamiento; y luego agregarlos para obtener efectos agregados, ya globales o dinámicos por tiempo desde el tratamiento o por cohortes de tratamiento. Este método tiene la ventaja de permitir heterogeneidad arbitraria respecto al momento de tratamiento y entre cohortes –a diferencia de la propuesta de @sunEstimatingDynamicTreatment2021, que solo admite la primera–. Además, tiene una estructura transparente de agregación de los efectos individuales, que asegura que ningún efecto tenga ponderación negativa. 
+
+Realizo las estimaciones principales en `R` usando el paquete `did` [@callawayDidDifferenceDifferences2021], una implementación de autores de su propia propuesta.
+
+==DETALLAR MÁS==
+
+# Datos
+
+## Fuentes de datos
+
+En este trabajo combino varias fuentes de datos de las firmas uruguayas para el período 2009--2016. Uso principalmente registros administrativos de la Dirección General Impositiva (DGI) que contienen distintos tipos de información sobre las actividades de las firmas. La @tbl-data resume las fuentes de datos y su período de cobertura.
+
+En primer lugar, utilizo información derivada de declaraciones juradas que las firmas deben realizar periódicamente, asociada al pago de distintos tipos de impuestos. Por un lado, uso los formularios 2148 y 2149, que contienen información patrimonial y de resultados de la firma. Estos formularios se utilizan para calcular lo adeudado por la firma por concepto de IRAE e IPAT. Ambos formularios contienen la misma información pero difieren en su frecuencia. El formulario 2148 tiene frecuencia anual y es obligatorio para todas las firmas. El formulario 2149 tiene frecuencia semestral y solo lo completa un subconjunto de firmas que se encuentra bajo escrutinio especial de DGI.
+
+Por otro lado, uso los formularios 2176 y 2178, los cuales contienen información sobre compras y ventas gravadas, y se utilizan para calcular lo adeudado por la firma por concepto de IVA. Al igual que con los formularios antes descritos, el 2178 es obligatorio para todas las firmas y de frecuencia anual; mientras que el 2176 tiene frecuencia semestral y solo lo completa un subconjunto de firmas.
+
+En segundo lugar, uso información de DGI sobre el pago de impuestos de las firmas mes a mes. Por más que los impuestos sean de base anual las firmas muchas veces hacen adelantos periódicos de acuerdo a como va evolucionando su actividad. Cuento con información del pago de IVA, IRAE, y un conjunto de otros impuestos pequeños agregados en una única categoría. Para evitar fluctuaciones demasiado pronunciadas, agrupo la información de pagos en trimestres.
+
+En tercer lugar, cuento con información del sistema de facturación electrónica. Tengo un registro que contiene el valor y monto total de las transacciones en cada mes para cada dupla emisor-receptor. Con esta base puedo definir el mes exacto en que cada firma comienza a estar expuesta a la facturación electrónica (ya sea al recibir o al emitir), así como la intensidad de su exposición.
+
+Por último, cuento con un conjunto reducido de covariables provenientes de registros de BPS que indican el sector de actividad y la edad de las firmas. Tengo esta información para un grupo reducido de firmas, con lo cual solo entran en el análisis al momento de analizar heterogeneidades.
+
+| Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
+|---------------|-----------------------------|---------------|---------------|
+| Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
+| Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
+| Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
+| Transacciones con CFE | Resumen mensual de transacciones con CFE entre pares de firmas.                        | Mensual                 | Ene/2010--Nov/2016 |
+
+: Fuentes de datos y período de disponibilidad {#tbl-data}
+
+## Muestra principal
+
+Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^6] de ingresos en el formulario 2148 todos los años del período 2009--2016.
+
+[^6]: Mantener un registro detallado de sus operaciones es costoso para las firmas pequeñas. Con esto en mente, la DGI permite a las firmas cuya facturación anual no supere 3 millones de UI, presentar un declaración abreviada de su actividad en el formulario 2148. En estos casos, las firmas declaran únicamente sus ingresos anuales y su renta se calcula de forma ficta de acuerdo a tres tramos. Para facturaciones menores a 2 millones de UI, se asume una tasa de beneficio de 13.2%; entre 2 y 3 millones de UI la tasa ficta es de 36%; y para facturaciones mayores a 3 millones de UI la tasa ficta asciende a 48%. La discontinuidad en las tasas busca incentivar a que las firmas hagan declaraciones reales de su actividad y es bastante efectiva: solo 5% de las firmas que presentan declaraciones fictas reportan una facturación mayor a 2 millones de UI.
+
+Uso un panel balanceado para evitar problemas de composición. En la @tbl-static-characteristics-desgranamiento y la @tbl-yearly-characteristics-desgranamiento comparo las firmas el panel balanceado y el panel no balanceado. Las firmas en la muestra tenían un menor nivel de facturación promedio en 2009–2010, pero luego presentan mayores niveles de actividad declarada formalmente. Es decir, declaran más compras y ventas, más IVA compras e IVA ventas, y pagan más impuestos. Por otro lado, no hay diferencias significativas por sector de actividad.
+
+Me centro en las firmas que presentan declaraciones fictas de ingresos por dos razones. La principal es su *potencial evasor*. Varios estudios han mostrado que las firmas que no presentan una declaración completa de sus actividades son más propensas a evadir [@almuniaRadarEffectsMonitoring2018; BUSCAR MÁS CITAS].
+
+Por otra parte, también interesa que las firmas no tengan un poder de influencia en la decisión de sus proveedores de adoptar la facturación electrónica. Aunque la pretensión de exogeneidad pueda ser débil, el reducido tamaño de las firmas analizadas y su poca importancia como jugadores individuales, vuelve plausible que el momento exacto en que las firmas empiezan a recibir facturas electrónicas sea relativamente exógeno.
+
+## Variables
+
+Las variables principales de análisis surgen de las declaraciones juradas y de los pagos de impuestos realizados.
+
+- **De declaraciones juradas.**
+  - Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
+  - Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
+  - IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
+  - IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
+- **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
+
+Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara la implementación de la facturación electrónica. 
+## Estadísticas descriptivas
+
+- **Características de la muestra principal.** La muestra principal es un panel balanceado de 11.052 firmas que presentan declaración ficta de sus actividades todos los años entre 2009–2016. Se trata de firmas relativamente pequeñas, que en 2009–2010 presentaban facturación anual promedio de 2.6 millones de pesos. La segunda columna de la @tbl-static-characteristics y la @tbl-yearly-characteristics presentan sus principales características, en contraste con el resto de las firmas para las que contamos información en el período.
+- **Adopción del tratamiento.** La emisión de comprobantes electrónicos comienza en 2012, con unas pocas empresas piloto de gran tamaño. A pesar de que para 2016 solo 3717 firmas habían emitido comprobantes, la mayor parte de las firmas había recibido algún tipo de comprobante electrónico antes de 2014. En la muestra principal, solo 3% de las firmas llega a 2016 sin haber recibido un comprobante electrónico.
+- **Confounding con emisión de facturas electrónicas.** Una evaluación integral de la política requeriría evaluar también el efecto de la emisión. Durante el período analizado en este estudio la emisión de comprobantes estaba concentrada en firmas de gran porte. Solo 0.2% firmas en la muestra principal emiten facturas electrónicas.
+- **¿Tratamiento es absorbente?** La recepción de facturas electrónicas opera, en la mayoría de los casos como un tratamiento absorbente. Es decir, una vez una firma recibe un comprobante electrónico, no deja de recibirlos hasta el final del período. Menos de 1% de las firmas en el panel balanceado dejan de recibir comprobantes electrónicos luego de haber recibido alguno. Excluimos a las firmas para las que el tratamiento no es absorbente de la muestra principal. Vale notar que en el universo de firmas la no-absorción del tratamiento supone un problema mayor. De querer hacer un estudio sobre esta muestra habría que usar métodos alternativos, como la propuesta de @dechaisemartinDifferenceinDifferencesEstimatorsIntertemporal2022 para tratamientos no absorbentes.
+- **Grupo de control.** @callawayDifferenceinDifferencesMultipleTime2021 proponen un método de estimación de diferencias en diferencias con adopción escalonada de tratamiento que contempla dos potenciales grupos de control: las observaciones que nunca reciben tratamiento o las que aún no lo han recibido en el período para el que se estima el efecto de tratamiento. Aunque lo ideal sería tener un único grupo de control que nunca recibiera tratamiento, este grupo representa solo 3% de la muestra y tiene características sustancialmente distintas al grupo que sí recibe tratamiento. Son firmas con elevados niveles de facturación en 2009–2010, pero que en el resto del período reportan muy poca actividad y pagan muy pocos impuestos.
+
+```{r}
+#| label: tbl-static-characteristics
+#| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 firma).
+varlist <- c(
+  "inSample1",
+  "receivedAnyT", 
+  "emittedAnyT", 
+  "nonAbsorbing",
+  "neverTreated"
+)
+dts[, ..varlist] %>%
+  tbl_summary(by = "inSample1", missing = "no")
+```
+
+```{r}
+#| label: tbl-yearly-characteristics
+#| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 año-firma).
+varlist <- c(
+  "inSample1",
+  "Scaler1",
+  "Scaled1deductPurchasesK",
+  "Scaled1RevenueK",
+  "Scaled1taxableTurnoverK",
+  "Scaled1vatSalesK",
+  "Scaled1vatPurchasesK",
+  "Scaled1vatDueK"
+)
+dty[year %in% 2009:2015, ..varlist] %>%
+  .[, Scaler1 := Scaler1 / 1e06] %>%
+  tbl_summary(by = "inSample1", missing = "no") %>% 
+  as_gt()
+```
+
+# Resultados
+
+## Resultados principales
+
+Realizo el conjunto principal de estimaciones sobre un panel balanceado de firmas que presentan declaraciones fictas entre 2009 y 2016. Los resultados no son condicionales a ninguna covariable. Reporto niveles de signiificación al 5% y los intervalos presentados son al 95% de confianza. La inferencia se realiza aplicando un proceso de bootstrap, clusterizando los errores a nivel de firma.
+
+- **ATT agregado.** En primer lugar, estudiamos el impacto agregado de la recepción de facturas electrónicas sobre nuestras variables principales de análisis (@fig-aggte-simple). Se observa que la recepción de facturas electrónicas tiene un impacto positivo y significativo sobre las compras declaradas de $0.01 por peso de facturación al inicio del período. No hay efecto sobre las ventas reportadas ni sobre el ingreso total reportado. No obstante, si se observa un efecto de $0.01 por peso de facturación reportada al inicio del período sobre IVA compras e IVA ventas declarado. No hay efecto sobre el IVA adeudado ni el IVA pagado en el año.
+- **ATT dinámico.** La @fig-aggte-dynamic muestra los efectos dinámicos. Los resultados no presentan dinámicas demasiado interesantes. Los efectos son rara vez significativos para un evento puntual. Aparece un efecto significativo en IVA compras y compras gravadas el segundo año luego de recibir factura. Los gráficos parecerían sugerir que no hay tendencias previas entre tratados y controles.
+- **Identificación.** El diseño de diferencias en diferencias tiene dos supuestos de identificación: tendencias paralelas y ausencia de anticipación.
+	- **Tendencias paralelas.** Suponemos que, en ausencia de tratamiento, los resultados de tratados y controles habrían evolucionado de forma paralela.
+		- **Pre-trends.** Al estimar los efectos dinámico encontramos que ninguno de los coeficientes es significativo antes del tratamiento, para ninguna de las variables analizadas. Si bien esto no implica que los grupos habrían de seguir evolucionando en paralelo luego de aplicado el tratamiento, si sugiere
+		- **Cuantificación de tendencias paralelas.** @callawayDifferenceinDifferencesMultipleTime2021 proponen una forma de cuantificar potenciales desvíos del supuesto de tendencias paralelas a partir de las pre-trends. ==(PENDIENTE)==
+	- **Ausencia de anticipación.** El tratamiento es, en última instancia, un aumento en los costos de las firmas reportados por terceros. De acuerdo al modelo planteado, las firmas optimizarían período a período de acuerdo a la información con la que (suponen) cuenta la autoridad tributaria sobre sus operaciones. Anticiparse supondría revelar más de su actividad real a la autoridad tributaria, lo cual podríamos suponer reportaría a las firmas escasos beneficios. Además, podría no resultar trivial para la firma cuantificar *cuanto* van aumentar sus costos reportados por terceros ante la futura implementación de la política. (la propuesta de @callawayDifferenceinDifferencesMultipleTime2021 contempla la posibilidad de incorporar anticipación en el tratamiento; corro las regresiones de nuevo y los resultados ... ==PENDIENTE==)
+
+```{r plot-specs}
+pointsize <- 2
+errorbarsize <- .2
+```
+
+```{r}
+#| label: fig-aggte-simple
+#| fig-cap: ATT – Aggregate effect.
+simple$S1.base %>%
+  ggplot(aes(x = estimate, y = variable)) +
+  geom_point(size = pointsize) +
+  geom_errorbarh(
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
+    height = errorbarsize
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    color = ggsci::pal_cosmic()(2)[2]
+  ) +
+  scale_y_discrete(limits = rev) +
+  labs(y = NULL)
+```
+
+```{r}
+#| label: fig-aggte-dynamic
+#| fig-cap: ATT – Dynamic estimates
+#| echo: false
+dynamic$S1.base[variable != "taxableTurnover"] %>% 
+  ggplot(aes(x = event, y = estimate)) +
+    geom_point(size = pointsize) +
+    geom_errorbar(
+      aes(
+        ymin = conf.low,
+        ymax = conf.high
+      ),
+      width = errorbarsize
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+    geom_vline(xintercept = -.5, linetype = "dashed") +
+    facet_wrap(~variable, scale = "free_y") +
+    labs(caption = "[ 95% Simult. CI ]")
+```
+
+### Robustez
+
+Realizo las mismas estimaciones con otras especificaciones. La @fig-aggte-simple-heterog presenta los efectos agregados y la @fig-aggte-dynamic-heterog los efectos dinámicos. 
+
+- **Con controles.** `(S1.ctrl)` Estimo controlando por cuartiles de tamaño de la firma y por sector de actividad. Las estimaciones de los efectos de tratamiento son más precisas y son cualitativamente similares a las estimaciones incondicionales. Encuentro efectos agregados 15% más altos sobre compras declaradas e IVA compras. Las diferencias más importantes aparecen sobre las ventas e IVA ventas, con estimaciones puntuales 50-60% mayores. A su vez, aparece un efecto agregado significativo sobre las ventas e ingreso reportados cuantitativamente importantes, de 16 y 14 centavos por peso de ingreso reportado, respectivamente. 
+- **Con ponderadores de tamaño.** `(S1.wt)` Estimo la especificación incondicional ponderando cada firma por el promedio de su facturación en los dos años anteriores. Con esto busco (..., sigo a Yagan 2015). Las estimaciones –tanto agregadas como dinámicas– pierden precisión y todos los coeficientes dejan de ser significativos. 
+- **Panel no balanceado.** `(S0.unbal)` Estimo sobre una muestra no balanceada que comprende todas las firmas que hayan presentado una DJ ficta en cada año. Los estimaciones ganan en precisión y en significación. Hay un efecto agregado significativo sobre todas las variables. El análisis dinámico muestra efectos crecientes en el tiempo para todas las variables que resultan significativas, sin presencia de pre-trends.
+- **Muestra alternativa.** `(S2.base)` Consideramos un panel balanceado de firmas que hayan presentado en algún momento del período una DJ ficta. Es decir, permitimos que en algún momento las firmas comiencen a presentar una declaración real de sus actividades. Los resultados son cuantitativamente y cualitativamente muy similares a los obtenidos con la muestra principal. Hay una mejora en la precisión de las estimaciones que permite vislumbrar una dinámica más clara, mostrando un efecto creciente sobre las declaraciones de IVA compras e IVA ventas. Nuevamente, no hay un aumento correspondiente en el IVA adeudado o pago en el período.
+
+```{r}
+#| label: fig-aggte-simple-heterog
+#| fig-cap: ATT – Aggregate effect with different specifications
+#| echo: false
+simple_dt <- reduce(simple, rbind) %>% 
+  .[, sample := as_factor(sample)] %>% 
+  .[, variable := fct_rev(variable)]
+simple_dt %>% 
+  ggplot(aes(x = estimate, y = variable, color = sample)) +
+  geom_point(size = 2,
+             position = position_dodge(width = .5)) +
+  geom_errorbarh(
+    aes(xmin = conf.low,
+        xmax = conf.high),
+    height = .5,
+    position = position_dodge(width = .5)
+  ) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed") +
+  coord_cartesian(xlim = c(-0.5, 0.5)) +
+  ggsci::scale_color_futurama() +
+  labs(y = NULL, color = NULL)
+```
+
+```{r}
+#| label: fig-aggte-dynamic-heterog
+#| fig-cap: ATT – Dynamic estimates with different specifications
+dynamic_dt <- reduce(dynamic, rbind) %>% 
+  .[, sample := as_factor(sample)]
+dynamic_dt[variable != "Revenue" & sample %in% estname[c(2,4,5)]] %>% 
+  ggplot(aes(x = event, y = estimate, color = sample)) +
+  geom_point(size = 1, position = position_dodge(width = .3)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = errorbarsize, position = position_dodge(width = .3)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_vline(xintercept = -.5) +
+  facet_wrap(~variable, scale = "free_y") +
+  scale_color_manual(values = ggsci::pal_futurama()(5)[c(2,4,5)]) +
+  labs(caption = "[ 95% Simult. CI ]", color = NULL)
+```
+
+## Heterogeneidades
+
+### Intensidad del tratamiento
+
+- **DD agregado con TWFE.** Planteo una regresión por MCO con efectos fijos de firma y año, donde estimo el efecto de estar dentro del conjunto de firmas que están por encima o por debajo de la mediana en el porcentaje de costos cubiertos en facturas electrónicas. La especificación es la de un modelo de diferencias en diferencias con tratamiento no absorbente –los efectos estimados refieren al impacto de encontrarse por encima o por debajo de la recepción mediana en el período de referencia–. Los resultados aparecen en la @tbl-panel-twfe y muestran que estar por encima de la recepción mediana se asocia a un mayor reporte en todas las variables analizadas. No hay efecto de encontrarse por debajo de la recepción mediana. 
+- **DD con tratamiento contínuo.** @dechaisemartinDifferenceinDifferencesEstimatorsIntertemporal2022 y @callawayDifferenceinDifferencesContinuousTreatment2021 proponen métodos para estimar DD con tratamientos continuos. ==(PENDIENTE DE IMPLEMENTACIÓN, LEER PAPERS.)==
+
+```{r}
+#| label: tbl-panel-twfe
+#| fig-cap: Intensidad del tratamiento. Panel TWFE, muestra principal.
+dty[is.na(netAmountReceivedK), netAmountReceivedK := 0]
+dty[, netAmountReceivedSz := netAmountReceivedK / Scaler1]
+cutoff <- dty[netAmountReceivedSz>0, fmedian(netAmountReceivedSz)]
+dty[, netAmountReceivedSzHi := netAmountReceivedSz > cutoff]
+dty[, netAmountReceivedSzLo := 0 < netAmountReceivedSz & netAmountReceivedSz < cutoff]
+varlist <-
+  c(
+    "deductPurchases",
+    "taxableTurnover",
+    "vatPurchases",
+    "vatSales",
+    "vatDue",
+    "vatPaid"
+  ) %>%
+  paste0("Scaled1", ., "K")
+reg <- varlist |>
+  map(~ arsenal::formulize(.x, "netAmountReceivedSzLo + netAmountReceivedSzHi | fid + year") %>%
+    feols(., dty[(inSample1)]))
+names(reg) <- varlist |> stringr::str_remove("Scaled1")
+modelsummary::msummary(reg, stars = TRUE, fmt = 3, gof_map = c("rmse", "nobs", "r.squared", "vcov.type", "FE: fid", "FE: year"))
+```
+
+### Margen extensivo
+
+Para estudiar el margen extensivo de la política tenemos que cambiar la definición de la muestra. En el caso de la supervivencia de las firmas, usamos un panel no balanceado de firmas que hayan presentado DJ ficta en algún año entre 2009–2016. Para estudiar el impacto sobre la declaración real de ingresos usamos un panel balanceado de firmas que presentaron DJ ficta algún año entre 2009–2016.
+
+En todos los casos estimamos modelos de probabilidad lineal, con un diseño de diferencias en diferencias con efectos fijos bidireccionales y tratamiento absorbente. Los resultados se presentan en la @tbl-extensivo
+
+- **Supervivencia de las firmas**. ¿Comenzar a recibir facturas electrónicas reduce la probabilidad de que la firma presente una declaración jurada o reporte ingresos>0 en el siguiente período? Encuentro que comenzar a recibir facturas electrónicas se asocia con una probabilidad 20–23 puntos porcentuales menor de dejar de pagar IVA y dejar de reporatar actividad, respectivamente. ==(NO ME CONVENCE ESTA ESPECIFICACIÓN, ES DEMASIADO ALTO)==
+- **Declaración real de ingresos.** ¿Afecta la probabilidad de las firmas de comenzar a presentar declaraciones reales? Estimo dos regresiones, una incondicional y otra incorporando efectos fijos por sector y por cuartiles de facturación y edad de la firma. La recepción de comprobantes electrónicos se asocia a un aumento de 0.8–1.2 puntos porcentuales en la probabilidad de presentar una declaración real de actividades.
+
+```{r}
+#| label: tbl-extensivo
+#| fig-cap: Margen extensivo de la política
+
+# data prep
+dty[, receivedPost := fifelse(
+  !is.na(yearFirstReception), year >= yearFirstReception, FALSE)]
+dty[, djReal := djFict == FALSE]
+dty[, noVat := vatPaid == 0 | is.na(vatPaid)]
+dty[, inactive := is.na(in214) & is.na(in217) & noVat]
+
+# controles
+quartiles <- dty[(inSample2), quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[(inSample2), sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
+quartiles <- dty[(inSample2), quantile(firm_age, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[(inSample2), ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
+
+# regress
+reg <- list()
+reg[[1]] <- feols(noVat ~ receivedPost | fid + year, dty[(inSample0) & year>2009])
+reg[[2]] <- feols(inactive ~ receivedPost | fid + year, dty[(inSample0) & year>2009])
+reg[[3]] <- feols(djReal ~ receivedPost | 
+                    fid + year, 
+                  dty[(inSample2) & year >2009])
+reg[[4]] <- feols(djReal ~ receivedPost |
+                    fid + year + sizeQuartile + ageQuartile + sector, 
+                  dty[(inSample2) & year > 2009])
+
+# model summary
+reg %>% 
+  dvnames(number = FALSE) %>% 
+  modelsummary::msummary(
+    stars = TRUE,
+    fmt = 3,
+    gof_map = c("rmse", "nobs", "r.squared", "vcov.type", 
+                "FE: fid", "FE: year", "FE: sizeQuartile", "FE: ageQuartile", "FE: sector"))
+```
+
+# Discusión
+
+- **Interpretación de los resultados.**
+  - **Coherencia con el modelo.** Se observa que, para las firmas analizadas, un aumento en la cobertura de los costos reportados por terceros genera un aumento estadísticamente significativo de los costos reportados, y también de los ingresos reportados. A la luz del modelo planteado, los resultados son coherentes en tanto las firmas estarían operando con niveles muy bajos de fiscalización, donde la autoridad tributaria cuenta con muy poca información sobre las firmas por fuera de lo que ellas mismas declaran. En este contexto, las firmas aprovecharían la situación para reducir su deuda tributaria al mínimo. La reoptimización de tanto costos como ingresos reportados parecería mostrar que antes del tratamiento, las firmas consideraban tanto los ingresos como los costos reportados por terceros como restricciones relevantes (potencialmente binding) a la hora de hacer sus declaraciones. Esto no era así en el caso analizado por @carrilloDodgingTaxmanFirm2017, donde para las firmas más grandes solo parecía estar operativa la restricción asociada a los ingresos reportados por terceros.
+  - **Saliencia.** Para que las firmas puedan reoptimizar tienen que conocer la información con la que cuenta la autoridad tributaria sobre sus transacciones. Es decir, que puedan estimar $C_{T}$ y $R_{T}$. Las firmas reciben comprobantes de todas sus transacciones con CFE, y saben cuantas facturas emiten, con lo cual deberían ser capaces de reconstruir de forma muy precisa $C_{T}$ y $R_{T}$.
+  - **Evasión o error honesto.** Registrar todas las operaciones de la firma es costoso y suceptible a errores. La respuesta que vemos puede no estar vinculada necesariamente a comportamientos evasivos, sino a mejoras de eficiencia en el registro de operaciones de las firmas.
+  - **Subreporte o respuesta real.** Por otro lado, la variación en las declaraciones de las firmas podría provenir de cambios reales en su actividad. La alta prevalencia de bunching en la facturación declarada y su aumento luego de que las firmas comienzan a recibir facturas electrónicas sugiere que al menos parte de la respuesta proviene de modificaciones en sus comportamientos evasivos (@fig-bunching-event, TEST FORMAL DE BUNCHING?). A su vez, resulta sugerente ver como las firmas aumentan la declaración de IVA compras e IVA ventas sin que esto se vea reflejado en una modificación de sus pagos de IVA. Tal como observan @carrilloDodgingTaxmanFirm2017 en Ecuador, ante un aumento en el grado de exposición a la información reportada por terceros, las firmas hacen ajustes en otros márgenes para que su deuda tributaria se mantenga incambiada. 
+- **Canales.**
+	- **Aumento de los costos reportados por terceros.**
+	- **Estrategias de evasión de IVA.** La política pudo haber limitado ciertas formas prevalentes de evasión de IVA que realizaban las empresas. (Ver reseña de @slemrodVAT100Retrospective2022 para completar).
+- **Validez externa.**
+  - **Efecto local a firmas poco fiscalizadas.** Las firmas analizadas son potencialmente las más sensibles a cambios en el grado de fiscalización al que están expuestas. Los resultados podrían considerarse una cota superior del efecto de la recepción de facturas electrónicas. 
+  - **Período reducido de análisis.** No podemos ver respuestas en el largo plazo. Para la mayor parte de las firmas no tenemos más que uno o dos años desde que comienzan a recibir facturas electrónicas. También hace que las estimaciones tipo estudio de eventos sean poco precisas.
+  - **Evaluación integral de la política.** Una evaluación completa de la política requeriría evaluar su efecto conjunto, considerando tanto la recepción como la emisión. Con los datos disponibles no es posible evaluar el efecto de la emisión sobre las variables analizadas en este estudio. Se necesitan datos que cubran un mayor período luego de implementada la política. Usando datos de mayor frecuencia,  @bergoloFacturaElectronicaCumplimiento2018 estiman un efecto sobre el pago de IVA de 8% en los seis meses posteriores a la implementación obligatoria del sistema.
+  - **Dependencia de la estructura evasiva preexistente.** La respuesta de las firmas a cualquier política que puede reducir la evasión depende de la estructura evasiva pre-existente y en la distribución de los comportamientos evasivos a través de las firmas (CITA). Es posible que los efectos encontrados en otros países y contextos, a una política similar, sean de magnitudes distintas.
+
+# Comentarios finales
+
+# Anexos
+
+## Anexo 1. Fuentes de datos
+
+### Declaraciones juradas de las empresas
+
+Las firmas tienen que presentar un conjunto de declaraciones juradas periódicamente, informando a la autoridad tributaria sobre distintos aspectos de sus operaciones. En este trabajo utilizamos los siguientes formularios:
+
+> - *Formulario 2148.* Declaración de IRAE, ICOSA e Impuesto al Patrimonio para contribuyentes NO CEDE (para períodos mayores o iguales a 10/2020 deben utilizar el formulario 1050 incluido en PADI).
+> - *Formulario 2149.* Declaración de IRAE, ICOSA e Impuesto al Patrimonio para contribuyentes CEDE.
+> - *Formulario 2176.* Declaración de IVA, Responsables, Anticipos de IRAE, Impuesto al Patrimonio e ICOSA, para Grandes contribuyentes y Contribuyentes CEDE.
+> - *Formulario 2178.* Declaración de IVA, Anticipos de IRAE, Impuesto al Patrimonio e ICOSA para contribuyentes NO CEDE.
+
+### Contribuyentes CEDE y NO CEDE
+
+La DGI clasifica dos grandes tipos de contribuyentes, un grupo de firmas sujeto a un "Control Especial de Empresas" (CEDE) y un grupo no sujeto a ese control adicional (no CEDE). La integración de uno u otro grupo es una decisión administrativa de la DGI, con criterios privados. En general las firmas CEDE se caracterizan por tener niveles elevados de facturación, pertenecer a algún sector de actividad particular, entre otras. El control adicional al que están sujetas se traduce en una mayor frecuencia de presentación de información, a la vez que actúan como agentes de retención de impuestos de sus socios comerciales. Las firmas NO CEDE suelen ser empresas de menor porte y se les requiere presentar menos formularios, con menor frecuencia.
+
+## Anexo 2. Estadísticas descriptivas
+
+
+```{r}
+#| label: fig-dens-trunover-fict
+#| fig-cap: Facturación reportada en millones de UI, por tipo de declaración.
+dty[turnoverMUI %between% c(0.01, 30)] |>
+  ggplot(aes(x = turnoverMUI, color = djFict, fill = djFict)) +
+  geom_density(linewidth = 1, alpha = 0.3) +
+  geom_vline(xintercept = 3, size = 1) +
+  geom_vline(xintercept = 2, size = 1.5) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0.01, 5)) +
+  ggsci::scale_color_cosmic() +
+  ggsci::scale_fill_cosmic() +
+  labs(
+    x = "Facturación en millones de UI", y = "Densidad", 
+    color = "DJ Ficta", fill = "DJ Ficta"
+  )
+```
+
+```{r}
+#| label: tbl-static-characteristics-desgranamiento
+#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 firma).
+
+varlist <- c(
+  "inSample1",
+  "receivedAnyT", 
+  "emittedAnyT", 
+  "neverTreated",
+  "sector"
+)
+dts[inSample0 & djFictAnyT, ..varlist] %>%
+  tbl_summary(by = "inSample1", missing = "no") %>% 
+  add_p()
+```
+
+```{r}
+#| label: tbl-yearly-characteristics-desgranamiento
+#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 año-firma).
+
+varlist <- c(
+  "inSample1",
+  "Scaler1",
+  "Scaled1deductPurchasesK",
+  "Scaled1RevenueK",
+  "Scaled1taxableTurnoverK",
+  "Scaled1vatSalesK",
+  "Scaled1vatPurchasesK",
+  "Scaled1vatDueK",
+  "Scaled1vatPaidK",
+  "Scaled1corpTaxPaidK",
+  "Scaled1otherTaxPaidK",
+  "Scaled1totalTaxPaidK"
+)
+dty[inSample0 & djFict & year %in% 2009:2015, ..varlist] %>%
+  .[, Scaler1 := Scaler1 / 1e06] %>%
+  tbl_summary(
+    by = "inSample1",
+    # statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    missing = "no",
+  ) %>%
+  add_p()
+```
+
+```{r}
+#| label: fig-dens-turnover-nevertreated
+#| fig-cap: Facturación reportada en millones de UI, por estado de tratamiento. Muestra principal.
+dty[inSample1 & turnoverMUI %between% c(0.01, 30)] |>
+  ggplot(aes(x = turnoverMUI, color = neverTreated, fill = neverTreated)) +
+  geom_density(linewidth = 1, alpha = 0.3) +
+  geom_vline(xintercept = 3, size = 1) +
+  geom_vline(xintercept = 2, size = 1.5) +
+  scale_x_continuous(expand = c(0, 0)) +
+  coord_cartesian(xlim = c(0.01, 5)) +
+  ggsci::scale_color_cosmic() +
+  ggsci::scale_fill_cosmic() +
+  labs(
+    x = "Facturación en millones de UI", y = "Densidad", 
+    color = "Never-treated", fill = "Never-treated"
+  )
+```
+
+```{r }
+#| label: tbl-yearly-characteristics-nevertreated
+#| tbl-cap: Descriptivas de nunca tratados. Muestra principal. (1 obs. = 1 año-firma).
+
+varlist <- c(
+  "neverTreated",
+  "Scaler1",
+  "Scaled1deductPurchasesK",
+  "Scaled1RevenueK",
+  "Scaled1taxableTurnoverK",
+  "Scaled1vatSalesK",
+  "Scaled1vatPurchasesK",
+  "Scaled1vatDueK",
+  "Scaled1vatPaidK",
+  "Scaled1corpTaxPaidK",
+  "Scaled1otherTaxPaidK",
+  "Scaled1totalTaxPaidK"
+)
+dty[inSample1 & djFict & year %in% 2009:2015, ..varlist] %>%
+  .[, Scaler1 := Scaler1 / 1e06] %>%
+  tbl_summary(
+    by = "neverTreated",
+    # statistic = list(all_continuous() ~ "{mean} ({sd})"),
+    missing = "no",
+  ) %>%
+  add_p()
+```
+
+## Anexo 3. Análisis adicionales
+
+```{r}
+#| label: fig-bunching-event
+#| fig-cap: Facturación anual reportada el año antes y el año después de recibir la primera factura electrónica. Muestra principal.
+dty[, eventtime := year - yearFirstReception]
+dty[, .N, eventtime]
+dty[turnoverMUI < 5 & inSample1 & eventtime %in% c(-1, 1)] |>
+  ggplot(aes(turnoverMUI, color = as.factor(eventtime))) +
+  geom_density(linewidth = 1) +
+  coord_cartesian(xlim = c(0, 5)) +
+  ggsci::scale_color_cosmic() +
+  geom_vline(xintercept = 2, linetype = "dashed") +
+  geom_vline(xintercept = 3, linetype = "dashed") +
+  labs(color = "Event time", x = "Facturación en millones de UI")
+```
+

@@ -5,6 +5,7 @@
 Rplots*
 packrat/lib*/
 packrat/src/*
+Draft_files/
 # Workflow files
 .snakemake
 out/
