@@ -14,25 +14,27 @@ lookup_list <- list()
 lookup_list[[1]] <- dty[year %in% 2009:2016, .N, fid][N == 8, .(fid)]
 lookup_list[[1]][, inAllT := TRUE]
 
-# DJ de IRAE/IPAT en todos los períodos
+# DJ de IRAE/IPAT en todos los períodos / algún período
 lookup_list[[2]] <- dty[year %in% 2009:2016 & in214 == TRUE, .N, .(fid)][N == 8, .(fid)]
 lookup_list[[2]][, in214AllT := TRUE]
+lookup_list[[3]] <- dty[year %in% 2009:2016 & in214 == TRUE, .N, .(fid)][, .(fid)]
+lookup_list[[3]][, in214AnyT := TRUE]
 
-# DJ de IVA en todos los períodos
-lookup_list[[3]] <- dty[year %in% 2009:2015 & in217 == TRUE, .N, .(fid)][N == 7, .(fid)]
-lookup_list[[3]][, in217AllT := TRUE]
+# DJ de IVA en todos los períodos / algún período
+lookup_list[[4]] <- dty[year %in% 2009:2015 & in217 == TRUE, .N, .(fid)][N == 7, .(fid)]
+lookup_list[[4]][, in217AllT := TRUE]
+lookup_list[[5]] <- dty[year %in% 2009:2015 & in217 == TRUE, .N, .(fid)][, .(fid)]
+lookup_list[[5]][, in217AnyT := TRUE]
 
-# DJ ficta en todos los períodos
-lookup_list[[4]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8, .(fid)]
-lookup_list[[4]][, djFictAllT := TRUE]
-
-# DJ ficta en algún período
-lookup_list[[5]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
-lookup_list[[5]][, djFictAnyT := TRUE]
+# DJ ficta en todos los períodos / algún período
+lookup_list[[6]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8, .(fid)]
+lookup_list[[6]][, djFictAllT := TRUE]
+lookup_list[[7]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
+lookup_list[[7]][, djFictAnyT := TRUE]
 
 # Tratamiento absorbente
 dty[, receivedInYear := !is.na(nTicketsReceived)] # mas amplio que usando monto
-lookup_list[[6]] <- map(
+lookup_list[[8]] <- map(
   2012:2016,
   ~ dty[year == .x, .(fid, receivedInYear)] %>%
     setnames("receivedInYear", paste0("received", .x))
@@ -49,14 +51,14 @@ lookup_list[[6]] <- map(
   .[, .(fid, nonAbsorbing)]
 
 # Tiene covariables en BPS
-lookup_list[[7]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
+lookup_list[[9]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 
 # Define samples  -----------------------------------------------------------------------
 
 lut <- lookup_list %>%
   reduce(merge, by = "fid", all = TRUE)
 
-lut[, inSample0 := djFictAnyT]
+lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))]
 lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
 

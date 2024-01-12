@@ -125,41 +125,13 @@ dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
 
-# tratamiento A: recepción de primer eticket
-dt[, yearFirstReception := lubridate::year(dateFirstReception)]
-
 # covariables
 dt[, firm_age := year - birth_year]
 
-# Define analysis sample ------------------------------------------------------
+# Recepción/emisión de tickets en t
+dt[, received := !is.na(nTicketsReceived)]
+dt[, emitted := !is.na(nTicketsEmitted)]
 
-message("Defining analysis sample.")
-
-## Muestra 1: DJ ficta en todos los períodos y tiene covariables
-
-# presenta djFicta en todos los períodos
-lookup_djFictAllT <- dt[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8, .(fid)]
-lookup_djFictAllT[, djFictAllT := TRUE]
-dt <- merge(dt, lookup_djFictAllT, by = "fid", all.x = TRUE)
-
-# tiene covariables
-dt[, hasCovariates := !is.na(sector) & !is.na(firm_age)]
-
-dt[, inSample1 := djFictAllT & hasCovariates]
-
-## Muestra 2: Presente en todos los períodods y DJ ficta en algún período
-
-# aparece en todos los períodos
-lookup_inAllT <- dt[year %in% 2009:2016, .N, fid][N == 8, .(fid)]
-lookup_inAllT[, inAllT := TRUE]
-dt <- merge(dt, lookup_inAllT, by = "fid", all.x = TRUE)
-
-# presenta djFicta en algún período
-lookup_djFictAnyT <- dt[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
-lookup_djFictAnyT[, djFictAnyT := TRUE]
-dt <- merge(dt, lookup_djFictAnyT, by = "fid", all.x = TRUE)
-
-dt[, inSample2 := inAllT & djFictAnyT & hasCovariates]
 
 # Export ----------------------------------------------------------------------
 
