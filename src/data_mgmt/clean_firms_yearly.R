@@ -44,8 +44,8 @@ message("Processing VAT affidavits and taxable sales/purchases.")
 sls <- read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst", as.data.table = TRUE)
 
 slsvarlist <- c(
-  "vatSales", "vatPurchases", "vatDue", "vatLiability", "turnoverNetOfTax", "taxableTurnover",
-  "deductPurchases", "excessVatPrevious", "deductPurchasesSpecial", "vatDeductions"
+  "vatSales", "vatPurchases", "vatDue", "vatDueV2", "vatLiability", "turnoverNetOfTax", 
+  "taxableTurnover", "deductPurchases", "vatDeductions"
 )
 slsformula <- arsenal::formulize(slsvarlist, idvars)
 
