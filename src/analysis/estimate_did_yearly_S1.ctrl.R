@@ -2,6 +2,7 @@ library(data.table)
 library(magrittr)
 library(fst)
 library(purrr)
+library(stringr)
 library(did)
 
 # input data
@@ -15,7 +16,6 @@ dty <-
 # size quartiles – mean revenue 2009–2010
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
-dty[, .N, sizeQuartile]
 
 # dependent variables
 varlist <- c(
@@ -28,6 +28,7 @@ varlist <- c(
   "vatPaid"
 ) %>%
   paste0("Scaled1", ., "K")
+varlist %<>% c(., str_replace(., "Scaled1", "Scaled2"))
 
 # analysis period
 yearlist <- list(
@@ -38,7 +39,8 @@ yearlist <- list(
   2009:2015,
   2009:2015,
   2010:2015
-)
+) %>%
+  rep(2)
 
 # estimate
 ddlist <- varlist %>%
@@ -59,14 +61,14 @@ ddlist <- varlist %>%
   )
 
 simple <- ddlist %>%
-  map(aggte,
+  map(possibly(aggte, otherwise = NULL),
     type = "simple",
     clustervars = "fid",
     bstrap = TRUE
   )
 
 dynamic <- ddlist %>%
-  map(aggte,
+  map(possibly(aggte, otherwise = NULL),
     type = "dynamic",
     clustervars = "fid",
     bstrap = TRUE

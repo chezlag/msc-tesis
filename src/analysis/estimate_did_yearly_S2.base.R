@@ -2,6 +2,7 @@ library(data.table)
 library(magrittr)
 library(fst)
 library(purrr)
+library(stringr)
 library(did)
 
 # input data
@@ -23,6 +24,7 @@ varlist <-  c(
     "vatPaid"
   ) %>%
   paste0("Scaled1", ., "K")
+varlist %<>% c(., str_replace(., "Scaled1", "Scaled2"))
 
 # analysis period
 yearlist <- list(
@@ -33,7 +35,8 @@ yearlist <- list(
   2009:2015,
   2009:2015,
   2010:2015
-)
+) %>%
+  rep(2)
 
 # estimate group-time ATT
 ddlist <- varlist %>%
