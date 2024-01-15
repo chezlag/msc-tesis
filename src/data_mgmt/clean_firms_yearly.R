@@ -69,6 +69,7 @@ for (v in taxvarlist) tax[, (v) := get(v) / 1e03] # to avoid int overflow in col
 ctax <- collap(tax, taxformula, fsum)
 for (v in taxvarlist) ctax[, (v) := get(v) * 1e03]
 rm(tax)
+ctax <- ctax[(totalTaxPaid > 0 | totalTaxRetained > 0)]
 
 # e-ticket ---------------------------------------------------------------------
 
