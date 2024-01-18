@@ -3,9 +3,7 @@
 .Rproj.user
 .Rhistory
 Rplots*
-packrat/lib*/
-packrat/src/*
-Draft_files/
+src/paper/.quarto/
 # Workflow files
 .snakemake
 out/

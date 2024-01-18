@@ -1,0 +1,156 @@
+# Resultados
+
+```{r lib-fcn}
+library(groundhog)
+pkgs <- c(
+    "fastverse", "fst", "did", "ggplot2", "ggsci", "purrr", "stringr", "forcats", "fixest", "gtsummary", "kableExtra"
+)
+groundhog.library(pkgs, "2024-01-15")
+
+ROOT <- ""
+if (grepl("src/paper", getwd())) ROOT <- "../../"
+
+source(paste0(ROOT, "src/lib/tidy_did.R"))
+source(paste0(ROOT, "src/lib/theme_set.R"))
+```
+
+```{r read-estimates}
+# estimation specifications
+estname <- c("S1.base", "S1.ctrl", "S1.wt", "S0.unbal", "S2.base")
+# read simple overall att
+filelist <- estname %>% paste0(ROOT, "out/analysis/did_yearly_", ., "_aggte.simple.RDS")
+simple_est <- lapply(filelist, readRDS)
+simple <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
+# read dynamic att
+filelist <- str_replace(filelist, "simple", "dynamic")
+dynamic_est <- map(filelist, readRDS)
+dynamic <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
+# name estimations
+names(simple) <- estname
+names(dynamic) <- estname
+# set data.table
+walk(simple, setDT)
+walk(dynamic, setDT)
+# add column with specification name
+walk2(simple, estname, ~ .x[, sample := .y])
+walk2(dynamic, estname, ~ .x[, sample := .y])
+```
+
+## Resultados principales
+
+### Recepción de e-facturas y costos reportados
+
+```{r fig-cost-dynamic}
+#| fig-cap: Efecto dinámico de la recepción de e-factura sobre costos reportados
+dynamic$S1.base[y.name == "Scaled1deductPurchasesK"] %>%
+  ggplot(aes(x = event, y = estimate)) +
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  labs(caption = "[ 95% Simult. CI ]")
+```
+
+### Recepción de e-facturas e ingresos reportados
+
+```{r fig-revenue-dynamic}
+#| fig-cap: Efecto dinámico de la recepción de e-factura sobre ingresos reportados
+dynamic$S1.base[y.name == "Scaled1taxableTurnoverK"] %>%
+  ggplot(aes(x = event, y = estimate)) +
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  labs(caption = "[ 95% Simult. CI ]")
+```
+
+### Recepción de e-facturas y pago de IVA
+
+```{r fig-vat-dynamic}
+#| fig-cap: Efecto dinámico de la recepción de e-factura sobre componentes del IVA
+dynamic$S1.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
+  ggplot(aes(x = event, y = estimate)) +
+  geom_point(size = 2) +
+  geom_line(size = 1) +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3) +
+  # geom_errorbar(
+  #   aes(
+  #     ymin = conf.low,
+  #     ymax = conf.high
+  #   ),
+  #   width = .2
+  # ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  facet_grid(variable ~ 1) +
+  labs(caption = "[ 95% Simult. CI ]")
+```
+
+## Heterogeneidades
+
+### Heterogeneidad por tamaño
+
+```{r}
+simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_S1.base_by.size_aggte.simple.RDS"))
+tidy_size <- simple_size %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
+    as_factor() %>%
+    fct_rev()] %>%
+  .[, sizeQuartile := rep(1:4, 7) %>% as_factor()]
+
+tidy_size[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
+  ggplot(aes(x = estimate, y = variable, color = sizeQuartile)) +
+  geom_point(
+    size = 2,
+    position = position_dodge(width = .5)
+  ) +
+  geom_errorbarh(
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
+    height = .5,
+    position = position_dodge(width = .5)
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+  coord_cartesian(xlim = c(-0.3, 0.86)) +
+  ggsci::scale_color_futurama() +
+  labs(y = NULL, color = "Size quartile")
+```
+
+### Heterogeneidad por sector
+

@@ -9,16 +9,16 @@
 # contributors: @lachlandeer, @julianlanger, @bergmul
 
 # --- Dictionaries --- #
-RMD_FILES  = glob.glob(config["src_paper"] + "*.Rmd")
-YAML_FILES = glob.glob(config["src_paper"] + "*.yml")
-BIB_FILES  = glob.glob(config["src_paper"] + "*.bib")
-TEX_FILES  = glob.glob(config["src_paper"] + "*.tex")
+QMD_FILES  = glob.glob("src/paper/" + "*.qmd")
+YAML_FILES = glob.glob("src/paper/" + "*.yml")
+BIB_FILES  = glob.glob("src/paper/" + "*.bib")
+TEX_FILES  = glob.glob("src/paper/" + "*.tex")
 
 # --- Build Rules --- #
 ## paper2root:   copy paper to root directory
 rule paper2root:
     input:
-        pdf  = config["out_paper"] + "article.pdf",
+        pdf  = "out/paper/" + "index.pdf"
     output:
         pdf  = PROJ_NAME + ".pdf",
     shell:
@@ -27,20 +27,13 @@ rule paper2root:
 ## build_paper: builds pdf using bookdown
 rule build_paper:
     input:
-        text_files = RMD_FILES,
+        text_files = QMD_FILES,
         yaml_files = YAML_FILES,
         biblo      = BIB_FILES,
-        tex_style  = TEX_FILES,
-        tables     = expand(config["out_tables"] +
-                            "{iTable}.tex",
-                            iTable = TABLES),
-        figures = expand(config["out_figures"] +
-                            "{iPlot}.pdf",
-                            iPlot = PLOTS),
-        runner     = config["src_lib"] + "build_article.R"
+        tex_style  = TEX_FILES
     output:
-        config["out_paper"] + "article.pdf"
+        "out/paper/" + "index.pdf"
     log:
-        config["log"] + "paper/build_article.Rout"
+        "logs/paper/" + "build_paper.Rout"
     shell:
-        "{runR} {input.runner} > {log} {logAll}"
+        "quarto render src/paper > {log} {logAll}"

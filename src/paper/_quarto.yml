@@ -1,0 +1,53 @@
+project:
+  type: book
+  output-dir: "../../out/paper"
+
+book:
+  title: "Nuevas tecnologías y evasión de impuestos"
+  subtitle: "La recepción de facturas electrónicas en Uruguay"
+  author: 
+  - name: "Guillermo Sánchez Laguardia"
+    orcid: 0000-0002-7511-6062
+    affiliations:
+      - name: "Universidad de la República"
+        department: "Facultad de Ciencias Económicas y Adminstración"
+  date: "`r Sys.Date()`"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - lit_review.qmd
+    - method.qmd
+    - results.qmd
+    - summary.qmd
+    - references.qmd
+
+bibliography: references.bib
+
+lang: es
+
+toc: true
+
+code-fold: true
+execute: 
+  echo: false
+  warning: false
+
+format:
+  html:
+    theme: simplex
+    fontsize: 1.2em
+    linestretch: 1.7
+    mainfont: Helvetica Neue, Helvetica, Arial, sans
+    monofont: Cascadia Mono, Menlo, Consolas, Courier New, Courier
+    backgroundcolor: "white"
+    fontcolor: "black"
+    knitr:
+      opts_chunk:
+        dev: "ragg_png"
+  pdf:
+    documentclass: scrreprt
+    papersize: a4
+
+
+
+

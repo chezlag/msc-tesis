@@ -1,6 +1,3 @@
-# Main Workflow - MRW Replication
-# Contributors: @lachlandeer, @julianlanger, @bergmul
-
 import glob
 
 # --- Importing Configuration Files --- #
@@ -15,22 +12,17 @@ runStata = "stata-mp -q -b"
 logAll = "2>&1"
 
 # --- Main Build Rule --- #
-## all            : build paper and slides that are the core of the project
 rule all:
     input:
         html  = PROJ_NAME + "_slides.pdf"
 
 # --- Cleaning Rules --- #
-## clean_all      : delete all output and log files for this project
 rule clean_all:
     shell:
         "rm -rf out/ logs/ *.log *.pdf *.html"
 
 
 # --- Help Rules --- #
-## help_main      : prints help comments for Snakefile in ROOT directory. 
-##                  Help for rules in other parts of the workflows (i.e. in rules/)
-##                  can be called by `snakemake help_<workflowname>`
 rule help_main:
     input: "Snakefile"
     shell:
