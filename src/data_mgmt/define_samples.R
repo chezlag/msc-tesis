@@ -1,7 +1,6 @@
-library(fastverse)
-library(fst)
-library(purrr)
-
+library(groundhog)
+pkgs <- c("fastverse", "fst", "purrr")
+groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_o.R")
 
 dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE)
@@ -31,10 +30,12 @@ lookup_list[[6]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8
 lookup_list[[6]][, djFictAllT := TRUE]
 lookup_list[[7]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
 lookup_list[[7]][, djFictAnyT := TRUE]
+lookup_list[[8]] <- dty[year %in% 2009:2011 & djFict == TRUE, .N, fid][N == 3, .(fid)]
+lookup_list[[8]][, djFictAllTPre := TRUE] # balance pre implementación
 
 # Tratamiento absorbente
 dty[, receivedInYear := !is.na(nTicketsReceived)] # mas amplio que usando monto
-lookup_list[[8]] <- map(
+lookup_list[[9]] <- map(
   2012:2016,
   ~ dty[year == .x, .(fid, receivedInYear)] %>%
     setnames("receivedInYear", paste0("received", .x))
@@ -51,7 +52,7 @@ lookup_list[[8]] <- map(
   .[, .(fid, nonAbsorbing)]
 
 # Tiene covariables en BPS
-lookup_list[[9]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
+lookup_list[[10]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 
 # Define samples  -----------------------------------------------------------------------
 
@@ -61,5 +62,6 @@ lut <- lookup_list %>%
 lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))]
 lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
+lut[, inSample3 := djFictAllTPre & hasCovariates]
 
 write_fst(lut, opt$output)
