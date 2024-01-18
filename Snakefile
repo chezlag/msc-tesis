@@ -14,7 +14,7 @@ logAll = "2>&1"
 # --- Main Build Rule --- #
 rule all:
     input:
-        html  = PROJ_NAME + "_slides.pdf"
+        html  = PROJ_NAME + ".pdf"
 
 # --- Cleaning Rules --- #
 rule clean_all:
@@ -35,7 +35,7 @@ include: config["rules"] + "data_mgmt.smk"
 include: config["rules"] + "analysis.smk"
 # include: config["rules"] + "figures.smk"
 #include: config["rules"] + "tables.smk"
-#include: config["rules"] + "paper.smk"
+include: config["rules"] + "paper.smk"
 # include: config["rules"] + "slides.smk"
 # 2. Other rules
 # include: config["rules"] + "clean.smk"

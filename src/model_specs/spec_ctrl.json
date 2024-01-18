@@ -1,0 +1,4 @@
+{
+    "formula": "~ sector + sizeQuartile + ageQuartile",
+    "wt": null
+}
