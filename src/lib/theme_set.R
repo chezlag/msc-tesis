@@ -1,9 +1,9 @@
-library(cowplot)
-library(extrafont)
-loadfonts()
-par(family = "LM Roman 10")
+groundhog.library("cowplot", "2024-01-15")
+# library(extrafont)
+# loadfonts()
+# par(family = "LM Roman 10")
 theme_set(
-  cowplot::theme_half_open(font_size = 10, font_family = "LM Roman 10") +
+  cowplot::theme_half_open(font_size = 10) +
     cowplot::background_grid("y") +
     theme(
       legend.position = "bottom",
