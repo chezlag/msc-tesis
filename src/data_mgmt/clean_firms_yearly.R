@@ -1,8 +1,11 @@
-library(fastverse)
-library(fst)
-library(lubridate)
-library(purrr)
-
+library(groundhog)
+pkgs <- c(
+  "fastverse",
+  "fst",
+  "lubridate",
+  "purrr"
+)
+groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_o.R")
 source("src/lib/stata_helpers.R")
 
@@ -113,6 +116,9 @@ varlist <- c(balvarlist, slsvarlist, taxvarlist, cfevarlist)
 for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
 for (v in varlist) dt[, (paste0(v, "MUI")) := get(paste0(v, "M")) / ui]
+
+# Logaritmo deflactado
+for (v in paste0(varlist, "K")) dt[, (paste0("Log", v)) := log(get(v))]
 
 # Reescalo usando turnover de 2009-2010 y de los dos años anteriores
 create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
