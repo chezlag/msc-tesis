@@ -1,0 +1,385 @@
+---
+title: "Nuevas tecnologías y evasión de impuestos: La recepción de facturas electrónicas en Uruguay"
+date: "`r Sys.Date()`"
+author: 
+  - name: "Guillermo Sánchez Laguardia"
+    orcid: 0000-0002-7511-6062
+lang: es
+format: beamer
+editor: visual
+bibliography: zotero.bib
+execute: 
+  echo: false
+  warning: false
+---
+
+```{r lib-fcn}
+library(fastverse)
+library(fst)
+library(did)
+library(ggplot2)
+library(ggsci)
+library(patchwork)
+library(purrr)
+library(stringr)
+library(forcats)
+source("src/lib/tidy_did.R")
+source("src/lib/theme_set.R")
+```
+
+```{r read-data}
+samples <- read_fst("out/data/samples.fst", as.data.table = TRUE)
+dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
+  .[samples[(inSample2)], on = "fid"]
+```
+
+```{r read-estimates}
+# estimation specifications
+estname <- c("S1.base", "S1.ctrl", "S1.wt", "S0.unbal", "S2.base")
+# read simple overall att
+filelist <- estname %>% paste0("out/analysis/did_yearly_", ., "_aggte.simple.RDS")
+simple_est <- lapply(filelist, readRDS)
+simple <- map(filelist,
+              ~ .x %>%
+                readRDS() %>%
+                map(possibly(tidy_did, NULL)) %>%
+                reduce(rbind) %>%
+                setDT() %>%
+                .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()])
+# read dynamic att
+filelist <- str_replace(filelist, "simple", "dynamic")
+dynamic_est <- map(filelist, readRDS)
+dynamic <- map(filelist,
+              ~ .x %>%
+                readRDS() %>%
+                map(possibly(tidy_did, NULL)) %>%
+                reduce(rbind) %>%
+                setDT() %>%
+                .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()])
+# name estimations
+names(simple) <- estname
+names(dynamic) <- estname
+# set data.table
+walk(simple, setDT)
+walk(dynamic, setDT)
+# add column with specification name
+walk2(simple, estname, ~ .x[, sample := .y])
+walk2(dynamic, estname, ~ .x[, sample := .y])
+```
+
+## Pregunta de investigación
+
+-   ¿Cómo impacta la recepción de la facturas electrónicas sobre el comportamiento de las firmas pequeñas y poco fiscalizadas?
+-   ¿Hay heterogeneidades en las respuestas de las firmas?
+
+# Marco teórico
+
+## Marco teórico
+
+La **información reportada por terceros** es clave para asegurar el cumplimiento tributario. Los contribuyentes incorporan el grado de exposición al reporte de terceros a la hora de hacer declaraciones de impuestos.
+
+-   **Hipótesis 1.** La recepción de facturas electrónicas supone un incremento de los costos de las firmas sujetos al reporte por terceros.
+
+-   **Hipótesis 2.** El incremento de los costos reportados por terceros induce a las firmas a aumentar sus costos reportados.
+
+## Marco teórico (II)
+
+La deuda tributaria de las firmas se calcula de formas complejas. Tienen **múltiples márgenes de ajuste** a disposición para minimizar lo que tienen que pagar de impuestos, más cuando están sujetas a múltiples bases imponibles.
+
+Cualquier cambio en el entorno de decisión (por ej. un aumento en los costos reportados por terceros) puede desencadenar una reoptimización en otros márgenes.
+
+-   **Hipótesis 3.** El incremento de los costos sujetos a reporte por terceros puede inducir a las firmas a cambiar sus reportes en otros márgenes.
+
+-   **Hipótesis 4.** En general, las firmas no deberían incrementar los ingresos reportados, ya que eso aumentaría su deuda tributaria, ya sea por IVA o por IRAE. (Carrillo et al 2017)
+
+## Marco teórico (III)
+
+Las firmas que están sujetas a bajos niveles de monitoreo tienen más cintura para ajustar sus declaraciones de formas convenientes. Este tipo de firmas suelen ser las que más responden a cambios en la exposición al monitoreo.
+
+## Marco teórico (IV)
+
+En Uruguay las firmas relativamente pequeñas pueden optar por presentar una declaración abreviada de ingresos para el calculo del IRAE. Quienes se amparan en este régimen no están forzados a llevar una contabilidad suficiente de la firma ni a presentar un balance, como sí tienen que hacerlo las firmas más grandes.
+
+Se limitan a reportar sus ventas y luego se calcula una **renta ficta de acuerdo a tramos de facturación**, sobre la cual se aplica una tasa de 25% para calcular el IRAE.
+
+Hay discontinuidades (notches) muy pronunciadas en los tramos para calcular de la renta ficta y hay bunching en el entorno de los puntos de corte.
+
+-   **Hipótesis 5:** Las firmas que presentan DJ fictas tienen incentivos muy importantes para subreportar su tamaño – y lo hacen –.
+
+------------------------------------------------------------------------
+
+```{r}
+#| label: fig-dens-trunover-fict
+#| fig-cap: Facturación reportada en millones de UI, por tipo de declaración (izq.) y tasas de renta ficta prevalentes en cada tramo (der.)
+p1 <- dty[turnoverMUI %between% c(0.01, 30)] |>
+  ggplot(aes(x = turnoverMUI, color = djFict, fill = djFict)) +
+  geom_density(linewidth = 1, alpha = 0.3) +
+  geom_vline(xintercept = 3, size = 1) +
+  geom_vline(xintercept = 2, size = 1) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 1)) +
+  coord_cartesian(xlim = c(0.01, 5)) +
+  ggsci::scale_color_cosmic() +
+  ggsci::scale_fill_cosmic() +
+  labs(
+    x = "Facturación en millones de UI", y = "Densidad",
+    color = "DJ Ficta", fill = "DJ Ficta"
+  )
+
+pd2 <- data.table(x = seq(0,5,.01))
+pd2[, y := fcase(x < 2, .132, x < 3, .36, x > 3, .48) * 100]
+p2 <- pd2 %>% 
+  ggplot(aes(x, y)) +
+  geom_point(size = .7) +
+  scale_x_continuous(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0), limits = c(0, 50)) +
+  labs(x = "Facturación en millones de UI", y = "Tasa de renta ficta (%)")
+
+p1 | p2
+```
+
+## Marco teórico (V)
+
+Un aumento de los costos reportados por terceros, en principio, no haría más que reducir la deuda tributaria. –\> ¿Por qué las firmas aumentarían los ingresos declarados?
+
+Si las firmas pequeñas están escondiendo su tamaño, van a intentar que tanto sus costos como sus ingresos reportados sean lo menores posible. Un aumento en los costos reportados por terceros puede inducir, luego del aumento en su compras reportadas, a que reporten más ingresos. Si los deja en una **"posición sospechosa"** a los ojos de la DGI –por ejemplo si tienen IVA \<= 0–.
+
+-   **Hipótesis 6.** Las firmas que van a responder son ...?
+
+## Marco teórico (VI)
+
+Las respuestas de las firmas van a depender de la distribución de los comportamientos evasivos antes de la política.
+
+Está establecido en la literatura que las firmas más pequeñas y las firmas en sectores *downstream* tienen mayores posibilidades de evasión –y en promedio evaden más–.
+
+-   **Hipótesis 7.** Hay heterogeneidad en los ATT de acuerdo a tamaño y sector de la firma.
+
+## Marco teórico (VII)
+
+Las firmas van a responder más cuanto mayor el grado de exposición al reporte de terceros.
+
+-   **Hipótesis 8.** El efecto de tratamiento va a ser mayor a mayor intensidad del tratamiento.
+
+# Estrategia empírica
+
+## Diseño de investigación
+
+Diseño de **diferencias en diferencias con tratamiento escalonado**, explotando la variación en las fechas en que las firmas comienzan a recibir facturas electrónicas.
+
+Estimación con TWFE tiene problemas en este contexto –comparaciones indebidas (early treated vs. late treated), ponderaciones poco claras de comparaciones individuales (MCO, de acuerdo a varianza, pueden ser negativas).
+
+Callaway y Sant'Anna (2021) proponen una alternativa de estimación que identifica los **efectos de tratamiento por cohorte y tiempo**, para luego agregarlos en efectos más interpretables.
+
+## Diseño de investigación (II)
+
+CS21 definen efectos de tratamiento para cada cohorte $g$ y momento $t$ : $ATT(g, t)$
+
+Los $ATT(g,t)$ pueden estimarse con IPW, OR, o DR. Las tres estrategias de estimación explotan distintas del proceso generador de datos para la identificación.
+
+Usamos el **doubly robust (DR)**, ya que es más robusto frente a *model misspecifications* (es una combinación de IPW y OR).
+
+$$
+ATT_{dr}^{ny}(g,t) = \mathbb{E}\left[\left(\frac{G_{g}}{\mathbb{E}[G_{g}]} - \frac{\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}} {\mathbb{E}\left[\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}\right]} (Y_{t}-Y_{g-1}-m^{ny}_{g,t}(X))\right)\right]
+$$
+
+## Diseño de investigación (III) – Agregación
+
+CS21 proponen diferentes esquemas de agregación que brindan medidas resumen de los efectos causales de la política. Por ejemplo, ATT por cohorte de tratamiento, por tiempo de exposición, o ATT agregado para todas las unidades que participaron del tratamiento.
+
+Los esquemas de agregación toman la forma
+
+$$
+\theta = \sum_{g\in \mathcal{G}}\sum_{t=2}^{\mathcal{T}}w(g,t) \cdot ATT(g,t)
+$$
+
+donde $w(g,t)$ son funciones de ponderación estimables que permiten obtener las medidas resumen descritas.
+
+## Muestra
+
+-   **Muestra principal.** Panel balanceado de firmas que presentan DJ ficta todos los años entre 2009–2016.
+
+Trabajo con 11.052 firmas en siete años, dando 77.364 observaciones (años-firma)
+
+## Tratamiento
+
+Defino el inicio del tratamiento como el **año donde la firma recibe su primera factura electrónica**.
+
+El método que uso requiere que el tratamiento sea absorbente. Si bien hay casos donde una firma recibe factura un año y luego deja de recibir, eran muy pocos casos de la muestra y los elimino.
+
+## Grupo de control
+
+CS21 contempla dos potenciales grupos de control: los nunca tratados y los aún no tratados.
+
+Aunque sería ideal usar a las firmas nunca tratadas, representan solo 3% de la muestra y tienen características sustancialmente distintas a las firmas que si reciben facturas electrónicas.
+
+-   **Grupo de control:** Firmas que aún no recibieron facturas electrónicas en cada $t$
+
+## Variables
+
+-   **Yagan15:** Transformo todas las variables de interés, reescalándolas por la facturación en términos constantes declarada en 2009–2010.
+
+# Resultados principales
+
+## CFE implica mayor información
+
+-   **Hipótesis 1.** La recepción de facturas electrónicas supone un incremento de los costos de las firmas sujetos al reporte por terceros.
+
+(¿Cómo testeo? Podría ver si costos en CFE son mayores a los costos antes de la política. Sino solo a partir de si tienen efecto o no.)
+
+## Efecto de recepción de CFE
+
+-   **Hipótesis 2.** El incremento de los costos reportados por terceros induce a las firmas a aumentar sus costos reportados.
+
+```{r}
+#| label: fig-aggte-simple
+#| fig-cap: ATT – Aggregate effect.
+p3 <- simple$S1.base[str_detect(y.name, "^Scaled1")] %>%
+  ggplot(aes(x = estimate, y = variable)) +
+  geom_point(size = 2) +
+  geom_errorbarh(
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
+    height = .2
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    color = ggsci::pal_cosmic()(2)[2]
+  ) +
+  scale_y_discrete(limits = rev) +
+  labs(y = NULL, x = "Aggregate ATT of e-invoice reception")
+
+p3 +
+  theme(axis.text.y = element_text(
+    face = ifelse(
+      simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
+      "bold", "plain") %>%
+      rev()
+  ))
+```
+
+---
+
+-   **Hipótesis 3.** El incremento de los costos sujetos a reporte por terceros puede inducir a las firmas a cambiar sus reportes en otros márgenes.
+
+-   **Hipótesis 4.** En general, las firmas no deberían incrementar los ingresos reportados, ya que eso aumentaría su deuda tributaria, ya sea por IVA o por IRAE. (Carrillo et al 2017)
+
+## Tendencias paralelas
+
+```{r}
+#| label: fig-aggte-dynamic
+#| fig-cap: ATT – Dynamic estimates
+#| echo: false
+dynamic$S1.base[str_detect(y.name, "^Scaled1") & variable != "taxableTurnover"] %>% 
+  ggplot(aes(x = event, y = estimate)) +
+    geom_point(size = 2) +
+    geom_errorbar(
+      aes(
+        ymin = conf.low,
+        ymax = conf.high
+      ),
+      width = .2
+    ) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+    geom_vline(xintercept = -.5, linetype = "dashed") +
+    facet_wrap(~variable, scale = "free_y") +
+    labs(x = "Dynamic ATT of e-invoice reception",
+         y = "Years since first e-invoce reception", 
+         caption = "[ 95% Simult. CI ]")
+```
+
+# Heterogeneidades
+
+## Efecto por tamaño
+
+-   **Hipótesis 6.** Hay heterogeneidad en los ATT de acuerdo a tamaño y sector de la firma.
+
+```{r}
+simple_size <- readRDS("out/analysis/did_yearly_S1.base_by.size_aggte.simple.RDS")
+tidy_size <- simple_size %>% 
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
+      as_factor() %>% 
+      fct_rev()] %>% 
+  .[, sizeQuartile := rep(1:4, 7) %>% as_factor()]
+```
+
+```{r}
+tidy_size %>% 
+  ggplot(aes(x = estimate, y = variable, color = sizeQuartile)) +
+  geom_point(size = 2,
+             position = position_dodge(width = .5)) +
+  geom_errorbarh(
+    aes(xmin = conf.low,
+        xmax = conf.high),
+    height = .5,
+    position = position_dodge(width = .5)
+  ) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed") +
+  coord_cartesian(xlim = c(-0.5, 0.5)) +
+  ggsci::scale_color_futurama() +
+  labs(y = NULL, color = "Size quartile") +
+  theme(axis.text.y = element_text(
+    face = ifelse(
+      simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
+      "bold", "plain") %>%
+      rev()
+  ))
+```
+
+## Efecto por sector
+
+(PENDIENTE)
+
+## Intensidad del tratamiento
+
+-   **Hipótesis 8.** El efecto de tratamiento va a ser mayor a mayor intensidad del tratamiento.
+
+(PENDIENTE)
+
+DD con tratamiento continuo: Callaway, Goodman-Bacon, Sant'Anna (2021)
+
+# Robustez
+
+## Muestra alternativa
+
+-   **Panel no balanceado.** `(S0.unbal)` Estimo sobre una muestra no balanceada que comprende todas las firmas que hayan presentado una DJ ficta en cada año. Los estimaciones ganan en precisión y en significación. Hay un efecto agregado significativo sobre todas las variables. El análisis dinámico muestra efectos crecientes en el tiempo para todas las variables que resultan significativas, sin presencia de pre-trends.
+-   **Muestra alternativa.** `(S2.base)` Consideramos un panel balanceado de firmas que hayan presentado en algún momento del período una DJ ficta. Es decir, permitimos que en algún momento las firmas comiencen a presentar una declaración real de sus actividades. Los resultados son cuantitativamente y cualitativamente muy similares a los obtenidos con la muestra principal.
+
+## Especificaciones alternativas
+
+-   **Con controles.** `(S1.ctrl)` Estimo controlando por cuartiles de tamaño de la firma y por sector de actividad. Las estimaciones de los efectos de tratamiento son más precisas y son cualitativamente similares a las estimaciones incondicionales.
+-   **Con ponderadores de tamaño.** `(S1.wt)` Estimo la especificación incondicional ponderando cada firma por el promedio de su facturación en los dos años anteriores. Las estimaciones –tanto agregadas como dinámicas– pierden precisión y todos los coeficientes dejan de ser significativos.
+
+------------------------------------------------------------------------
+
+```{r}
+#| label: fig-aggte-simple-heterog
+#| fig-cap: ATT – Aggregate effect with different specifications
+#| echo: false
+simple_dt <- reduce(simple, rbind) %>% 
+  .[, sample := as_factor(sample)] %>% 
+  .[, variable := fct_rev(variable)]
+
+simple_dt[str_detect(y.name, "^Scaled1") & sample != "S1.base"]  %>% 
+  ggplot(aes(x = estimate, y = variable, color = sample)) +
+  geom_point(size = 1,
+             position = position_dodge(width = .5)) +
+  geom_errorbarh(
+    aes(xmin = conf.low,
+        xmax = conf.high),
+    height = .5,
+    position = position_dodge(width = .5)
+  ) +
+  geom_vline(xintercept = 0,
+             linetype = "dashed") +
+  coord_cartesian(xlim = c(-0.1, 0.5)) +
+  ggsci::scale_color_futurama() +
+  facet_grid(~ sample) +
+  labs(y = NULL, color = NULL)
+```
