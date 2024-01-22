@@ -4,7 +4,7 @@ import glob
 configfile: "paths.yaml"
 
 # --- PROJECT NAME --- #
-PROJ_NAME = "CFE Spillovers"
+PROJ_NAME = "CFE_Spillovers"
 
 # --- Variable Declarations ---- #
 runR = "Rscript --no-save --no-restore --verbose"
@@ -14,7 +14,7 @@ logAll = "2>&1"
 # --- Main Build Rule --- #
 rule all:
     input:
-        html  = PROJ_NAME + ".pdf"
+        pdf  = PROJ_NAME + ".pdf"
 
 # --- Cleaning Rules --- #
 rule clean_all:

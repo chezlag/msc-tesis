@@ -4,7 +4,7 @@
 
 # --- Target Rules --- #
 
-rule Tdata:
+rule data:
     input: 
         "out/data/firms_yearly.fst",
         "out/data/samples.fst"
