@@ -59,9 +59,13 @@ lookup_list[[10]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 lut <- lookup_list %>%
   reduce(merge, by = "fid", all = TRUE)
 
+cols <- grep("^fid$", names(lut), value = TRUE, invert = TRUE)
+lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)), 
+    .SDcols = cols] 
+
 lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
-lut[, inSample1 := djFictAllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))]
-lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & hasCovariates & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
-lut[, inSample3 := djFictAllTPre & hasCovariates]
+lut[, inSample1 := djFictAllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))]
+lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
+lut[, inSample3 := djFictAllTPre]
 
 write_fst(lut, opt$output)
