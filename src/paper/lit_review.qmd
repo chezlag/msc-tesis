@@ -1,2 +1,21 @@
 # Revisión bibliográfica
 
+Esta tesis se enmarca en varias discusiones actuales de la literatura sobre cumplimiento tributario. 
+
+En primer lugar, busca dialogar con los trabajos que estudian respuestas a la evasión tributaria desde las políticas públicas [ver reseña de @slemrodTaxComplianceEnforcement2019]. 
+
+- Relevancia de la información reportada por terceros para apuntalar el cumplimiento tributario. 
+    - Contribuyentes individuales 
+    - Firmas. Teórico y empírico.
+- Impacto de la probabilidad de auditoría sobre cumplimiento tributario – e-facturas crean un registro que permite detectar incumplimientos con mayor facilidad, lo cual se traduce en un mayor riesgo de auditoría. 
+
+- Tecnologías digitales
+
+
+## Literatura relacionada
+
+Hay una serie de trabajos que también realizan evaluaciones de sistemas de facturación electrónica. Bellon, Fan et al., Eissa et al.
+
+Para Uruguay, Bérgolo et al. ...
+
+Todos los trabajos mencionados analizan los efectos de emitir comprobantes electrónicos. Sin embargo, en ninguno de los trabajos mencionados se analiza que sucede con las firmas que reciben dichos comprobantes.

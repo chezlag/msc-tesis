@@ -18,7 +18,7 @@ TEX_FILES  = glob.glob("src/paper/" + "*.tex")
 ## paper2root:   copy paper to root directory
 rule paper2root:
     input:
-        pdf  = "out/paper/" + "index.pdf"
+        pdf  = "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     output:
         pdf  = PROJ_NAME + ".pdf",
     shell:
@@ -30,9 +30,11 @@ rule build_paper:
         text_files = QMD_FILES,
         yaml_files = YAML_FILES,
         biblo      = BIB_FILES,
-        tex_style  = TEX_FILES
+        tex_style  = TEX_FILES,
+        did_files  = DID_YEARLY,
+        did_byvar  = DID_YEARLY_BYV
     output:
-        "out/paper/" + "index.pdf"
+        "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     log:
         "logs/paper/" + "build_paper.Rout"
     shell:

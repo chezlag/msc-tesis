@@ -15,10 +15,13 @@ book:
   chapters:
     - index.qmd
     - intro.qmd
+    - context.qmd
     - lit_review.qmd
+    - hypotheses.qmd
+    - data.qmd
     - method.qmd
     - results.qmd
-    - summary.qmd
+    - closing_remarks.qmd
     - references.qmd
 
 bibliography: references.bib
@@ -47,7 +50,3 @@ format:
   pdf:
     documentclass: scrreprt
     papersize: a4
-
-
-
-

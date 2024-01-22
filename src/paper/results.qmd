@@ -3,7 +3,20 @@
 ```{r lib-fcn}
 library(groundhog)
 pkgs <- c(
-    "fastverse", "fst", "did", "ggplot2", "ggsci", "purrr", "stringr", "forcats", "fixest", "gtsummary", "kableExtra"
+  "data.table",
+  "did",
+  "fixest",
+  "forcats",
+  "fst",
+  "ggplot2",
+  "ggsci",
+  "gtsummary",
+  "kableExtra",
+  "magrittr",
+  "modelsummary",
+  "purrr",
+  "rlist",
+  "stringr"
 )
 groundhog.library(pkgs, "2024-01-15")
 
@@ -16,7 +29,7 @@ source(paste0(ROOT, "src/lib/theme_set.R"))
 
 ```{r read-estimates}
 # estimation specifications
-estname <- c("S1.base", "S1.ctrl", "S1.wt", "S0.unbal", "S2.base")
+estname <- c("S1.bal.base", "S1.bal.ctrl", "S1.bal.wt", "S2.bal.base", "S3.unbal.base", "S3.unbal.wt")
 # read simple overall att
 filelist <- estname %>% paste0(ROOT, "out/analysis/did_yearly_", ., "_aggte.simple.RDS")
 simple_est <- lapply(filelist, readRDS)
@@ -44,6 +57,8 @@ dynamic <- map(
 # name estimations
 names(simple) <- estname
 names(dynamic) <- estname
+names(simple_est) <- estname
+names(dynamic_est) <- estname
 # set data.table
 walk(simple, setDT)
 walk(dynamic, setDT)
@@ -58,7 +73,7 @@ walk2(dynamic, estname, ~ .x[, sample := .y])
 
 ```{r fig-cost-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre costos reportados
-dynamic$S1.base[y.name == "Scaled1deductPurchasesK"] %>%
+dynamic$S3.unbal.base[y.name == "Scaled1deductPurchasesK"] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -73,11 +88,23 @@ dynamic$S1.base[y.name == "Scaled1deductPurchasesK"] %>%
   labs(caption = "[ 95% Simult. CI ]")
 ```
 
+```{r tbl-main-overall-att}
+tbl <- simple_est$S3.unbal.base %>%
+  map(tidy_did_list) %>%
+  list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
+names(tbl) <- list.cases(tbl, tidy$y.name) %>% 
+  str_remove_all("^Scaled1|K$") #%>% 
+  # map2_chr(1:7, \(x, y) paste0("(", y, ")\n", x))
+tbl %>% 
+  list.match("deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid") %>%
+  modelsummary::msummary(statistic = "conf.int")
+```
+
 ### Recepción de e-facturas e ingresos reportados
 
 ```{r fig-revenue-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre ingresos reportados
-dynamic$S1.base[y.name == "Scaled1taxableTurnoverK"] %>%
+dynamic$S3.unbal.base[y.name == "Scaled1taxableTurnoverK"] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -96,7 +123,7 @@ dynamic$S1.base[y.name == "Scaled1taxableTurnoverK"] %>%
 
 ```{r fig-vat-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre componentes del IVA
-dynamic$S1.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
+dynamic$S3.unbal.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_line(size = 1) +
@@ -119,17 +146,24 @@ dynamic$S1.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0
 ### Heterogeneidad por tamaño
 
 ```{r}
-simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_S1.base_by.size_aggte.simple.RDS"))
+simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S3.unbal.base_aggte.simple.RDS"))
+
 tidy_size <- simple_size %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
     as_factor() %>%
-    fct_rev()] %>%
-  .[, sizeQuartile := rep(1:4, 7) %>% as_factor()]
+    fct_rev()]
 
-tidy_size[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
+quantlist <- 1:4
+nvars <- tidy_size[, .N, y.name] %>%
+  dim() %>%
+  .[1]
+tidy_size[, sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
+
+varlist <- c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")
+tidy_size[variable %in% varlist] %>%
   ggplot(aes(x = estimate, y = variable, color = sizeQuartile)) +
   geom_point(
     size = 2,
@@ -154,3 +188,41 @@ tidy_size[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", 
 
 ### Heterogeneidad por sector
 
+```{r}
+simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S3.unbal.base_aggte.simple.RDS"))
+
+tidy_ind <- simple_ind %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
+    as_factor()]
+
+industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
+nvars <- tidy_ind[, .N, y.name] %>%
+  dim() %>%
+  .[1]
+tidy_ind[, industry := rep(industrylist, nvars) %>% as_factor()]
+
+tidy_ind[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
+  ggplot(aes(x = estimate, y = industry, color = variable)) +
+  geom_point(
+    size = 2,
+    position = position_dodge(width = .5)
+  ) +
+  geom_errorbarh(
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
+    height = .5,
+    position = position_dodge(width = .5)
+  ) +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
+  coord_cartesian(xlim = c(-0.3, 0.86)) +
+  ggsci::scale_color_flatui() +
+  labs(y = NULL, color = NULL)
+```

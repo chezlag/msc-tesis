@@ -1,2 +1,22 @@
 # Introducción
 
+La evasión aumenta el costo de la recaudación de impuestos y altera la distribución de la carga fiscal. Es un problema central de la administración tributaria que se agudiza en los países en desarrollo, dada su menor capacidad de hacer cumplir las reglamentaciones vigentes. Reducir la evasión incrementa la recaudación, pero requiere incurrir en costos de fiscalización [@slemrodTaxComplianceEnforcement2019]. 
+
+Una literatura reciente ha desplazado el foco tradicional de la literatura de evasión desde las auditorías y las multas como mecanismos principales de cumplimiento [@allinghamIncomeTaxEvasion1972; @yitzhakiNoteIncomeTax1974] hacia la información reportada por terceros. Es decir, fuentes de información externas a los contribuyentes que permitan corroborar sus declaraciones de impuestos. Ejemplos de este tipo de fuentes pueden ser la información sobre remuneraciones enviadas por los empleadores directamente a la autoridad tributaria o la información de las transacciones realizadas por vía bancaria o con tarjetas de crédito [ver @klevenUnwillingUnableCheat2011; @pomeranzNoTaxationInformation2015; @carrilloDodgingTaxmanFirm2017; @adhikariSmallBusinessTax2021]. La posibilidad de verificar información tributaria de varias fuentes es un rasgo central de la administración tributaria en economías avanzadas y ha sido señalada como uno de los factores que permiten a los gobiernos de esos países cobrar altos impuestos y asegurar, a pesar de ello, altos niveles de cumplimiento tributario [@klevenWhyCanModern2016]. 
+
+La incorporación de nuevas tecnologías digitales está cambiando radicalmente la forma de operación de las administraciones tributarias en todo el mundo, mejorando sustancialmente la capacidad de recolectar y procesar información impositiva [@guptaDigitalRevolutionsPublic2017]. En particular, ha hecho posible la verificación cruzada de amplios contingentes de información provenientes de múltiples fuentes, a un costo más bajo que nunca antes. Uno de estos desarrollos tecnológicos son los sistemas de facturación electrónica, los cuales involucran la emisión de comprobantes digitales documentando las operaciones comerciales de una firma, y permitiendo la transmisión automática de comprobantes entre firmas y las administraciones tributarias. Una vez adoptada de forma masiva, la facturación electrónica permite a las administraciones tributarias contar con información de todas las transacciones de las firmas entre si y con consumidores, prácticamente en tiempo real, lo cual permitiría contrastar las declaraciones juradas de impuestos de las firmas con información granular de sus operaciones [@barreixFacturaElectronicaAmerica2018].
+
+Varios trabajos han analizado que ocurre cuando las firmas se convierten en emisoras de comprobantes electrónicos. @bellonDigitalizationImproveTax2022 realizan una evaluación extensiva para Perú, explotando la variación cuasiexperimental dada por la adopción escalonada de la política. En Uruguay @bergoloMisperceptionsTaxAudits2018 hacen una reseña general de la política y estudian el impacto sobre los pagos mensuales de IVA.
+
+El mecanismo detrás de las respuestas observadas puede adjudicarse a (i) un mayor volumen de transacciones registradas y puestas a disposición de la autoridad tributaria; y (ii) un mayor riesgo de auditoría, dado por una mayor facilidad de encontrar discrepancias en las declaraciones tributarias de las firmas.
+
+Un elemento poco estudiado de la política son sus potenciales efectos de derrame. La factura electrónica también crea un registro parcial de las operaciones de compra de los socios comerciales de las firmas emisoras. ¿Tiene esto algún efecto sobre el cumplimiento tributario de las firmas receptoras? 
+
+En este trabajo, busco cuantificar el impacto de la recepción de facturas electrónicas sobre distintos márgenes que utilizan las firmas para minimizar su pago de impuestos. 
+
+## Hipótesis
+
+- **Hipótesis 1.** 
+
+
+
