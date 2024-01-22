@@ -117,8 +117,9 @@ for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
 for (v in varlist) dt[, (paste0(v, "MUI")) := get(paste0(v, "M")) / ui]
 
-# Logaritmo deflactado
+# Logaritmo e IHS de variables deflactadas
 for (v in paste0(varlist, "K")) dt[, (paste0("Log", v)) := log(get(v))]
+for (v in paste0(varlist, "K")) dt[, (paste0("IHS", v)) := asinh(get(v))]
 
 # Reescalo usando turnover de 2009-2010 y de los dos años anteriores
 create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
@@ -137,6 +138,16 @@ create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "TempPurchases2009",
 create_lag_by_group(dt, "year == 2010", "deductPurchasesK", "TempPurchases2010", "fid")
 dt[, Purch1 := (TempPurchases2009 + TempPurchases2010) / 2]
 dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2]
+
+# Franjas de facturación en MUI
+dt[(djFict), djFictInBracket1 := RevenueMUI < 2]
+dt[(djFict), djFictInBracket2 := inrange(RevenueMUI, 2, 3)]
+dt[(djFict), djFictInBracket3 := RevenueMUI > 3]
+dt[(djFict),
+   djFictBracketSwitch :=
+     (djFictInBracket1 & !shift(djFictInBracket1)) |
+     (djFictInBracket2 & !shift(djFictInBracket2)) |
+     (djFictInBracket3 & !shift(djFictInBracket3))]
 
 # covariables
 dt[, firm_age := year - birth_year]
