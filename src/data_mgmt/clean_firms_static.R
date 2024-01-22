@@ -1,5 +1,6 @@
-library(fastverse)
-library(fst)
+library(groundhog)
+pkgs <- c("data.table", "fst")
+groundhog.library(pkgs, "2024-01-15")
 
 source("src/lib/cli_parsing_o.R")
 
