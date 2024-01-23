@@ -39,23 +39,27 @@ estname <- c("S1.base", "S1.ctrl", "S1.wt", "S0.unbal", "S2.base")
 # read simple overall att
 filelist <- estname %>% paste0("out/analysis/did_yearly_", ., "_aggte.simple.RDS")
 simple_est <- lapply(filelist, readRDS)
-simple <- map(filelist,
-              ~ .x %>%
-                readRDS() %>%
-                map(possibly(tidy_did, NULL)) %>%
-                reduce(rbind) %>%
-                setDT() %>%
-                .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()])
+simple <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
 # read dynamic att
 filelist <- str_replace(filelist, "simple", "dynamic")
 dynamic_est <- map(filelist, readRDS)
-dynamic <- map(filelist,
-              ~ .x %>%
-                readRDS() %>%
-                map(possibly(tidy_did, NULL)) %>%
-                reduce(rbind) %>%
-                setDT() %>%
-                .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()])
+dynamic <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
 # name estimations
 names(simple) <- estname
 names(dynamic) <- estname
@@ -117,7 +121,7 @@ p1 <- dty[turnoverMUI %between% c(0.01, 30)] |>
   geom_vline(xintercept = 3, size = 1) +
   geom_vline(xintercept = 2, size = 1) +
   scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0,0), limits = c(0, 1)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 1)) +
   coord_cartesian(xlim = c(0.01, 5)) +
   ggsci::scale_color_cosmic() +
   ggsci::scale_fill_cosmic() +
@@ -126,13 +130,13 @@ p1 <- dty[turnoverMUI %between% c(0.01, 30)] |>
     color = "DJ Ficta", fill = "DJ Ficta"
   )
 
-pd2 <- data.table(x = seq(0,5,.01))
+pd2 <- data.table(x = seq(0, 5, .01))
 pd2[, y := fcase(x < 2, .132, x < 3, .36, x > 3, .48) * 100]
-p2 <- pd2 %>% 
+p2 <- pd2 %>%
   ggplot(aes(x, y)) +
   geom_point(size = .7) +
-  scale_x_continuous(expand = c(0,0)) +
-  scale_y_continuous(expand = c(0,0), limits = c(0, 50)) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 50)) +
   labs(x = "Facturación en millones de UI", y = "Tasa de renta ficta (%)")
 
 p1 | p2
@@ -255,7 +259,8 @@ p3 +
   theme(axis.text.y = element_text(
     face = ifelse(
       simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
-      "bold", "plain") %>%
+      "bold", "plain"
+    ) %>%
       rev()
   ))
 ```
@@ -272,22 +277,24 @@ p3 +
 #| label: fig-aggte-dynamic
 #| fig-cap: ATT – Dynamic estimates
 #| echo: false
-dynamic$S1.base[str_detect(y.name, "^Scaled1") & variable != "taxableTurnover"] %>% 
+dynamic$S1.base[str_detect(y.name, "^Scaled1") & variable != "taxableTurnover"] %>%
   ggplot(aes(x = event, y = estimate)) +
-    geom_point(size = 2) +
-    geom_errorbar(
-      aes(
-        ymin = conf.low,
-        ymax = conf.high
-      ),
-      width = .2
-    ) +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
-    geom_vline(xintercept = -.5, linetype = "dashed") +
-    facet_wrap(~variable, scale = "free_y") +
-    labs(x = "Dynamic ATT of e-invoice reception",
-         y = "Years since first e-invoce reception", 
-         caption = "[ 95% Simult. CI ]")
+  geom_point(size = 2) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  facet_wrap(~variable, scale = "free_y") +
+  labs(
+    x = "Dynamic ATT of e-invoice reception",
+    y = "Years since first e-invoce reception",
+    caption = "[ 95% Simult. CI ]"
+  )
 ```
 
 # Heterogeneidades
@@ -298,36 +305,43 @@ dynamic$S1.base[str_detect(y.name, "^Scaled1") & variable != "taxableTurnover"] 
 
 ```{r}
 simple_size <- readRDS("out/analysis/did_yearly_S1.base_by.size_aggte.simple.RDS")
-tidy_size <- simple_size %>% 
+tidy_size <- simple_size %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
-      as_factor() %>% 
-      fct_rev()] %>% 
+    as_factor() %>%
+    fct_rev()] %>%
   .[, sizeQuartile := rep(1:4, 7) %>% as_factor()]
 ```
 
 ```{r}
-tidy_size %>% 
+tidy_size %>%
   ggplot(aes(x = estimate, y = variable, color = sizeQuartile)) +
-  geom_point(size = 2,
-             position = position_dodge(width = .5)) +
+  geom_point(
+    size = 2,
+    position = position_dodge(width = .5)
+  ) +
   geom_errorbarh(
-    aes(xmin = conf.low,
-        xmax = conf.high),
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
     height = .5,
     position = position_dodge(width = .5)
   ) +
-  geom_vline(xintercept = 0,
-             linetype = "dashed") +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
   coord_cartesian(xlim = c(-0.5, 0.5)) +
   ggsci::scale_color_futurama() +
   labs(y = NULL, color = "Size quartile") +
   theme(axis.text.y = element_text(
     face = ifelse(
       simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
-      "bold", "plain") %>%
+      "bold", "plain"
+    ) %>%
       rev()
   ))
 ```
@@ -362,24 +376,30 @@ DD con tratamiento continuo: Callaway, Goodman-Bacon, Sant'Anna (2021)
 #| label: fig-aggte-simple-heterog
 #| fig-cap: ATT – Aggregate effect with different specifications
 #| echo: false
-simple_dt <- reduce(simple, rbind) %>% 
-  .[, sample := as_factor(sample)] %>% 
+simple_dt <- reduce(simple, rbind) %>%
+  .[, sample := as_factor(sample)] %>%
   .[, variable := fct_rev(variable)]
 
-simple_dt[str_detect(y.name, "^Scaled1") & sample != "S1.base"]  %>% 
+simple_dt[str_detect(y.name, "^Scaled1") & sample != "S1.base"] %>%
   ggplot(aes(x = estimate, y = variable, color = sample)) +
-  geom_point(size = 1,
-             position = position_dodge(width = .5)) +
+  geom_point(
+    size = 1,
+    position = position_dodge(width = .5)
+  ) +
   geom_errorbarh(
-    aes(xmin = conf.low,
-        xmax = conf.high),
+    aes(
+      xmin = conf.low,
+      xmax = conf.high
+    ),
     height = .5,
     position = position_dodge(width = .5)
   ) +
-  geom_vline(xintercept = 0,
-             linetype = "dashed") +
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed"
+  ) +
   coord_cartesian(xlim = c(-0.1, 0.5)) +
   ggsci::scale_color_futurama() +
-  facet_grid(~ sample) +
+  facet_grid(~sample) +
   labs(y = NULL, color = NULL)
 ```
