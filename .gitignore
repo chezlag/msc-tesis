@@ -4,6 +4,9 @@
 .Rhistory
 Rplots*
 src/paper/.quarto/
+src/paper/index.tex
+src/paper/index.aux
+src/paper/index.toc
 # Workflow files
 .snakemake
 out/
