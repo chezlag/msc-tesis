@@ -20,7 +20,7 @@ rule collapse_eticket:
         "out/data/" + "eticket_yearly.fst",
         "out/data/" + "eticket_quarterly.fst"
     log:
-        "logs/data_mgmt/" + "collapse_eticket.log"
+        "logs/data_mgmt/" + "collapse_eticket.Rout"
     threads: 16
     shell:
         "{runR} {input.script} > {log} {logAll}"
@@ -33,7 +33,7 @@ rule clean_firms_static:
     output:
         data = "out/data/" + "firms_static.fst"
     log:
-        "logs/data_mgmt/" + "clean_firms_static.log"
+        "logs/data_mgmt/" + "clean_firms_static.Rout"
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
 
@@ -48,7 +48,7 @@ rule clean_firms_yearly:
     output:
         data = "out/data/" + "firms_yearly.fst"
     log:
-        "logs/data_mgmt/" + "clean_firms_yearly.log"
+        "logs/data_mgmt/" + "clean_firms_yearly.Rout"
     threads: 16
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
@@ -60,7 +60,7 @@ rule define_samples:
     output:
         data = "out/data/" + "samples.fst"
     log:
-        "logs/data_mgmt/" + "define_samples.log"
+        "logs/data_mgmt/" + "define_samples.Rout"
     threads: 16
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
