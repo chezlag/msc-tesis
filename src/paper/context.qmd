@@ -1,0 +1,56 @@
+# Contexto institucional
+
+```{r data-context}
+library(groundhog)
+pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "lubridate")
+date <- "2024-01-15"
+groundhog.library(pkgs, date)
+
+ROOT <- ""
+if (grepl("src/paper", getwd())) ROOT <- "../../"
+
+source(paste0(ROOT, "src/lib/theme_set.R"))
+
+samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
+dts <-
+  read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE) %>%
+  .[samples[(activeBusinessAnyT)], on = "fid"]
+```
+
+## Impuestos a las empresas en Uruguay
+
+La Dirección General Impositiva (DGI) recauda por impuestos cerca de 19% del PIB (2019). El IVA representa cerca del 50% de la recaudación. La DGI (2013) estimaba que la tasa de evasión de IVA en 2012 era cercana al 13%. Es una tasa de evasión baja para la región [^vatGapLAC] y comparable a las estimadas para algunos países desarrollados. [^vatGapEU] 
+
+[^vatGapLAC]: @gomezsabainiTaxStructureTax2012, 34-36 estimaban que la brecha de cumplimiento del IVA en América Latina era en promedio 25,9% en 2006, variando desde 11,0% en Chile hasta 38,1% en Nicaragua. La brecha estimada para Uruguay en 2006 era de 26,3%, muy cercana a la media regional del momento. 
+
+[^vatGapEU]: La brecha de cumplimiento del IVA en la Unión Europea era de 11% en 2018 con amplia variación entre países. Las brechas más bajas se encontraron en Suecia (0,7%), Croacia (3,5%) y Finlandia (3,6%), y las más altas en Rumania (33,8%), Grecia (30,1%) y Lituania (25,9%) [@europeancommissiondgtaxudStudyReportsVAT2020].
+
+Además del IVA, las empresas están sujetas a distintos impuestos de acuerdo a sus características: al Impuesto a la Renta de las Actividades Económicas (IRAE), que grava las ganancias empresariales a una tasa de 25%; el Impuesto al Patrimonio (IP) que grava los activos a una tasa de 1,5%; el Impuesto de Control a las Sociedades Anónimas (ICOSA) de suma fija (560 USD en 2022); el Impuesto a la Enajenación de Bienes Agropecuarios (IMEBA) por hasta 2,5% del valor de las ventas de negocios agropecuarios de pequeña escala; y el Impuesto Específico Interno (IMESI) que grava ciertos productos.  Por otro lado, las personas físicas están sujetas al Impuesto a la Renta de las Personas Físicas (IRPF), un impuesto dual que grava los ingresos de capital (IRPF categoría I; incluye dividendos) y los ingresos laborales (IRPF cat. II).
+
+## Facturación electrónica
+
+La facturación electrónica involucra la emisión de comprobantes digitales que documentan las operaciones comerciales de una firma. Desde la perspectiva de la administración tributaria, la tecnología permite un acceso a información tributaria prácticamente en tiempo real, lo cual permite hacer mejores proyecciones de recaudación, comprender mejor la dinámica de la actividad de las firmas, y automatizar procesos de control y fiscalización. La política también tiene beneficios para los contribuyentes, en tanto reduce los costos de cumplimiento y puede mejorar la eficiencia a partir de la reducción de costos operativos y a las ganancias de potenciales procesos de automatización e integración entre firmas.
+
+La facturación electrónica comienza en Uruguay en el año 2012. Desde ese momento pueden ingresar al régmien las empresas que así lo soliciten. El régimen contempla la inclusión de documentación de operaciones entre contribuyentes (e-facturas) y de operaciones con consumidores finales (e-tickets). En 2015 se establece un calendario de inclusión preceptiva en el régimen de facturación electrónica. Se incluyen ocho fechas límite para la inclusión, delimitadas en base al volumen de facturación de las empresas en 2014.
+
+Dada la disponibilidad de datos para este trabajo contamos únicamente con información hasta fines de 2016. En dicho período, solo las firmas con más de 30 millones de UI de facturación anual estaban mandatadas a entrar al régimen de facturación electrónica. A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica. El lado derecho de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo.
+
+A pesar de que pueda parecer un número reducido de firmas, sus altos volúmenes de facturación resultaron en que un gran número de firmas recibieran alguna factura electrónica en relativamente poco tiempo. El lado izquierdo de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las firmas en Uruguay había recibido algún tipo de factura electrónica.
+
+```{r}
+#| label: fig-adoption
+#| fig-cap: FDA de la fecha de primera emisión (der.) y fecha de primera recepción (izq.)
+# densidad de la primera adopción
+p1 <- dts %>%
+  ggplot() +
+  stat_bin(aes(dateFirstEmission, y = cumsum(..count..)), geom = "step")
+# densidad de la primera recepción
+dts[is.na(dateFirstReception), dateFirstReception := lubridate::ymd("2020-01-01")]
+dts %>%
+  ggplot() +
+  stat_ecdf(aes(dateFirstReception), geom = "step") +
+  coord_cartesian(xlim = c(lubridate::ymd("2012-01-01"), lubridate::ymd("2016-12-31")))
+# stat_bin(aes(dateFirstReception, y = cumsum(..count..)), geom = "step")
+# combino en figura única (patchwork::)
+p1 | p2
+```

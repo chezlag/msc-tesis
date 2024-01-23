@@ -1,0 +1,10 @@
+# Pregunta de investigación e hipótesis
+
+- Pregunta: ¿Cuál es el efecto de recibir facturas electrónicas sobre el cumplimiento tributario de las firmas?
+- H1: El pago de IVA no debería aumentar
+- H2: Las compras reportadas deberían aumentar
+- H3: Las ventas reportadas no deberían reducirse
+	- H3a: En principio las ventas declaradas no deberían aumentar.
+	- H3b: Las firmas podrían aumentar sus ventas declaradas si el aumento en las compras declaradas las llevara a una "posición sospechosa" en términos de pago de IVA. Es decir, si la deuda tributaria resultante del aumento en las compras reportadas, implicara un aumento en su probabilidad de auditoría.
+- H4: Hay heterogeneidades en la respuesta por tamaño y sector de actividad
+- H5: Múltiples márgenes de ajuste. Evitar una "posición sospechosa" de IVA puede llevar a las empresas a declarar mayor tamaño y aumentar su pago de IRAE. Otro efecto de CFE sobre cumplimiento.

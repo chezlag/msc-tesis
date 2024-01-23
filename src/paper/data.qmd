@@ -1,5 +1,28 @@
 # Datos
 
+```{r data-data}
+library(groundhog)
+pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "gtsummary")
+groundhog.library(pkgs, "2024-01-15")
+
+ROOT <- ""
+if (grepl("src/paper", getwd())) ROOT <- "../../"
+
+source(paste0(ROOT, "src/lib/theme_set.R"))
+
+samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
+dts <- 
+  read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE) %>%
+  .[samples[(in214AnyT | in217AnyT)], on = "fid"]
+dty <-
+  read_fst(paste0(ROOT, "out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
+  .[samples[(in214AnyT | in217AnyT)], on = "fid"]
+
+dts[, neverTreated := is.na(nonAbsorbing)]
+dty[, neverTreated := is.na(nonAbsorbing)]
+```
+
+
 ## Fuentes de datos
 
 En este trabajo combino varias fuentes de datos de las firmas uruguayas para el período 2009–2016. Uso principalmente microdatos de la Dirección General Impositiva (DGI) que contienen distintos tipos de información sobre las actividades de las firmas. La @tbl-data resume las fuentes de datos y su período de cobertura.
@@ -23,6 +46,19 @@ Por último, cuento con un conjunto reducido de covariables provenientes de micr
 
 : Fuentes de datos y período de disponibilidad {#tbl-data}
 
+### Variables
+
+Las variables de resultados principales surgen de las declaraciones juradas y de los pagos de impuestos realizados.
+
+- **De declaraciones juradas.**
+    - Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
+    - Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
+    - IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
+    - IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
+- **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
+
+Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara la implementación de la facturación electrónica.
+
 ### Muestra principal
 
 Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^method-1] de ingresos en el formulario 2148 todos los años del período 2009–2016.
@@ -34,19 +70,6 @@ Uso un panel balanceado para evitar problemas de composición debido a entradas 
 Me centro en las firmas que presentan declaraciones fictas de ingresos por dos razones. La principal es su *potencial evasor*. Varios estudios han mostrado que las firmas que no presentan una declaración completa de sus actividades son más propensas a evadir [@almuniaRadarEffectsMonitoring2018; BUSCAR MÁS CITAS].
 
 Por otra parte, también interesa que las firmas no tengan un poder de influencia en la decisión de sus proveedores de adoptar la facturación electrónica. Aunque la pretensión de exogeneidad pueda ser débil, el reducido tamaño de las firmas analizadas y su poca importancia como jugadores individuales, vuelve plausible que el momento exacto en que las firmas empiezan a recibir facturas electrónicas sea relativamente exógeno.
-
-### Variables
-
-Las variables principales de análisis surgen de las declaraciones juradas y de los pagos de impuestos realizados.
-
--   **De declaraciones juradas.**
-    -   Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
-    -   Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
-    -   IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
-    -   IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
--   **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
-
-Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara la implementación de la facturación electrónica.
 
 ### Estadísticas descriptivas
 
@@ -70,8 +93,7 @@ dts[, ..varlist] %>%
   tbl_summary(by = "inSample1", missing = "no")
 ```
 
-```{r}
-#| label: tbl-yearly-characteristics
+```{r tbl-yearly-characteristics}
 #| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 año-firma).
 varlist <- c(
   "inSample1",
