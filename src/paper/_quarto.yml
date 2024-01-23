@@ -23,6 +23,9 @@ book:
     - results.qmd
     - closing_remarks.qmd
     - references.qmd
+  appendices: 
+    - appendix_analysis.qmd
+    - appendix_data.qmd
 
 bibliography: references.bib
 
