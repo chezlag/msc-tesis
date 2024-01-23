@@ -92,7 +92,7 @@ dynamic$S3.unbal.base[y.name == "Scaled1deductPurchasesK"] %>%
 tbl <- simple_est$S3.unbal.base %>%
   map(tidy_did_list) %>%
   list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
-names(tbl) <- list.cases(tbl, tidy$y.name) %>% 
+names(tbl) <- list.cases(tbl, tidy$y.name, sorted = FALSE) %>% 
   str_remove_all("^Scaled1|K$") #%>% 
   # map2_chr(1:7, \(x, y) paste0("(", y, ")\n", x))
 tbl %>% 
