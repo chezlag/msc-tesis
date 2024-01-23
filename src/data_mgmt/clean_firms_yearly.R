@@ -47,7 +47,7 @@ message("Processing VAT affidavits and taxable sales/purchases.")
 sls <- read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst", as.data.table = TRUE)
 
 slsvarlist <- c(
-  "vatSales", "vatPurchases", "vatDue", "vatDueV2", "vatLiability", "turnoverNetOfTax", 
+  "vatSales", "vatPurchases", "vatDue", "vatDueV2", "vatLiability", "turnoverNetOfTax",
   "taxableTurnover", "deductPurchases", "vatDeductions"
 )
 slsformula <- arsenal::formulize(slsvarlist, idvars)
@@ -143,11 +143,13 @@ dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2]
 dt[(djFict), djFictInBracket1 := RevenueMUI < 2]
 dt[(djFict), djFictInBracket2 := inrange(RevenueMUI, 2, 3)]
 dt[(djFict), djFictInBracket3 := RevenueMUI > 3]
-dt[(djFict),
-   djFictBracketSwitch :=
-     (djFictInBracket1 & !shift(djFictInBracket1)) |
-     (djFictInBracket2 & !shift(djFictInBracket2)) |
-     (djFictInBracket3 & !shift(djFictInBracket3))]
+dt[
+  (djFict),
+  djFictBracketSwitch :=
+    (djFictInBracket1 & !shift(djFictInBracket1)) |
+      (djFictInBracket2 & !shift(djFictInBracket2)) |
+      (djFictInBracket3 & !shift(djFictInBracket3))
+]
 
 # covariables
 dt[, firm_age := year - birth_year]
@@ -156,6 +158,10 @@ dt[, firm_age := year - birth_year]
 dt[, received := !is.na(nTicketsReceived)]
 dt[, emitted := !is.na(nTicketsEmitted)]
 
+# Negocio activo
+dt[, anyTaxPaid := totalTaxPaid > 0]
+dt[, activeBusiness := in214 & in217]
+dt[, activeTaxpayer := activeBusiness & anyTaxPaid]
 
 # Export ----------------------------------------------------------------------
 

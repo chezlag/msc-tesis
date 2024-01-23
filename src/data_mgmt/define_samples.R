@@ -13,29 +13,9 @@ lookup_list <- list()
 lookup_list[[1]] <- dty[year %in% 2009:2016, .N, fid][N == 8, .(fid)]
 lookup_list[[1]][, inAllT := TRUE]
 
-# DJ de IRAE/IPAT en todos los períodos / algún período
-lookup_list[[2]] <- dty[year %in% 2009:2016 & in214 == TRUE, .N, .(fid)][N == 8, .(fid)]
-lookup_list[[2]][, in214AllT := TRUE]
-lookup_list[[3]] <- dty[year %in% 2009:2016 & in214 == TRUE, .N, .(fid)][, .(fid)]
-lookup_list[[3]][, in214AnyT := TRUE]
-
-# DJ de IVA en todos los períodos / algún período
-lookup_list[[4]] <- dty[year %in% 2009:2015 & in217 == TRUE, .N, .(fid)][N == 7, .(fid)]
-lookup_list[[4]][, in217AllT := TRUE]
-lookup_list[[5]] <- dty[year %in% 2009:2015 & in217 == TRUE, .N, .(fid)][, .(fid)]
-lookup_list[[5]][, in217AnyT := TRUE]
-
-# DJ ficta en todos los períodos / algún período
-lookup_list[[6]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, .(fid)][N == 8, .(fid)]
-lookup_list[[6]][, djFictAllT := TRUE]
-lookup_list[[7]] <- dty[year %in% 2009:2016 & djFict == TRUE, .N, fid][, .(fid)]
-lookup_list[[7]][, djFictAnyT := TRUE]
-lookup_list[[8]] <- dty[year %in% 2009:2011 & djFict == TRUE, .N, fid][N == 3, .(fid)]
-lookup_list[[8]][, djFictAllTPre := TRUE] # balance pre implementación
-
 # Tratamiento absorbente
 dty[, receivedInYear := !is.na(nTicketsReceived)] # mas amplio que usando monto
-lookup_list[[9]] <- map(
+lookup_list[[2]] <- map(
   2012:2016,
   ~ dty[year == .x, .(fid, receivedInYear)] %>%
     setnames("receivedInYear", paste0("received", .x))
@@ -52,16 +32,39 @@ lookup_list[[9]] <- map(
   .[, .(fid, nonAbsorbing)]
 
 # Tiene covariables en BPS
-lookup_list[[10]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
+lookup_list[[3]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
+
+# En todos los años / en algún año / todos los años pre (múltiples variables)
+cols <- c("in214", "in217", "djFict", "activeBusiness")
+lookup_AllT <- map(
+  cols, \(x) {
+    dty[year %in% 2009:2016 & get(x) == TRUE, .N, fid][N == 8, .(fid)] %>%
+      .[, paste0(x, "AllT") := TRUE]
+  }
+)
+lookup_AnyT <- map(
+  cols, \(x) {
+    dty[year %in% 2009:2016 & get(x) == TRUE, .N, fid][, .(fid)] %>%
+      .[, paste0(x, "AnyT") := TRUE]
+  }
+)
+lookup_AllTPre <- map(
+  cols, \(x) {
+    dty[year %in% 2009:2011 & get(x) == TRUE, .N, fid][N == 3, .(fid)] %>%
+      .[, paste0(x, "AllTPre") := TRUE]
+  }
+)
 
 # Define samples  -----------------------------------------------------------------------
 
-lut <- lookup_list %>%
+lut <- list(lookup_list, lookup_AllT, lookup_AnyT, lookup_AllTPre) %>%
+  unlist(recursive = FALSE) %>%
   reduce(merge, by = "fid", all = TRUE)
 
 cols <- grep("^fid$", names(lut), value = TRUE, invert = TRUE)
-lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)), 
-    .SDcols = cols] 
+lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)),
+  .SDcols = cols
+]
 
 lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))]
