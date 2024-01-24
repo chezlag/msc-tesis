@@ -3,6 +3,7 @@
 ```{r lib-fcn}
 library(groundhog)
 pkgs <- c(
+  "collapse",
   "data.table",
   "did",
   "fixest",
@@ -67,13 +68,28 @@ walk2(simple, estname, ~ .x[, sample := .y])
 walk2(dynamic, estname, ~ .x[, sample := .y])
 ```
 
+```{r read-data}
+samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
+dty <- read_fst(paste0(ROOT, "out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
+  .[samples[(activeBusinessAnyT)], on = "fid"]
+dts <- read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE) %>%
+  .[samples[(activeBusinessAnyT)], on = "fid"]
+
+size_quartiles <- dty[(inSample1), quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[(inSample1), sizeQuartile := cut(Scaler1, breaks = size_quartiles, labels = 1:4)]
+```
+
 ## Resultados principales
 
 ### Recepción de e-facturas y costos reportados
 
+En primer lugar, muestro evidencia en apoyo del supuesto de tendencias paralelas en los costos declarados, un requerimiento para la identificación en el diseño de diferencias en diferencias. La @fig-cost-dynamic presenta los efectos de tratamiento dinámicos propuestos por Callaway y Sant'Anna (2021), equivalentes a los estudios de eventos. Se observa que ninguno de los coeficientes es significativo antes del tratamiento. Si bien esto no confirma el supuesto de tendencias paralelas, si dota de mayor credibilidad al diseño seleccionado: indica que, en los años antes de recibir e-facturas, los costos reportados por tratados y controles venían evolucionando en paralelo.
+
+Formalizo esta evidencia en la primera columna de la @tbl-main-overall-att, donde presento los efectos de tratamiento agregados. En conjunto, la recepción de e-facturas genera un aumento promedio en los costos reportados de \$0.032 por peso de facturación declarada en 2009–2010. En términos porcentuales respecto a la media pre-2011, representa un aumento de 5%.
+
 ```{r fig-cost-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre costos reportados
-dynamic$S3.unbal.base[y.name == "Scaled1deductPurchasesK"] %>%
+dynamic$S1.bal.base[y.name == "Scaled1deductPurchasesK"] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -89,22 +105,39 @@ dynamic$S3.unbal.base[y.name == "Scaled1deductPurchasesK"] %>%
 ```
 
 ```{r tbl-main-overall-att}
-tbl <- simple_est$S3.unbal.base %>%
-  map(tidy_did_list) %>%
+#| tbl-cap: Efecto de tratamiento agregado. Panel balanceado.
+estlist <- simple_est$S1.bal.base
+tbl <- estlist %>%
+  map(possibly(tidy_did_list, NULL)) %>%
   list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
-names(tbl) <- list.cases(tbl, tidy$y.name, sorted = FALSE) %>% 
-  str_remove_all("^Scaled1|K$") #%>% 
-  # map2_chr(1:7, \(x, y) paste0("(", y, ")\n", x))
-tbl %>% 
-  list.match("deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid") %>%
-  modelsummary::msummary(statistic = "conf.int")
+colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
+names(tbl) <- str_remove_all(colnames, "^Scaled1|K$")
+var_regex <- "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid"
+ar <- data.frame(
+  "Mean Y pre-2011",
+  lapply(
+    grep(var_regex, colnames, value = TRUE),
+    \(x) dty[inSample1 & year <= 2011, fmean(get(x), na.rm = TRUE)]
+  )
+)
+tbl %>%
+  list.match(var_regex) %>%
+  msummary(
+    statistic = "conf.int",
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group"),
+    add_rows = ar
+  )
 ```
 
 ### Recepción de e-facturas e ingresos reportados
 
+En segundo lugar, exploro los ingresos reportados. Primero muestro los efectos de tratamiento dinámicos sobre el ingreso reportado, para aportar evidencia sobre el supuesto de tendencias paralelas en esta variable. No hay efectos significativos antes del tratamiento, ni tampoco después. 
+
+En la segunda columna de la @tbl-main-overall-att muestro la estimación del efecto agregado promedio sobre los tratados. La estimación puntual es de \$0.107 por peso de facturación declarada en 2009–2010, pero no es significativa al 95%. 
+
 ```{r fig-revenue-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre ingresos reportados
-dynamic$S3.unbal.base[y.name == "Scaled1taxableTurnoverK"] %>%
+dynamic$S1.bal.base[y.name == "Scaled1taxableTurnoverK"] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -121,32 +154,45 @@ dynamic$S3.unbal.base[y.name == "Scaled1taxableTurnoverK"] %>%
 
 ### Recepción de e-facturas y pago de IVA
 
+Por último analizo el pago anual de IVA, junto con IVA compras e IVA ventas declarados por las firmas. Cabe aclarar que aunque IVA compras e IVA ventas tienen un vínculo directo con costos y ventas reportados, respectivamente, dicho vínculo no es lineal. Hay productos y servicios que están sujetos a distintas tasas de IVA, lo cual crea no-linealidades en la relación entre IVA compras y costos (e IVA ventas e ingresos). Por otra parte, el IVA adeudado surge principalmente de la diferencia entre IVA ventas e IVA compras; pero la firma toma decisiones respecto a como afrontar esa deuda.
+
+La @fig-vat-dynamic ilustra los efectos de tratamiento dinámicos sobre IVA compras (panel 1), IVA ventas (panel 2) y pago de IVA (panel 3). En ningún caso hay efectos significativos antes del tratamiento. Hay efectos significativos en el segundo período luego del tratamiento, tanto en IVA compras e IVA ventas.
+
+Las últimas tres columnas de la @tbl-main-overall-att muestran el efecto agregado promedio sobre los tratados, para cada una de estas tres variables. La recepción de e-facturas tiene un impacto estadísticamente significativo de $0.008 por peso de facturación en 2009-2010. Representa un aumento de 6% en términos porcentuales. No hay efectos significativos sobre IVA ventas ni en pagos de IVA.
+
 ```{r fig-vat-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre componentes del IVA
-dynamic$S3.unbal.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
+dynamic$S1.bal.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
-  geom_line(size = 1) +
-  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3) +
-  # geom_errorbar(
-  #   aes(
-  #     ymin = conf.low,
-  #     ymax = conf.high
-  #   ),
-  #   width = .2
-  # ) +
+  # geom_line(size = 1) +
+  # geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2
+  ) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
-  facet_grid(variable ~ 1) +
+  facet_wrap(~variable, nrow = 3) +
   labs(caption = "[ 95% Simult. CI ]")
 ```
 
 ## Heterogeneidades
 
+En esta sección analizo heterogeneidades en los efectos de tratamiento, de acuerdo al tamaño y al sector de las firmas. Presento en cada caso evidencia para apoyar el supuesto de tendencias paralelas, ya entre cuartiles de tamaño o entre sectores de actividad. Luego, muestro los efectos de tratamiento agregados, por sector y por tamaño de la firma.
+
 ### Heterogeneidad por tamaño
 
-```{r}
-simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S3.unbal.base_aggte.simple.RDS"))
+Defino cuartiles de facturación pre-tratamiento para las firmas de la muestra principal. Las firmas del primer cuartil tienen una facturación pre-tratamiento menor a \$`r (size_quartiles[2] / 1e6) |> round(digits = 1)`M y las del cuarto cuartil una facturación superior a \$`r (size_quartiles[4] / 1e6) |> round(digits = 1)`M. Las @fig-heterog-size-dynamic-1, @fig-heterog-size-dynamic-2 muestran los efectos de tratamiento dinámicos para cada una de las variables analizadas en la sección anterior. En términos generales, prácticamente ninguno de los coeficientes pre-tratamiento resulta significativo. 
+
+La @fig-heterog-size-overall sintetiza las estimaciones de los efectos agregados de tratamiento por cuartil. Los únicos efectos significativos se concentran en el primer cuartil, en los costos reportados e IVA compras. 
+
+```{r fig-heterog-size-overall}
+#| fig-cap: Efecto de tratamiento agregado por cuartiles de facturación pre-tratamiento. Panel balanceado.
+simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S1.bal.base_aggte.simple.RDS"))
 
 tidy_size <- simple_size %>%
   map(possibly(tidy_did, NULL)) %>%
@@ -181,15 +227,17 @@ tidy_size[variable %in% varlist] %>%
     xintercept = 0,
     linetype = "dashed"
   ) +
-  coord_cartesian(xlim = c(-0.3, 0.86)) +
+  coord_cartesian(xlim = c(-0.05, 0.5)) +
   ggsci::scale_color_futurama() +
-  labs(y = NULL, color = "Size quartile")
+  labs(y = NULL, color = "Pre-treatment size quartile")
 ```
 
 ### Heterogeneidad por sector
 
-```{r}
-simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S3.unbal.base_aggte.simple.RDS"))
+Al realizar las estimaciones por sector de actividad, los resultados no    son tan claros. Pierden significación todos los coeficientes. Puede estar relacionado con la reducción en el número de observaciones utilizadas para cada una de las estimaciones.
+
+```{r fig-heterog-industry-overall}
+simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S1.bal.base_aggte.simple.RDS"))
 
 tidy_ind <- simple_ind %>%
   map(possibly(tidy_did, NULL)) %>%
@@ -202,10 +250,10 @@ industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "
 nvars <- tidy_ind[, .N, y.name] %>%
   dim() %>%
   .[1]
-tidy_ind[, industry := rep(industrylist, nvars) %>% as_factor()]
+tidy_ind[, sector := rep(industrylist, nvars) %>% as_factor()]
 
-tidy_ind[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
-  ggplot(aes(x = estimate, y = industry, color = variable)) +
+p1 <- tidy_ind[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
+  ggplot(aes(x = estimate, y = sector, color = variable)) +
   geom_point(
     size = 2,
     position = position_dodge(width = .5)
@@ -222,7 +270,25 @@ tidy_ind[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "
     xintercept = 0,
     linetype = "dashed"
   ) +
-  coord_cartesian(xlim = c(-0.3, 0.86)) +
+  xlim(-0.3, 0.66) +
   ggsci::scale_color_flatui() +
   labs(y = NULL, color = NULL)
+
+# Add number of observations per industry
+industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
+dty[sector == "Agriculture, forestry, fishing, mining and quarrying", sector := "Primary activities"]
+nobs <- dty[(inSample1) & sector %in% industrylist, .N, sector] %>% 
+  .[, estimate := .6] %>% 
+  .[, label := paste0("N = ", N)]
+
+p1 +
+  geom_text(data = nobs, aes(label = label), color = "black")
 ```
+
+## Margen extensivo
+
+### Salidas
+
+### Cambios de franja 
+
+## Robustez

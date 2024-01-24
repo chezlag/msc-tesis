@@ -46,7 +46,7 @@ p1 <- dts %>%
   stat_bin(aes(dateFirstEmission, y = cumsum(..count..)), geom = "step")
 # densidad de la primera recepción
 dts[is.na(dateFirstReception), dateFirstReception := lubridate::ymd("2020-01-01")]
-dts %>%
+p2 <- dts %>%
   ggplot() +
   stat_ecdf(aes(dateFirstReception), geom = "step") +
   coord_cartesian(xlim = c(lubridate::ymd("2012-01-01"), lubridate::ymd("2016-12-31")))

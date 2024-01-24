@@ -26,7 +26,7 @@ source(paste0(ROOT, "src/lib/tidy_did.R"))
 source(paste0(ROOT, "src/lib/theme_set.R"))
 ```
 
-```{r read-data-appendix}
+```{r read-data}
 samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
 dty <- read_fst(paste0(ROOT, "out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
   .[samples[(in214AnyT | in217AnyT)], on = "fid"]
@@ -37,6 +37,46 @@ walk(paste0("inSample", 0:2), ~ dts[is.na(get(.x)), (.x) := FALSE])
 walk(paste0("inSample", 0:2), ~ dty[is.na(get(.x)), (.x) := FALSE])
 dts[, neverTreated := is.na(nonAbsorbing)]
 dty[, neverTreated := is.na(nonAbsorbing)]
+```
+
+```{r read-estimates}
+# estimation specifications
+estname <- c("S1.bal.base", "S1.bal.ctrl", "S1.bal.wt", "S2.bal.base", "S3.unbal.base", "S3.unbal.wt")
+# read simple overall att
+filelist <- estname %>% paste0(ROOT, "out/analysis/did_yearly_", ., "_aggte.simple.RDS")
+simple_est <- lapply(filelist, readRDS)
+simple <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
+# read dynamic att
+filelist <- str_replace(filelist, "simple", "dynamic")
+dynamic_est <- map(filelist, readRDS)
+dynamic <- map(
+  filelist,
+  ~ .x %>%
+    readRDS() %>%
+    map(possibly(tidy_did, NULL)) %>%
+    reduce(rbind) %>%
+    setDT() %>%
+    .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+)
+# name estimations
+names(simple) <- estname
+names(dynamic) <- estname
+names(simple_est) <- estname
+names(dynamic_est) <- estname
+# set data.table
+walk(simple, setDT)
+walk(dynamic, setDT)
+# add column with specification name
+walk2(simple, estname, ~ .x[, sample := .y])
+walk2(dynamic, estname, ~ .x[, sample := .y])
 ```
 
 ```{r}
@@ -57,8 +97,7 @@ dty[turnoverMUI %between% c(0.01, 30)] |>
   )
 ```
 
-```{r}
-#| label: tbl-static-characteristics-desgranamiento
+```{r tbl-static-characteristics-desgranamiento}
 #| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 firma).
 
 varlist <- c(
@@ -73,8 +112,7 @@ dts[inSample0 & djFictAnyT, ..varlist] %>%
   add_p()
 ```
 
-```{r}
-#| label: tbl-yearly-characteristics-desgranamiento
+```{r tbl-yearly-characteristics-desgranamiento}
 #| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 año-firma).
 
 varlist <- c(
@@ -162,3 +200,82 @@ dty[turnoverMUI < 5 & inSample1 & eventtime %in% c(-1, 1)] |>
   labs(color = "Event time", x = "Facturación en millones de UI")
 ```
 
+```{r fig-heterog-size-dynamic-1}
+tidy_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S1.bal.base_aggte.dynamic.RDS")) %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
+    as_factor()]
+
+quantlist <- 1:4
+nvars <- tidy_size[, .N, y.name] %>%
+  dim() %>%
+  .[1]
+tidy_size[term == "ATT (l = 3)", sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
+tidy_size[, sizeQuartile := nafill(as.integer(sizeQuartile), type = "nocb")]
+
+varlist <- c("deductPurchases", "taxableTurnover")
+tidy_size[variable %in% varlist] %>%
+  ggplot(aes(x = event, y = estimate, color = as_factor(sizeQuartile))) +
+  geom_point(size = 2, position = position_dodge(width = .5)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2, 
+    position = position_dodge(width = .5)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  ggsci::scale_color_futurama() +
+  facet_wrap(~variable) +
+  coord_cartesian(ylim = c(-.25, .6)) +
+  labs(color = "Pre-treatment size quartiles", caption = "[ 95% Simult. CI ]")
+```
+
+```{r fig-heterog-size-dynamic-2}
+varlist <- c("vatPurchases", "vatSales", "vatPaid")
+tidy_size[variable %in% varlist] %>%
+  ggplot(aes(x = event, y = estimate, color = as_factor(sizeQuartile))) +
+  geom_point(position = position_dodge(width = .5)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2, 
+    position = position_dodge(width = .5)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  ggsci::scale_color_futurama() +
+  facet_wrap(~variable, nrow = 3, scale = "free_y") +
+  labs(color = "Pre-treatment size quartiles", caption = "[ 95% Simult. CI ]")
+```
+
+```{r tbl-S3.unbal.base-overall-att}
+#| tbl-cap: Efecto de tratamiento agregado. Panel balanceado pre-tratamiento, permitiendo salidas.
+estlist <- simple_est$S3.unbal.base
+tbl <- estlist %>%
+  map(possibly(tidy_did_list, NULL)) %>%
+  list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
+colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
+names(tbl) <- str_remove_all(colnames, "^Scaled1|K$")
+var_regex <- "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid"
+ar <- data.frame(
+  "Mean Y pre-2011",
+  lapply(
+    grep(var_regex, colnames, value = TRUE),
+    \(x) dty[inSample3 & year <= 2011, fmean(get(x), na.rm = TRUE)]
+  )
+)
+tbl %>%
+  list.match(var_regex) %>%
+  msummary(
+    statistic = "conf.int",
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group"),
+    add_rows = ar
+  )
+```
