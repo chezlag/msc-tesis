@@ -36,15 +36,20 @@ lookup_list[[3]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 
 # En todos los años / en algún año / todos los años pre (múltiples variables)
 cols <- c("in214", "in217", "djFict", "activeBusiness")
-lookup_AllT <- map(
-  cols, \(x) {
-    dty[year %in% 2009:2016 & get(x) == TRUE, .N, fid][N == 8, .(fid)] %>%
+colyrs <- list(2009:2016, 2009:2015, 2009:2016, 2009:2015)
+lookup_AllT <- map2(
+  cols,
+  colyrs,
+  \(x, y) {
+    dty[year %in% y & get(x) == TRUE, .N, fid][N == length(y), .(fid)] %>%
       .[, paste0(x, "AllT") := TRUE]
   }
 )
-lookup_AnyT <- map(
-  cols, \(x) {
-    dty[year %in% 2009:2016 & get(x) == TRUE, .N, fid][, .(fid)] %>%
+lookup_AnyT <- map2(
+  cols,
+  colyrs,
+  \(x, y) {
+    dty[year %in% y & get(x) == TRUE, .N, fid][, .(fid)] %>%
       .[, paste0(x, "AnyT") := TRUE]
   }
 )
