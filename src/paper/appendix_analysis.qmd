@@ -80,14 +80,13 @@ walk2(simple, estname, ~ .x[, sample := .y])
 walk2(dynamic, estname, ~ .x[, sample := .y])
 ```
 
-```{r}
-#| label: fig-dens-trunover-fict
+```{r fig-dens-trunover-fict}
 #| fig-cap: Facturación reportada en millones de UI, por tipo de declaración.
 dty[turnoverMUI %between% c(0.01, 30)] |>
   ggplot(aes(x = turnoverMUI, color = djFict, fill = djFict)) +
   geom_density(linewidth = 1, alpha = 0.3) +
+  geom_vline(xintercept = 2, size = 1) +
   geom_vline(xintercept = 3, size = 1) +
-  geom_vline(xintercept = 2, size = 1.5) +
   scale_x_continuous(expand = c(0, 0)) +
   coord_cartesian(xlim = c(0.01, 5)) +
   ggsci::scale_color_cosmic() +
@@ -140,8 +139,7 @@ dty[inSample0 & djFict & year %in% 2009:2015, ..varlist] %>%
   add_p()
 ```
 
-```{r}
-#| label: fig-dens-turnover-nevertreated
+```{r fig-dens-turnover-nevertreated}
 #| fig-cap: Facturación reportada en millones de UI, por estado de tratamiento. Muestra principal.
 dty[inSample1 & turnoverMUI %between% c(0.01, 30)] |>
   ggplot(aes(x = turnoverMUI, color = neverTreated, fill = neverTreated)) +
@@ -158,8 +156,7 @@ dty[inSample1 & turnoverMUI %between% c(0.01, 30)] |>
   )
 ```
 
-```{r }
-#| label: tbl-yearly-characteristics-nevertreated
+```{r tbl-yearly-characteristics-nevertreated}
 #| tbl-cap: Descriptivas de nunca tratados. Muestra principal. (1 obs. = 1 año-firma).
 
 varlist <- c(
@@ -186,8 +183,7 @@ dty[inSample1 & djFict & year %in% 2009:2015, ..varlist] %>%
   add_p()
 ```
 
-```{r}
-#| label: fig-bunching-event
+```{r fig-bunching-event}
 #| fig-cap: Facturación anual reportada el año antes y el año después de recibir la primera factura electrónica. Muestra principal.
 dty[, eventtime := year - yearFirstReception]
 dty[, .N, eventtime]
