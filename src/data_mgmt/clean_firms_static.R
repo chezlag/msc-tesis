@@ -1,6 +1,7 @@
 library(groundhog)
-pkgs <- c("data.table", "fst")
-groundhog.library(pkgs, "2024-01-15")
+pkgs <- c("data.table", "fst", "lubridate")
+date <- "2024-01-15"
+groundhog.library(pkgs, date)
 
 source("src/lib/cli_parsing_o.R")
 
@@ -14,6 +15,9 @@ dt[, emittedAnyT := !is.na(dateFirstEmission)]
 
 dt[, yearFirstReception := lubridate::year(dateFirstReception)]
 dt[, yearFirstEmission := lubridate::year(dateFirstEmission)]
+
+dt[is.na(yearFirstReception), yearFirstReception := Inf]
+dt[is.na(yearFirstEmission), yearFirstEmission := Inf]
 
 dt[, hasCovariates := !is.na(sector) & !is.na(birth_date)]
 
