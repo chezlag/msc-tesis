@@ -57,59 +57,43 @@ varlist <- c(
 
 message("Estimating group-time ATT.")
 ddlist <- varlist %>%
-  map(
-    possibly(
-      \(x) {
-        did::att_gt(
-          yname = x,
-          gname = "yearFirstReception",
-          idname = "fid",
-          tname = "year",
-          xformla = as.formula(params$formula),
-          data = dtycj,
-          control_group = "notyettreated",
-          weightsname = params$wt,
-          allow_unbalanced_panel = params$unbalanced,
-          clustervars = "fid",
-          est_method = "dr",
-          cores = 8,
-          anticipation = 1
-        )
-      }, NULL
+  map(possibly(\(x) {
+    did::att_gt(
+      yname = x,
+      gname = "yearFirstReception",
+      idname = "fid",
+      tname = "year",
+      xformla = as.formula(params$formula),
+      data = dtycj,
+      control_group = "notyettreated",
+      weightsname = params$wt,
+      allow_unbalanced_panel = params$unbalanced,
+      clustervars = "fid",
+      est_method = "dr",
+      cores = 8,
+      anticipation = 1
     )
-  )
+  }, NULL))
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
-  map(
-    possibly(
-      \(x) {
-        aggte(
-          x,
+  map(possibly(\(x) {
+    aggte(x,
           type = "simple",
           clustervars = "fid",
-          bstrap = TRUE
-        )
-      },
-      NULL
-    )
-  )
+          bstrap = TRUE)
+  },
+  NULL))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
-  map(
-    possibly(
-      \(x) {
-        aggte(
-          x,
+  map(possibly(\(x) {
+    aggte(x,
           type = "dynamic",
           clustervars = "fid",
-          bstrap = TRUE
-        )
-      },
-      NULL
-    )
-  )
+          bstrap = TRUE)
+  },
+  NULL))
 
 # Output ----------------------------------------------------------------------
 
