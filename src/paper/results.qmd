@@ -328,8 +328,10 @@ tidy %>%
   ) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
+  scale_x_continuous(breaks = -5:4) +
   ggsci::scale_color_d3() +
-  labs(color = NULL, caption = "[ 95% Simult. CI ]")
+  labs(color = NULL, caption = "[ 95% Simult. CI ]") +
+  theme(panel.grid.major.x = element_blank())
 ```
 
 ```{r tbl-ext.survival-overall-att}
@@ -391,8 +393,10 @@ tidy[str_detect(variable, "bracketShift|bracket1to2")] %>%
   ) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
+  scale_x_continuous(breaks  = -6:4, ) +
   ggsci::scale_color_d3() +
-  labs(color = NULL, caption = "[ 95% Simult. CI ]")
+  labs(color = NULL, caption = "[ 95% Simult. CI ]") +
+  theme(panel.grid.major.x = element_blank())
 ```
 
 ```{r tbl-ext.bracket-overall-att}
@@ -412,5 +416,53 @@ tbl %>%
 ```
 
 ### Declaración real de actividad
+
+Por último, en esta subsección analizo el impacto de recibir e-facturas sobre la probabilidad de que las firmas pasen a hacer una declaración de ingresos. Para ello, tomo una muestra balanceada de firmas que presentaban declaraciones fictas antes del primer período de tratamiento, y permito que en algún momento después del tratamiento pudan pasar a presentar declaraciones reales.
+
+La @fig-ext.real-dynamic muestra los efectos de tratamiento dinámicos para la probabilidad de presentar una declaración real de actividad. Al igual que con el pago de impuestos, hay anticipación al tratamiento de un período, lo cual incorporo en la especificación. La @tbl-ext.real-overall-att formaliza la evidencia gráfica e indica que, en el agregado, la recepción de e-facturas se asocia con un aumento de 6.6 puntos porcentuales en la probabildad de presentar DJ real.
+
+```{r fig-ext.real-dynamic}
+#| fig-cap: Efecto de e-factura sobre probabilidad de presentar DJ real.
+
+tidy <- readRDS(awd("out/analysis/did_yearly_ext.real_S2.bal.base_aggte.dynamic.RDS")) %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := as_factor(y.name)]
+tidy %>%
+  ggplot(aes(x = event, y = estimate, color = variable)) +
+  geom_point(size = 2, position = position_dodge(width = .5)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2,
+    position = position_dodge(width = .5)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  scale_x_continuous(breaks = -6:4) +
+  ggsci::scale_color_d3() +
+  labs(color = NULL, caption = "[ 95% Simult. CI ]") +
+  theme(panel.grid.major.x = element_blank())
+```
+
+```{r tbl-ext.real-overall-att}
+#| tbl-cap: Efecto de tratamiento agregado sobre probabilidad de presentar DJ real.
+
+estlist <- readRDS(awd("out/analysis/did_yearly_ext.real_S2.bal.base_aggte.simple.RDS"))
+tbl <- estlist %>%
+  map(tidy_did_list)
+colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
+names(tbl) <- colnames
+var_regex <- str_flatten(colnames, collapse = "|")
+tbl %>%
+  msummary(
+    statistic = "conf.int",
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation")
+  )
+```
+
 
 ## Robustez
