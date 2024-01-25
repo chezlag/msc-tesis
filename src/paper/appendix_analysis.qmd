@@ -256,6 +256,7 @@ tidy_size[variable %in% varlist] %>%
   labs(color = "Pre-treatment size quartiles", caption = "[ 95% Simult. CI ]")
 ```
 
+
 ```{r tbl-S3.unbal.base-overall-att}
 #| tbl-cap: Efecto de tratamiento agregado. Panel balanceado pre-tratamiento, permitiendo salidas.
 estlist <- simple_est$S3.unbal.base
