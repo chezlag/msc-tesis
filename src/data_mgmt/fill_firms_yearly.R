@@ -31,9 +31,11 @@ dt[, firm_age := year - birth_year]
 
 message("Creating extensive margin variables.") # -----------------------------
 
-dt[, anyTaxPaid := fifelse(!is.na(totalTaxPaid), totalTaxPaid > 0, FALSE)]
 dt[, anyVatPaid := fifelse(!is.na(vatPaid), vatPaid > 0, FALSE)]
-dt[, activeBusiness := fifelse(is.na(activeBusiness), FALSE, TRUE)]
+dt[, anyCorpTaxPaid := fifelse(!is.na(corpTaxPaid), corpTaxPaid > 0, FALSE)]
+dt[, anyOtherTaxPaid := fifelse(!is.na(otherTaxPaid), otherTaxPaid > 0, FALSE)]
+dt[, anyTaxPaid := fifelse(!is.na(totalTaxPaid), totalTaxPaid > 0, FALSE)]
+dt[, anyRecordedActivity := !is.na(in214) | !is.na(in217) | !is.na(inPay)]
 
 message("Exporting cross-joined dataset: ", opt$output) # ---------------------
 
