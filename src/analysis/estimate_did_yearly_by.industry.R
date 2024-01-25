@@ -79,40 +79,45 @@ industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "
 
 message("Estimating group-time ATT.")
 ddlist <-
-  map2(
-    .x = rep(varlist, each = length(industrylist)),
-    .y = rep(industrylist, length(varlist)),
-    .f = ~ did::att_gt(
-          yname = .x,
-          gname = "yearFirstReception",
-          idname = "fid",
-          tname = "year",
-          xformla = as.formula(params$formula) ,
-          data = dty[sector == .y],
-          control_group = "notyettreated",
-          weightsname = params$wt,
-          allow_unbalanced_panel = params$unbalanced,
-          clustervars = "fid",
-          est_method = "dr",
-          cores = 8
-        )
-    )
+  map2(rep(varlist, each = length(industrylist)),
+       rep(industrylist, length(varlist)),
+       possibly(\(x, y) {
+         att_gt(
+           yname = x,
+           gname = "yearFirstReception",
+           idname = "fid",
+           tname = "year",
+           xformla = as.formula(params$formula) ,
+           data = dty[sector == y],
+           control_group = "notyettreated",
+           weightsname = params$wt,
+           allow_unbalanced_panel = params$unbalanced,
+           clustervars = "fid",
+           est_method = "dr",
+           cores = 8
+         )
+       },
+       NULL))
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
-  map(aggte,
-    type = "simple",
-    clustervars = "fid",
-    bstrap = TRUE
-  )
+  map(possibly(\(x) {
+    aggte(x,
+          type = "simple",
+          clustervars = "fid",
+          bstrap = TRUE)
+  },
+  NULL))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
-  map(aggte,
-    type = "dynamic",
-    clustervars = "fid",
-    bstrap = TRUE
-  )
+  map(possibly(\(x) {
+    aggte(x,
+          type = "dynamic",
+          clustervars = "fid",
+          bstrap = TRUE)
+  },
+  NULL))
 
 # Output ----------------------------------------------------------------------
 
