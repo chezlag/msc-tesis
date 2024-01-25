@@ -7,7 +7,8 @@
 rule data:
     input: 
         "out/data/firms_yearly.fst",
-        "out/data/samples.fst"
+        "out/data/samples.fst",
+        "out/data/firms_yearly_filled.fst"
 
 # --- Build Rules --- #
 
@@ -64,3 +65,16 @@ rule define_samples:
     threads: 16
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
+
+rule fill_firms_yearly:
+    input:
+        script = "src/data_mgmt/" + "fill_firms_yearly.fst",
+        data = "out/data/" + "firms_yearly.fst"
+    output:
+        data = "out/data/" + "firms_yearly_filled.fst"
+    log:
+        "logs/data_mgmt/" + "fill_firms_yearly.Rout"
+    threads: 16
+    shell:
+        "{runR} {input.script} -o {output.data} > {log} {logAll}"
+
