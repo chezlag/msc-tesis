@@ -2,6 +2,7 @@
 ```{r lib-fcn}
 library(groundhog)
 pkgs <- c(
+  "collapse",
   "data.table",
   "did",
   "fixest",
