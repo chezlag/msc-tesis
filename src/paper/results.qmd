@@ -23,6 +23,7 @@ groundhog.library(pkgs, "2024-01-15")
 
 ROOT <- ""
 if (grepl("src/paper", getwd())) ROOT <- "../../"
+awd <- \(x) paste0(ROOT, x)
 
 source(paste0(ROOT, "src/lib/tidy_did.R"))
 source(paste0(ROOT, "src/lib/theme_set.R"))
@@ -70,9 +71,14 @@ walk2(dynamic, estname, ~ .x[, sample := .y])
 
 ```{r read-data}
 samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
-dty <- read_fst(paste0(ROOT, "out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
+dts <- 
+  read_fst(awd("out/data/firms_static.fst"), as.data.table = TRUE) %>%
   .[samples[(activeBusinessAnyT)], on = "fid"]
-dts <- read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE) %>%
+dty <- 
+  read_fst(awd("out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
+  .[samples[(activeBusinessAnyT)], on = "fid"]
+dtycj <- 
+  read_fst(awd("out/data/firms_yearly_filled.fst"), as.data.table = TRUE) %>% 
   .[samples[(activeBusinessAnyT)], on = "fid"]
 
 size_quartiles <- dty[(inSample1), quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
@@ -124,7 +130,7 @@ tbl %>%
   list.match(var_regex) %>%
   msummary(
     statistic = "conf.int",
-    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group"),
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation"),
     add_rows = ar
   )
 ```
@@ -184,7 +190,7 @@ dynamic$S1.bal.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% pa
 
 En esta sección analizo heterogeneidades en los efectos de tratamiento, de acuerdo al tamaño y al sector de las firmas. Presento en cada caso evidencia para apoyar el supuesto de tendencias paralelas, ya entre cuartiles de tamaño o entre sectores de actividad. Luego, muestro los efectos de tratamiento agregados, por sector y por tamaño de la firma.
 
-### Heterogeneidad por tamaño
+### Heterogeneidad por tamaño de las firmas
 
 Defino cuartiles de facturación pre-tratamiento para las firmas de la muestra principal. Las firmas del primer cuartil tienen una facturación pre-tratamiento menor a \$`r (size_quartiles[2] / 1e6) |> round(digits = 1)`M y las del cuarto cuartil una facturación superior a \$`r (size_quartiles[4] / 1e6) |> round(digits = 1)`M. Las @fig-heterog-size-dynamic-1, @fig-heterog-size-dynamic-2 muestran los efectos de tratamiento dinámicos para cada una de las variables analizadas en la sección anterior. En términos generales, prácticamente ninguno de los coeficientes pre-tratamiento resulta significativo. 
 
@@ -232,9 +238,9 @@ tidy_size[variable %in% varlist] %>%
   labs(y = NULL, color = "Pre-treatment size quartile")
 ```
 
-### Heterogeneidad por sector
+### Heterogeneidad por sector de actividad
 
-Al realizar las estimaciones por sector de actividad, los resultados no    son tan claros. Pierden significación todos los coeficientes. Puede estar relacionado con la reducción en el número de observaciones utilizadas para cada una de las estimaciones.
+Al realizar las estimaciones por sector de actividad, los resultados no son tan claros. Todos los coeficientes dejan de ser significativos. Puede estar relacionado con la reducción en el número de observaciones utilizadas para cada una de las estimaciones.
 
 ```{r fig-heterog-industry-overall}
 simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S1.bal.base_aggte.simple.RDS"))
@@ -287,8 +293,71 @@ p1 +
 
 ## Margen extensivo
 
+En esta sección presento evidencia sobre los efectos de la recepción de e-facturas en el margen extensivo. Estudio salidas de la muestra, cambios en la franja de renta ficta de IRAE, y pasajes a realizar declaraciones juradas reales de la actividad de la firma.
+
 ### Salidas
 
-### Cambios de franja 
+En primer lugar, estudio el impacto de la recepción de e-facturas sobre las salidas de las firmas de los registros tributarios. Para ello cambio la muestra: utilizo un panel de firmas balanceado en el período antes del primer tratamiento, pero permito salidas luego del inicio del tratamiento. Balanceo el panel artificialmente, de forma que las firmas aparezcan en todos los períodos a pesar de su salida. Luego cuantifico el impacto de la recepción de e-facturas sobre la probabilidad de que la firma registre distintos tipos de actividad con la autoridad tributaria. Considero como variables dependientes las probabilidades de pago de IVA, IRAE, y otros impuestos, la probabilidad de pagar algún impuesto, y la probabilidad de aparecer en alguno de los registros de DGI disponibles. 
+
+La @fig-survival-dynamic muestra los efectos de tratamiento dinámicos para cada una de las variables mencionadas, para testear las tendencias paralelas antes del tratamiento. Ninguno de los coeficientes pre-tratamiento resulta significativo excepto el asociado a un año antes del tratamiento, lo cual podría estar indicando algún tipo de anticipación de las firmas. El método de @callawayDifferenceinDifferencesMultipleTime2021 contempla la posibilidad de que las firmas se anticipen al tratamiento, por lo que incluyo en todas las especificaciones de esta sección la posibilidad que las firmas se anticipen un período al tratamiento. 
+
+La @tbl-survival-overall-att formaliza la evidencia gráfica y presenta los efectos agregados de tratamiento sobre cada una de las probabilidades mencionadas. Se observa que la recepción de e-facturas tiene un impacto negativo y significativo sobre la supervivencia (formal) de las firmas: reduce, en promedio, 2.7 puntos porcentuales la probabilidad de aparecer en los registros de la DGI. Cabe aclarar que esto no quiere decir que la firma desaparezca, sino que también es posible que pase a operar en la informalidad total.
+
+El impacto es cuantitativamente similar sobre el pago total de impuestos. No obstante, aparecen diferencias importantes en la probabilidad de pago de los distintos tipos de impuestos. El pago de impuesto que menos se reduce es el IRAE, lo cual podría parecer contraintuitivo si se considera probable que las firmas salientes presenten resultados negativos al menos algún año antes de salir del mercado. Sin embargo, tener un resultado negativo no exonera a las firma de esta muestra del pago de IRAE, sino que pagan por una renta ficta calculada a partir de sus ingresos reportados. 
+
+Por otra parte, hay reducciones importantes en la probabilidad de pagar IVA y otros impuestos, de 9.8 y 16 puntos porcentuales, respectivamente. Son reducciones considerables, más considerando la probabilidad de pagar estos impuestos antes del inicio del tratamiento: corresponden a reducciones de 12% y 18%, respectivamente. 
+
+```{r fig-survival-dynamic}
+est_dyn_survival <- readRDS(paste0(ROOT, "out/analysis/did_yearly_survival_S3.bal.base_aggte.dynamic.RDS"))
+tidy <- est_dyn_survival %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>% 
+  .[, variable := as_factor(y.name)]
+
+tidy %>%
+  ggplot(aes(x = event, y = estimate, color = variable)) +
+  geom_point(size = 2, position = position_dodge(width = .5)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2, 
+    position = position_dodge(width = .5)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  ggsci::scale_color_d3() +
+  labs(color = NULL, caption = "[ 95% Simult. CI ]")
+```
+
+```{r tbl-survival-overall-att}
+#| tbl-cap: Efecto de tratamiento agregado sobre probabilidad de supervivencia. Panel balanceado.
+estlist <- readRDS(awd("out/analysis/did_yearly_survival_S3.bal.base_aggte.simple.RDS"))
+tbl <- estlist %>%
+  map(tidy_did_list) %>% 
+  .[c(5, 1:4)]
+colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
+names(tbl) <- colnames
+var_regex <- str_flatten(colnames, collapse = "|")
+ar <- data.frame(
+  "Mean Y pre-2011",
+  lapply(
+    grep(var_regex, colnames, value = TRUE),
+    \(x) dtycj[inSample3 & year %in% 2010:2011, fmean(get(x), na.rm = TRUE)]
+  )
+)
+tbl %>%
+  msummary(
+    statistic = "conf.int",
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation"),
+    add_rows = ar
+  )
+```
+
+### Cambios de franja de renta ficta
+
+### Declaración real de actividad
 
 ## Robustez
