@@ -41,11 +41,11 @@ rule estimate_did_yearly:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
-        --sample {input.params_sample} \
-        --panel {input.params_panel} \
-        --spec {input.params_spec} \
-        --output {output.est1} \
-         > {log} {logAll}"
+            --sample {input.params_sample} \
+            --panel {input.params_panel} \
+            --spec {input.params_spec} \
+            --output {output.est1} \
+            > {log} {logAll}"
 
 rule estimate_did_yearly_by_size:
     input:
