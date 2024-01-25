@@ -293,7 +293,7 @@ p1 +
 
 ## Margen extensivo
 
-En esta sección presento evidencia sobre los efectos de la recepción de e-facturas en el margen extensivo. Estudio salidas de la muestra, cambios en la franja de renta ficta de IRAE, y pasajes a realizar declaraciones juradas reales de la actividad de la firma.
+En esta sección presento evidencia sobre los efectos de la recepción de e-facturas en el margen extensivo. Estudio salidas de la muestra, cambios en la franja de renta ficta de IRAE, y cambios de declaraciones fictas a declaraciones reales de la actividad de la firma. Aplico el diseño de @callawayDifferenceinDifferencesMultipleTime2021 utilizando variables dependientes binarias para aproximarnos a las probabilidades de los eventos mencionados. Utilizo distintas muestras en cada subsección, detallando las diferencias en cada caso.
 
 ### Salidas
 
@@ -307,8 +307,8 @@ El impacto es cuantitativamente similar sobre el pago total de impuestos. No obs
 
 Por otra parte, hay reducciones importantes en la probabilidad de pagar IVA y otros impuestos, de 9.8 y 16 puntos porcentuales, respectivamente. Son reducciones considerables, más considerando la probabilidad de pagar estos impuestos antes del inicio del tratamiento: corresponden a reducciones de 12% y 18%, respectivamente. 
 
-```{r fig-survival-dynamic}
-est_dyn_survival <- readRDS(paste0(ROOT, "out/analysis/did_yearly_survival_S3.bal.base_aggte.dynamic.RDS"))
+```{r fig-ext.survival-dynamic}
+est_dyn_survival <- readRDS(paste0(ROOT, "out/analysis/did_yearly_ext.survival_S3.bal.base_aggte.dynamic.RDS"))
 tidy <- est_dyn_survival %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
@@ -332,9 +332,9 @@ tidy %>%
   labs(color = NULL, caption = "[ 95% Simult. CI ]")
 ```
 
-```{r tbl-survival-overall-att}
+```{r tbl-ext.survival-overall-att}
 #| tbl-cap: Efecto de tratamiento agregado sobre probabilidad de supervivencia. Panel balanceado.
-estlist <- readRDS(awd("out/analysis/did_yearly_survival_S3.bal.base_aggte.simple.RDS"))
+estlist <- readRDS(awd("out/analysis/did_yearly_ext.survival_S3.bal.base_aggte.simple.RDS"))
 tbl <- estlist %>%
   map(tidy_did_list) %>% 
   .[c(5, 1:4)]
@@ -357,6 +357,59 @@ tbl %>%
 ```
 
 ### Cambios de franja de renta ficta
+
+Como ya mencioné, utilizo una muestra de firmas que presentan declaraciones fictas de actividad, en las cuales reportan únicamente sus ingresos. Luego, la DGI adjudica a las firmas una ganancia ficta y aplica sobre esta una tasa de 25% para calcular el IRAE adeudado. Una consecuencia de esto, como se observaba en la subsección anterior, es que este subconjunto de firmas reporta implícitamente ganancias en todos los períodos –y paga IRAE por estos–.
+
+La renta ficta no se calcula de forma lineal. La tasa de rentabilidad ficta varía por tramos de facturación: para las firmas que facturan menos de 2M de UI es de 13.2%, para las que facturan entre 2M y 3M de UI es de 36%, y para las que facturan más de 3M de UI es de 48%. El régimen busca incentivar a las firmas a hacer declaraciones reales de su actividad luego de que superan cierto volumen de facturación.
+
+El diseño, sin embargo, genera saltos discretos importantes en los pagos de las firmas. Para ilustrar, en el márgen, una firma que factura 1:999.999 UI debería pagar 66.000 UI por IRAE, mientras que facturando 2:000.001 UI pasaría a pagar 180.000 UI, casi triplicando su deuda tributaria. Es esperable que las firmas respondan a estos incentivos y la @fig-dens-trunover-fict muestra que lo hacen, concentrando sus declaraciones justo por debajo y por encima del punto de corte de 2M UI. [^bunch_excede]
+
+[^bunch_excede]: Si bien podríamos explotar esta discontinuidad con un diseño de *bunching*, hacerlo excede el alcance actual de este trabajo.
+
+En esta subsección, exploro si la recepción de e-facturas tiene un impacto suficientemente fuerte como para empujar a las firmas a cambiar de tramo de declaración. Primero, presento evidencia que apoye el supuesto de tendencias paralelas en la probabilidad de cambiar de tramo de renta ficta (@fig-ext.bracket-dynamic). Testeo el cambio de tramo con cuatro especificaciones, utilizando (i) la probabilidad de pasar del primer al segundo tramo de renta ficta; (ii) la probabilidad de pasar a un tramo mayor de un período al siguiente; (iii) la probabilidad de pasar a un tramo menor de un período al siguiente; y (iv) la probabilidad de cambiar de tramo, independientemente de si implica una mayor o menor deuda tributaria. Ninguno de los coeficientes pre- ni post- tratamiento es significativamente distinto de cero al 95%.
+
+La @tbl-ext.bracket-overall-att presenta los efectos de tratamiento agregados. Nuevamente, ninguno de los coeficientes resulta estadísticamente significativo. En otras palabras, la recepción de e-facturas no parece tener un efecto de suficiente magnitud sobre el ingreso reportado como para llevar a las firmas a cambiar de tramo de facturación. El resultado es coherente con lo hallado al analizar el ingreso reportado, ya que tampoco aparecían efectos significativos de la e-factura sobre dicha variable en términos continuos.
+
+```{r fig-ext.bracket-dynamic}
+#| fig-cap: Efecto dinámico de la recepción de e-factura sobre probabilidad de cambiar de franja de renta ficta.
+est_dyn <- readRDS(awd("out/analysis/did_yearly_ext.bracket_S1.bal.base_aggte.dynamic.RDS"))
+tidy <- est_dyn %>%
+  map(possibly(tidy_did, NULL)) %>%
+  reduce(rbind) %>%
+  setDT() %>%
+  .[, variable := as_factor(y.name)]
+tidy[str_detect(variable, "bracketShift|bracket1to2")] %>%
+  ggplot(aes(x = event, y = estimate, color = variable)) +
+  geom_point(size = 2, position = position_dodge(width = .5)) +
+  geom_errorbar(
+    aes(
+      ymin = conf.low,
+      ymax = conf.high
+    ),
+    width = .2,
+    position = position_dodge(width = .5)
+  ) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_vline(xintercept = -.5, linetype = "dashed") +
+  ggsci::scale_color_d3() +
+  labs(color = NULL, caption = "[ 95% Simult. CI ]")
+```
+
+```{r tbl-ext.bracket-overall-att}
+#| tbl-cap: Efecto de tratamiento agregado sobre probabilidad de cambiar de franja de renta ficta.
+estlist <- readRDS(awd("out/analysis/did_yearly_ext.bracket_S1.bal.base_aggte.simple.RDS"))
+tbl <- estlist %>%
+  map(tidy_did_list)
+colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
+names(tbl) <- colnames
+var_regex <- "bracketShift|bracket1to2"
+tbl %>%
+  list.match(var_regex) %>%
+  msummary(
+    statistic = "conf.int",
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation")
+  )
+```
 
 ### Declaración real de actividad
 
