@@ -103,20 +103,20 @@ rule estimate_did_yearly_by_industry:
         --output {output.est1} \
          > {log} {logAll}"
 
-rule estimate_did_yearly_survival:
+rule estimate_did_yearly_ext_survival:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_survival.R",
+        script = "src/analysis/" + "estimate_did_yearly_ext.survival.R",
         data = "out/data/" + "firms_yearly_filled.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
         params_panel = "src/model_specs/" + "panel_{panel}.json",
         params_spec = "src/model_specs/" + "spec_{spec}.json"
     output:
-        est1 = "out/analysis/" + "did_yearly_survival_S{sample}.{panel}.{spec}.RDS",
-        est2 = "out/analysis/" + "did_yearly_survival_S{sample}.{panel}.{spec}_aggte.simple.RDS",
-        est3 = "out/analysis/" + "did_yearly_survival_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
+        est1 = "out/analysis/" + "did_yearly_ext.survival_S{sample}.{panel}.{spec}.RDS",
+        est2 = "out/analysis/" + "did_yearly_ext.survival_S{sample}.{panel}.{spec}_aggte.simple.RDS",
+        est3 = "out/analysis/" + "did_yearly_ext.survival_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
-        "logs/analysis/" + "estimate_did_yearly_survival_S{sample}.{panel}.{spec}.Rout"
+        "logs/analysis/" + "estimate_did_yearly_ext.survival_S{sample}.{panel}.{spec}.Rout"
     threads: 8
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
