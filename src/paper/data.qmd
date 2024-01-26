@@ -2,7 +2,21 @@
 
 ```{r data-data}
 library(groundhog)
-pkgs <- c("collapse", "data.table", "magrittr", "ggplot2", "patchwork", "fst", "gtsummary", "labelled")
+pkgs <- c(
+  "collapse",
+  "data.table",
+  "forcats",
+  "fst",
+  "ggplot2",
+  "ggsci",
+  "gtsummary",
+  "labelled",
+  "lubridate",
+  "magrittr",
+  "patchwork",
+  "purrr",
+  "stringr"
+)
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
