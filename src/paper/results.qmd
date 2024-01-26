@@ -285,7 +285,7 @@ p1 <- tidy_ind[variable %in% tgtcols & !is.na(sector)] %>%
   geom_vline(xintercept = 0,
              linetype = "dashed") +
   coord_cartesian(xlim = c(-0.3, 0.66)) +
-  ggsci::scale_color_d3() +
+  ggsci::scale_color_futurama() +
   labs(y = NULL, color = NULL)
 
 # Add number of observations per industry
