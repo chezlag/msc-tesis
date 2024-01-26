@@ -3,6 +3,7 @@
 ```{r lib-fcn}
 library(groundhog)
 pkgs <- c(
+  "arsenal",
   "collapse",
   "data.table",
   "did",
@@ -240,53 +241,61 @@ tidy_size[variable %in% varlist] %>%
 
 ### Heterogeneidad por sector de actividad
 
-Al realizar las estimaciones por sector de actividad, los resultados no son tan claros. Todos los coeficientes dejan de ser significativos. Puede estar relacionado con la reducción en el número de observaciones utilizadas para cada una de las estimaciones.
+Al realizar las estimaciones por sector de actividad, se observa que la recepción de e-facturas tiene efectos significativos únicamente en algunos sectores. En particular, en el comercio minorista y en la industria manufacturera se observa un aumento de los costos reportados de entre \$0.17-\$0.20 por peso de facturación rezagada. A su vez, la industria manufacturera es el único sector en el cual la recepción de e-facturas aumenta significativamente los ingresos reportados, con una estimación puntual de \$0.236 por peso de facturación rezagada. Por último, hay aumentos significativos del pago de IVA en el sector servicios y, nuevamente, las manufacturas. El pago de IVA aumenta en promedio \$0.01–\$0.03 por peso de facturación rezagada.
 
 ```{r fig-heterog-industry-overall}
-simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S1.bal.base_aggte.simple.RDS"))
+simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S2.bal.base_aggte.simple.RDS"))
+
+tgtcols <- c("deductPurchases", "taxableTurnover", "vatPaid")
 
 tidy_ind <- simple_ind %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
-    as_factor()]
+    as_factor()] %>%
+  .[variable %in% c("deductPurchases", "taxableTurnover", "vatPaid")]
 
 industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
-nvars <- tidy_ind[, .N, y.name] %>%
+nvars <- tidy_ind[, .N, y.name][N == length(industrylist)] %>%
   dim() %>%
   .[1]
-tidy_ind[, sector := rep(industrylist, nvars) %>% as_factor()]
+exclvar <- tidy_ind[, .N, y.name][N < length(industrylist)]
+tidy_ind[y.name %nin% exclvar, sector := rep(industrylist, nvars) %>% as_factor()]
 
-p1 <- tidy_ind[variable %in% c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")] %>%
+
+p1 <- tidy_ind[variable %in% tgtcols & !is.na(sector)] %>%
   ggplot(aes(x = estimate, y = sector, color = variable)) +
-  geom_point(
-    size = 2,
-    position = position_dodge(width = .5)
-  ) +
+  geom_point(size = 2,
+             position = position_dodge(width = .5)) +
   geom_errorbarh(
-    aes(
-      xmin = conf.low,
-      xmax = conf.high
-    ),
+    aes(xmin = conf.low,
+        xmax = conf.high),
     height = .5,
     position = position_dodge(width = .5)
   ) +
-  geom_vline(
-    xintercept = 0,
-    linetype = "dashed"
-  ) +
-  xlim(-0.3, 0.66) +
-  ggsci::scale_color_flatui() +
+  geom_vline(xintercept = 0,
+             linetype = "dashed") +
+  coord_cartesian(xlim = c(-0.3, 0.66)) +
+  ggsci::scale_color_d3() +
   labs(y = NULL, color = NULL)
 
 # Add number of observations per industry
-industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
+industrylist <-
+  c(
+    "Construction",
+    "Services",
+    "Retail trade",
+    "Manufacturing",
+    "Wholesale",
+    "Primary activities"
+  )
 dty[sector == "Agriculture, forestry, fishing, mining and quarrying", sector := "Primary activities"]
-nobs <- dty[(inSample1) & sector %in% industrylist, .N, sector] %>% 
-  .[, estimate := .6] %>% 
+nobs <- dty[(inSample2 & inSample3) & sector %in% industrylist, .N, sector] %>%
+  .[, estimate := .6] %>%
   .[, label := paste0("N = ", N)]
 
+# Final plot
 p1 +
   geom_text(data = nobs, aes(label = label), color = "black")
 ```
