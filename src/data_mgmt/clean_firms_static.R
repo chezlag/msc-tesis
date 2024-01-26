@@ -5,19 +5,37 @@ groundhog.library(pkgs, date)
 
 source("src/lib/cli_parsing_o.R")
 
+# get fid for firms not in bcs nor cfe
+filelist <- c(
+  "src/data/dgi_firmas/out/data/balances_allF_allY.fst",
+  "src/data/dgi_firmas/out/data/sales_allF_allY.fst",
+  "src/data/dgi_firmas/out/data/tax_paid_retained.fst"
+)
+fid_only <- filelist |>
+  map(\(x) {
+    read_fst(x, as.data.table = TRUE) %>%
+      .[, .N, fid] %>%
+      .[, .(fid)]
+  }) |>
+  reduce(merge, by = "fid", all = TRUE)
+
+# read datasets with actual information
 bcs <- fread("src/data/bcs_covariates.csv")
 cfe <- read_fst("out/data/eticket_static.fst", as.data.table = TRUE)
 
-dt <- merge(bcs, cfe, by = "fid", all = TRUE)
+# merge all
+dt <- list(bcs, cfe, fid_only) |>
+  reduce(merge, by = "fid", all = TRUE)
+
+# create new variables
 
 dt[, receivedAnyT := !is.na(dateFirstReception)]
 dt[, emittedAnyT := !is.na(dateFirstEmission)]
 
-dt[, yearFirstReception := lubridate::year(dateFirstReception)]
-dt[, yearFirstEmission := lubridate::year(dateFirstEmission)]
+dt[, yearFirstReception := fifelse(!is.na(dateFirstReception), year(dateFirstReception), Inf)]
+dt[, yearFirstEmission := fifelse(!is.na(dateFirstEmission), year(dateFirstEmission), Inf)]
 
-dt[is.na(yearFirstReception), yearFirstReception := Inf]
-dt[is.na(yearFirstEmission), yearFirstEmission := Inf]
+dt[, neverTreated := is.na(dateFirstReception)]
 
 dt[, hasCovariates := !is.na(sector) & !is.na(birth_date)]
 
