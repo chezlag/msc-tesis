@@ -197,8 +197,8 @@ dty[turnoverMUI < 5 & inSample1 & eventtime %in% c(-1, 1)] |>
   labs(color = "Event time", x = "Facturación en millones de UI")
 ```
 
-```{r fig-heterog-size-dynamic-1}
-tidy_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S1.bal.base_aggte.dynamic.RDS")) %>%
+```{r fig-by.size-dynamic}
+tidy_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S2.bal.base_aggte.dynamic.RDS")) %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
@@ -211,31 +211,16 @@ nvars <- tidy_size[, .N, y.name] %>%
   .[1]
 tidy_size[term == "ATT (l = 3)", sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
 tidy_size[, sizeQuartile := nafill(as.integer(sizeQuartile), type = "nocb")]
+tidy_size[, sizeQuartile := fcase(
+  sizeQuartile == 1, "Quartile 1",
+  sizeQuartile == 2, "Quartile 2",
+  sizeQuartile == 3, "Quartile 3",
+  sizeQuartile == 4, "Quartile 4"
+)]
 
-varlist <- c("deductPurchases", "taxableTurnover")
-tidy_size[variable %in% varlist] %>%
-  ggplot(aes(x = event, y = estimate, color = as_factor(sizeQuartile))) +
-  geom_point(size = 2, position = position_dodge(width = .5)) +
-  geom_errorbar(
-    aes(
-      ymin = conf.low,
-      ymax = conf.high
-    ),
-    width = .2, 
-    position = position_dodge(width = .5)
-  ) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
-  geom_vline(xintercept = -.5, linetype = "dashed") +
-  ggsci::scale_color_futurama() +
-  facet_wrap(~variable) +
-  coord_cartesian(ylim = c(-.25, .6)) +
-  labs(color = "Pre-treatment size quartiles", caption = "[ 95% Simult. CI ]")
-```
-
-```{r fig-heterog-size-dynamic-2}
-varlist <- c("vatPurchases", "vatSales", "vatPaid")
-tidy_size[variable %in% varlist] %>%
-  ggplot(aes(x = event, y = estimate, color = as_factor(sizeQuartile))) +
+varlist <- c("deductPurchases", "taxableTurnover", "vatPaid")
+tidy_size[variable %in% varlist & term != "ATT (l = 3)"] %>%
+  ggplot(aes(x = event, y = estimate, color = variable)) +
   geom_point(position = position_dodge(width = .5)) +
   geom_errorbar(
     aes(
@@ -248,8 +233,9 @@ tidy_size[variable %in% varlist] %>%
   geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
   ggsci::scale_color_futurama() +
-  facet_wrap(~variable, nrow = 3, scale = "free_y") +
-  labs(color = "Pre-treatment size quartiles", caption = "[ 95% Simult. CI ]")
+  facet_grid(variable ~ sizeQuartile, scale = "free_y") +
+  # coord_cartesian(ylim = c(-.25, .6)) +
+  labs(color = NULL, caption = "[ 95% Simult. CI ]")
 ```
 
 

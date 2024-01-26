@@ -81,9 +81,6 @@ dty <-
 dtycj <- 
   read_fst(awd("out/data/firms_yearly_filled.fst"), as.data.table = TRUE) %>% 
   .[samples[(activeBusinessAnyT)], on = "fid"]
-
-size_quartiles <- dty[(inSample1), quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
-dty[(inSample1), sizeQuartile := cut(Scaler1, breaks = size_quartiles, labels = 1:4)]
 ```
 
 ## Resultados principales
@@ -113,7 +110,7 @@ dynamic$S1.bal.base[y.name == "Scaled1deductPurchasesK"] %>%
 
 ```{r tbl-main-overall-att}
 #| tbl-cap: Efecto de tratamiento agregado. Panel balanceado.
-estlist <- simple_est$S1.bal.base
+estlist <- readRDS(awd("out/analysis/did_yearly_S1.bal.base_aggte.simple.RDS"))
 tbl <- estlist %>%
   map(possibly(tidy_did_list, NULL)) %>%
   list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
@@ -193,12 +190,24 @@ En esta sección analizo heterogeneidades en los efectos de tratamiento, de acue
 
 ### Heterogeneidad por tamaño de las firmas
 
-Defino cuartiles de facturación pre-tratamiento para las firmas de la muestra principal. Las firmas del primer cuartil tienen una facturación pre-tratamiento menor a \$`r (size_quartiles[2] / 1e6) |> round(digits = 1)`M y las del cuarto cuartil una facturación superior a \$`r (size_quartiles[4] / 1e6) |> round(digits = 1)`M. Las @fig-heterog-size-dynamic-1, @fig-heterog-size-dynamic-2 muestran los efectos de tratamiento dinámicos para cada una de las variables analizadas en la sección anterior. En términos generales, prácticamente ninguno de los coeficientes pre-tratamiento resulta significativo. 
+```{r compute-size-quartiles}
+size_quartiles <- dty[(inSample2 & inSample3), quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[(inSample2 & inSample3), sizeQuartile := cut(Scaler1, breaks = size_quartiles, labels = 1:4)]
+```
 
-La @fig-heterog-size-overall sintetiza las estimaciones de los efectos agregados de tratamiento por cuartil. Los únicos efectos significativos se concentran en el primer cuartil, en los costos reportados e IVA compras. 
+Defino cuartiles de facturación pre-tratamiento para las firmas de la muestra principal. Las firmas del primer cuartil tienen una facturación pre-tratamiento menor a \$`r (size_quartiles[2] / 1e6) |> round(digits = 1)`M y las del cuarto cuartil una facturación superior a \$`r (size_quartiles[2] / 1e6) |> round(digits = 1)`M.
 
-```{r fig-heterog-size-overall}
+Las @fig-by.size-dynamic muestra los efectos de tratamiento dinámicos sobre compras reportadas, ventas reportadas y pago de IVA. Prácticamente ninguno de los coeficientes pre-tratamiento resulta signifcativo, lo cual aporta evidencia a favor del supuesto de tendencias paralelas.
+
+La @fig-by.size-overall sintetiza las estimaciones de los efectos agregados de tratamiento por cuartil de facturación pre-tratamiento. Primero, la recepción de e-facturas se asocia a un aumento de las compras reportadas en el primer cuartil. La estimación puntual del efecto es decrecientes a mayor facturación, pero en no es significativa en ningún otro cuartil. Para las firmas más pequeñas el impacto estimado es de \$0.10 por peso de facturación rezagada, casi tres veces mayor a la observada para la muestra completa.
+
+Segundo, también se observa un impacto significativo sobre las ventas reportadas en las firmas del segundo cuartil de facturación. La estimación puntual del efecto se sitúa en \$0.09 por peso de facturación rezagada. Si bien las estimaciones puntuales del efecto en el resto de los cuantiles también decrecen con la facturación, no son estadísticamente significativas en ningún caso. En el primer cuartil es una estimación muy poco precisa. En el último cuartil la estimación puntual es negativa.
+
+Tercero, hay un efecto significativo sobre el pago de IVA en el primer cuartil de \$0.01 por peso de facturación rezagada y de -\$0.003 en el cuarto cuartil. Sin embargo en el segundo y tercer cuartil no es significativamente distinto de cero.
+
+```{r fig-by.size-overall}
 #| fig-cap: Efecto de tratamiento agregado por cuartiles de facturación pre-tratamiento. Panel balanceado.
+
 simple_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S1.bal.base_aggte.simple.RDS"))
 
 tidy_size <- simple_size %>%
@@ -206,18 +215,17 @@ tidy_size <- simple_size %>%
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
-    as_factor() %>%
-    fct_rev()]
+    as_factor()]
 
-quantlist <- 1:4
+quantlist <- paste0("Quartile ", 1:4)
 nvars <- tidy_size[, .N, y.name] %>%
   dim() %>%
   .[1]
 tidy_size[, sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
 
-varlist <- c("deductPurchases", "taxableTurnover", "vatPurchases", "vatSales", "vatPaid")
+varlist <- c("deductPurchases", "taxableTurnover", "vatPaid")
 tidy_size[variable %in% varlist] %>%
-  ggplot(aes(x = estimate, y = variable, color = sizeQuartile)) +
+  ggplot(aes(x = estimate, y = sizeQuartile, color = variable)) +
   geom_point(
     size = 2,
     position = position_dodge(width = .5)
@@ -236,14 +244,14 @@ tidy_size[variable %in% varlist] %>%
   ) +
   coord_cartesian(xlim = c(-0.05, 0.5)) +
   ggsci::scale_color_futurama() +
-  labs(y = NULL, color = "Pre-treatment size quartile")
+  labs(y = NULL, color = NULL)
 ```
 
 ### Heterogeneidad por sector de actividad
 
 Al realizar las estimaciones por sector de actividad, se observa que la recepción de e-facturas tiene efectos significativos únicamente en algunos sectores. En particular, en el comercio minorista y en la industria manufacturera se observa un aumento de los costos reportados de entre \$0.17-\$0.20 por peso de facturación rezagada. A su vez, la industria manufacturera es el único sector en el cual la recepción de e-facturas aumenta significativamente los ingresos reportados, con una estimación puntual de \$0.236 por peso de facturación rezagada. Por último, hay aumentos significativos del pago de IVA en el sector servicios y, nuevamente, las manufacturas. El pago de IVA aumenta en promedio \$0.01–\$0.03 por peso de facturación rezagada.
 
-```{r fig-heterog-industry-overall}
+```{r fig-by.industry-overall}
 simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S2.bal.base_aggte.simple.RDS"))
 
 tgtcols <- c("deductPurchases", "taxableTurnover", "vatPaid")
