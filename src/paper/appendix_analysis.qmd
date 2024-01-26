@@ -36,8 +36,8 @@ dts <- read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE)
 # fix sample NAs
 walk(paste0("inSample", 0:2), ~ dts[is.na(get(.x)), (.x) := FALSE])
 walk(paste0("inSample", 0:2), ~ dty[is.na(get(.x)), (.x) := FALSE])
-dts[, neverTreated := is.na(nonAbsorbing)]
-dty[, neverTreated := is.na(nonAbsorbing)]
+dts[, neverTreated := is.na(dateFirstReception)]
+dty[, neverTreated := is.na(dateFirstReception)]
 ```
 
 ```{r read-estimates}
@@ -107,9 +107,8 @@ varlist <- c(
   "neverTreated",
   "sector"
 )
-dts[inSample0 & djFictAnyT, ..varlist] %>%
-  tbl_summary(by = "inSample1", missing = "no") %>%
-  add_p()
+dts[(inSample3), ..varlist] %>%
+  tbl_summary(by = "inSample1", missing = "no")
 ```
 
 ```{r tbl-yearly-characteristics-desgranamiento}

@@ -2,8 +2,9 @@
 
 ```{r data-data}
 library(groundhog)
-pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "gtsummary")
-groundhog.library(pkgs, "2024-01-15")
+pkgs <- c("collapse", "data.table", "magrittr", "ggplot2", "patchwork", "fst", "gtsummary", "labelled")
+date <- "2024-01-15"
+groundhog.library(pkgs, date)
 
 ROOT <- ""
 if (grepl("src/paper", getwd())) ROOT <- "../../"
@@ -34,12 +35,12 @@ Por otro lado, uso los formularios 2176 y 2178, los cuales contienen informació
 
 En segundo lugar, uso información de DGI sobre el pago de impuestos de las firmas mes a mes. Por más que los impuestos sean de base anual las firmas muchas veces hacen adelantos periódicos de acuerdo a como va evolucionando su actividad. Cuento con información del pago de IVA, IRAE, y un conjunto de otros impuestos pequeños agregados en una única categoría. Para suavizar la variación entre períodos, agrupo la información de pagos en trimestres.
 
-En tercer lugar, cuento con información del sistema de facturación electrónica. Tengo un registro que contiene el valor y monto total de las transacciones en cada mes para cada dupla emisor-receptor. Con esta base puedo definir el mes exacto en que cada firma comienza a estar expuesta a la facturación electrónica (ya sea al recibir o al emitir), así como la intensidad de su exposición.
+En tercer lugar, cuento con información del sistema de facturación electrónica. Disponemos de un registro del valor y monto total de las transacciones en cada mes para cada dupla emisor-receptor. Con esta base defino el mes exacto en que cada firma comienza a estar expuesta a la facturación electrónica (ya sea al recibir o al emitir), así como la intensidad de su exposición.
 
 Por último, cuento con un conjunto reducido de covariables provenientes de microdatos de BPS que indican el sector de actividad y la edad de las firmas.
 
 | Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
-|-----------------------|----------------------------------------------------------------------------------------|-------------------------|--------------------|
+|------------------|-------------------|------------------|------------------|
 | Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
 | Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
 | Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
@@ -47,66 +48,112 @@ Por último, cuento con un conjunto reducido de covariables provenientes de micr
 
 : Fuentes de datos y período de disponibilidad {#tbl-data}
 
-### Variables
+## Variables
 
 Las variables de resultados principales surgen de las declaraciones juradas y de los pagos de impuestos realizados.
 
 -   **De declaraciones juradas.**
     -   Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
-    -   Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
+    -   Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, desagregadas de acuerdo a la tasa a la que quedan gravadas las operaciones.
     -   IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
-    -   IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
--   **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
+-   **De pagos.** Registro mensual de los pagos de las firmas. Incluye IVA, IRAE y otros impuestos.
 
 Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara la implementación de la facturación electrónica.
 
-### Muestra principal
+## Muestra principal
 
-Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^data-2] de ingresos en el formulario 2148 todos los años del período 2009–2016.
+Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^data-2] de ingresos en el formulario 2148 todos los años del período 2009–2016. Uso un panel balanceado para evitar problemas de composición debido a entradas y salidas durante el período. En la @tbl-static-characteristics-desgranamiento y la @tbl-yearly-characteristics-desgranamiento comparo las firmas el panel balanceado y el panel no balanceado. Las firmas en la muestra tenían un menor nivel de facturación promedio en 2009–2010, pero luego presentan mayores niveles de actividad declarada formalmente. Es decir, declaran más compras y ventas, más IVA compras e IVA ventas, y pagan más impuestos. Por otro lado, no hay diferencias significativas por sector de actividad.
 
 [^data-2]: Mantener un registro detallado de sus operaciones es costoso para las firmas pequeñas. Con esto en mente, la DGI permite a las firmas cuya facturación anual no supere 3 millones de UI, presentar un declaración abreviada de su actividad en el formulario 2148. En estos casos, las firmas declaran únicamente sus ingresos anuales y su renta se calcula de forma ficta de acuerdo a tres tramos. Para facturaciones menores a 2 millones de UI, se asume una tasa de beneficio de 13.2%; entre 2 y 3 millones de UI la tasa ficta es de 36%; y para facturaciones mayores a 3 millones de UI la tasa ficta asciende a 48%. La discontinuidad en las tasas busca incentivar a que las firmas hagan declaraciones reales de su actividad y es bastante efectiva: solo 5% de las firmas que presentan declaraciones fictas reportan una facturación mayor a 2 millones de UI.
 
-Uso un panel balanceado para evitar problemas de composición debido a entradas y salidas durante el período. En la @tbl-static-characteristics-desgranamiento y la @tbl-yearly-characteristics-desgranamiento comparo las firmas el panel balanceado y el panel no balanceado. Las firmas en la muestra tenían un menor nivel de facturación promedio en 2009–2010, pero luego presentan mayores niveles de actividad declarada formalmente. Es decir, declaran más compras y ventas, más IVA compras e IVA ventas, y pagan más impuestos. Por otro lado, no hay diferencias significativas por sector de actividad.
+Me centro en las firmas que presentan declaraciones fictas de ingresos por dos razones. La principal es su *potencial evasor*. Varios estudios han mostrado que las firmas que no presentan una declaración completa de sus actividades son más propensas a evadir [@almuniaRadarEffectsMonitoring2018; @slemrodTaxComplianceEnforcement2019]. Por lo tanto, son también uno de los grupos de firmas más propensos a presentar algún tipo de respuesta ante un cambio potencialmente menor en sus incentivos a evadir. Los efectos que encontremos podrían interpretarse, entonce, como una cota superior del impacto de la recepción de e-facturas.
 
-Me centro en las firmas que presentan declaraciones fictas de ingresos por dos razones. La principal es su *potencial evasor*. Varios estudios han mostrado que las firmas que no presentan una declaración completa de sus actividades son más propensas a evadir [@almuniaRadarEffectsMonitoring2018; BUSCAR MÁS CITAS].
+La segunda razón es que sería deseable que las firmas no tengan un poder de influencia en la decisión de sus proveedores de comenzar a emitir e-facturas. Aunque la pretensión de exogeneidad pueda ser débil, el reducido tamaño de las firmas analizadas y su poca importancia como jugadores individuales, vuelve plausible que el momento exacto en que las firmas empiezan a recibir facturas electrónicas sea relativamente exógeno.
 
-Por otra parte, también interesa que las firmas no tengan un poder de influencia en la decisión de sus proveedores de adoptar la facturación electrónica. Aunque la pretensión de exogeneidad pueda ser débil, el reducido tamaño de las firmas analizadas y su poca importancia como jugadores individuales, vuelve plausible que el momento exacto en que las firmas empiezan a recibir facturas electrónicas sea relativamente exógeno.
+La muestra principal es un panel balanceado de `r dts[(inSample1), .N]` firmas. La @tbl-static-characteristics presenta las características estáticas de las firmas en la muestra. Se trata de firmas relativamente pequeñas, que en 2009–2010 presentaban facturación anual promedio de \$`r (dty[(inSample1), fmean(Scaler1)] / 1e6) |> round(digits = 1)` millones. Se observa que `r dty[(inSample1), fmean(neverTreated)] |> round(digits = 1)`% de las firmas en la muestra recibe alguna e-factura entre 2012 y 2016. En contraste, solo `r dty[(inSample1), fmean(emittedAnyT)] |> round(digits = 1)`% firmas emiten e-facturas. Por lo tanto, el análisis debería reflejar el efecto de la recepción de e-facturas, sin estar contaminado por la emisión.
 
-### Estadísticas descriptivas
-
--   **Características de la muestra principal.** La muestra principal es un panel balanceado de 11.052 firmas que presentan declaración ficta de sus actividades todos los años entre 2009–2016. Se trata de firmas relativamente pequeñas, que en 2009–2010 presentaban facturación anual promedio de 2.6 millones de pesos. La segunda columna de la @tbl-static-characteristics y la @tbl-yearly-characteristics presentan sus principales características, en contraste con el resto de las firmas para las que contamos información en el período.
--   **Adopción del tratamiento.** La emisión de comprobantes electrónicos comienza en 2012, con unas pocas empresas piloto de gran tamaño. A pesar de que para 2016 solo 3717 firmas habían emitido comprobantes, la mayor parte de las firmas había recibido algún tipo de comprobante electrónico antes de 2014. En la muestra principal, solo 3% de las firmas llega a 2016 sin haber recibido un comprobante electrónico.
--   **Confounding con emisión de facturas electrónicas.** Una evaluación integral de la política requeriría evaluar también el efecto de la emisión. Durante el período analizado en este estudio la emisión de comprobantes estaba concentrada en firmas de gran porte. Solo 0.2% firmas en la muestra principal emiten facturas electrónicas.
--   **¿Tratamiento es absorbente?** La recepción de facturas electrónicas opera, en la mayoría de los casos como un tratamiento absorbente. Es decir, una vez una firma recibe un comprobante electrónico, no deja de recibirlos hasta el final del período. Menos de 1% de las firmas en el panel balanceado dejan de recibir comprobantes electrónicos luego de haber recibido alguno. Excluimos a las firmas para las que el tratamiento no es absorbente de la muestra principal. Vale notar que en el universo de firmas la no-absorción del tratamiento supone un problema mayor. De querer hacer un estudio sobre esta muestra habría que usar métodos alternativos, como la propuesta de @dechaisemartinDifferenceinDifferencesEstimatorsIntertemporal2022 para tratamientos no absorbentes.
--   **Grupo de control.** @callawayDifferenceinDifferencesMultipleTime2021 proponen un método de estimación de diferencias en diferencias con adopción escalonada de tratamiento que contempla dos potenciales grupos de control: las observaciones que nunca reciben tratamiento o las que aún no lo han recibido en el período para el que se estima el efecto de tratamiento. Aunque lo ideal sería tener un único grupo de control que nunca recibiera tratamiento, este grupo representa solo 3% de la muestra y tiene características sustancialmente distintas al grupo que sí recibe tratamiento. Son firmas con elevados niveles de facturación en 2009–2010, pero que en el resto del período reportan muy poca actividad y pagan muy pocos impuestos.
+Por otra parte, la @tbl-yearly-characteristics muestra algunas características de las firmas que varían año a año. Las variables monetarias fueron deflactadas y reescaladas por la facturación promedio de la propia firma en 2009–2010. Se observa que, en la mediana, las compras anuales reportadas representan \\\$0.44 por peso de facturación rezagada, mientras que las ventas representan \\\$1.18. En tanto, el pago de IVA mediano es de \$\\0.03 por peso de facturación rezagada.
 
 ```{r tbl-static-characteristics}
 #| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 firma).
+
+# Add Scaler1 to dts
+Scaler1 <- dty[(inSample1), .(Scaler1 = fmean(Scaler1)), fid]
+var_label(Scaler1) <- list(Scaler1 = "Facturación promedio 2009–2010 (M$)")
 varlist <- c(
-  "inSample1",
   "receivedAnyT",
   "emittedAnyT",
   "nonAbsorbing",
-  "neverTreated"
+  "neverTreated",
+  "Scaler1"
 )
-dts[, ..varlist] %>%
-  tbl_summary(by = "inSample1", missing = "no")
+dts[Scaler1, on = "fid"] %>%
+  .[(inSample1), ..varlist] %>%
+  .[, Scaler1 := Scaler1 / 1e06] %>%
+  tbl_summary(missing = "no")
 ```
 
 ```{r tbl-yearly-characteristics}
 #| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 año-firma).
+labelledlist <- list(
+  Scaled1RevenueK = "Ingreso reportado (reesc.)",
+  Scaled1deductPurchasesK = "Compras reportadas (reesc.)",
+  Scaled1taxableTurnoverK = "Ventas reportadas (reesc.)",
+  Scaled1vatSalesK = "IVA Ventas (reesc.)",
+  Scaled1vatPurchasesK = "IVA Compras (reesc.)",
+  Scaled1vatPaidK = "Pagos de IVA (reesc.)",
+  firm_age = "Edad de la firma"
+)
+
+var_label(dty) <- labelledlist
+
 varlist <- c(
-  "inSample1",
-  "Scaler1",
-  "Scaled1deductPurchasesK",
   "Scaled1RevenueK",
+  "Scaled1deductPurchasesK",
   "Scaled1taxableTurnoverK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
-  "Scaled1vatDueK"
+  "Scaled1vatPaidK"
 )
-dty[year %in% 2009:2015, ..varlist] %>%
-  .[, Scaler1 := Scaler1 / 1e06] %>%
-  tbl_summary(by = "inSample1", missing = "no") %>%
-  as_gt()
+
+dty[year %in% 2009:2015 & inSample1, ..varlist] %>%
+  tbl_summary(missing = "no")
 ```
+
+## Definición del tratamiento
+
+Defino el tratamiento de forma binaria y absorbente. Tomo el **año donde la firma recibe su primera factura electrónica** como el período de inicio del tratamiento.
+
+**Tratamiento absorbente.** La recepción de facturas electrónicas opera, en la mayoría de los casos como un tratamiento absorbente. Es decir, una vez una firma recibe un comprobante electrónico, no deja de recibirlos hasta el final del período. Menos de 1% de las firmas en el panel balanceado dejan de recibir comprobantes electrónicos luego de haber recibido alguno. Excluimos a las firmas para las que el tratamiento no es absorbente de la muestra principal. Vale notar que en el universo de firmas la no-absorción del tratamiento supone un problema mayor. Para evaluar la política en el universo de las firmas uruguayas sería necesario usar métodos alternativos que contemplen tratamientos no absorbentes [ver por ejemplo @dechaisemartinDifferenceinDifferencesEstimatorsIntertemporal2022].
+
+**Adopción del tratamiento.** La emisión de comprobantes electrónicos comienza en 2012, con unas pocas empresas piloto de gran tamaño: a fines de 2016 solo `r dts[(emittedAnyT), .N]` firmas habían adoptado la emisión de comprobantes electrónicos. No obstante, las firmas emisoras, ya por su volumen de facturación o por su localización en la red productiva, alcanzaron a establecer relaciones comerciales con una parte sustancial de las firmas uruguayas. En la muestra principal de este trabajo, solo `r round(100 * dts[(inSample1), fmean(neverTreated)], digits = 1)`% de las firmas llega a 2016 sin haber recibido algún comprobante electrónico. La @fig-adoption-inSample presenta la FDA de la primera recepción, contrastando el universo de firmas con la muestra. Se observa que la adopción se extiende más rápido en la muestra: para principios de 2015 el 80% de la firmas de la muestra había recibido alguna e-factura.
+
+```{r fig-adoption-inSample}
+#| fig-cap: FDA de la fecha de primera recepción. Todas las firmas y muestra.
+dalt <- dts[, dateFirstReception := fifelse(is.na(dateFirstReception), ymd("2020-12-12"), dateFirstReception)] %>%
+  .[, .(fid, inSample1, dateFirstReception)]
+dfig <- rbind(dalt[, color := "All firms"], dalt[(inSample1), color := "In sample"])
+dfig %>%
+  ggplot(aes(color = color)) +
+  stat_ecdf(aes(dateFirstReception), geom = "step") +
+  coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
+  scale_color_aaas() +
+  labs(color = NULL)
+```
+
+
+```{r fig-adoption-by.size, include=FALSE}
+size_quartiles <- Scaler1[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+Scaler1[, sizeQuartile := cut(Scaler1, breaks = size_quartiles, labels = 1:4)]
+dts[Scaler1, on = "fid"] %>%
+  .[!is.na(sizeQuartile)] %>%
+  .[, dateFirstReception := fifelse(is.na(dateFirstReception), ymd("2020-12-12"), dateFirstReception)] %>%
+  ggplot(aes(color = as_factor(sizeQuartile))) +
+  stat_ecdf(aes(dateFirstReception), geom = "step") +
+  coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
+  scale_color_d3()
+```
+
+## Grupo de control
+
+El método de @callawayDifferenceinDifferencesMultipleTime2021 contempla dos potenciales grupos de control: quienes nunca reciben tratamiento (*never treated*) o quienes aún no lo han recibido en el período para el que se estima el efecto de tratamiento (*not-yet-treated*). Si bien sería ideal realizar las estimaciones utilizando a las firmas que no reciben e-facturas en el período como control, se trata de un grupo muy reducido con características sustancialmente distintas a las del grupo que si recibe alguna e-factura. Por ejemplo, la @fig-dens-turnover-nevertreated muestra como las firmas que en 2016 no habían recibido e-facturas presentan una distribución de la facturación poco comparable con el resto de la muestra. Por estas razones –tamaño del grupo y comparabilidad–, realizamos las estimaciones utilizando a las firmas *not-yet-treated* como grupo de control.
