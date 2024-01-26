@@ -22,12 +22,13 @@ dts[, neverTreated := is.na(nonAbsorbing)]
 dty[, neverTreated := is.na(nonAbsorbing)]
 ```
 
-
 ## Fuentes de datos
 
 En este trabajo combino varias fuentes de datos de las firmas uruguayas para el período 2009–2016. Uso principalmente microdatos de la Dirección General Impositiva (DGI) que contienen distintos tipos de información sobre las actividades de las firmas. La @tbl-data resume las fuentes de datos y su período de cobertura.
 
-En primer lugar, utilizo información derivada de declaraciones juradas que las firmas deben realizar periódicamente, asociada al pago de distintos tipos de impuestos. Por un lado, uso los formularios 2148 y 2149, que contienen información patrimonial y de resultados de la firma. Estos formularios se utilizan para calcular lo adeudado por la firma por concepto de IRAE e IPAT. Ambos formularios contienen la misma información pero difieren en su frecuencia. El formulario 2148 tiene frecuencia anual y es obligatorio para todas las firmas. El formulario 2149 tiene frecuencia semestral y solo lo completa un subconjunto de firmas que se encuentra bajo escrutinio especial de DGI.
+En primer lugar, utilizo información derivada de declaraciones juradas que las firmas deben presentar periódicamente ante la autoridad tributaria. Cada declaración se asocia al pago de distintos tipos de impuestos. Por un lado, uso los formularios 2148 y 2149, que contienen información patrimonial y de resultados de la firma. Estos formularios se utilizan para calcular lo adeudado por la firma por concepto de IRAE e IPAT. Ambos formularios contienen la misma información pero difieren en su frecuencia. El formulario 2148 tiene frecuencia anual y es obligatorio para todas las firmas. El formulario 2149 tiene frecuencia semestral y solo lo completa un subconjunto de firmas que se encuentra bajo escrutinio especial de DGI [^data-1].
+
+[^data-1]: Hay aproximadamente 10.000 firmas sujetas al control especial de empresas (firmas CEDE). En
 
 Por otro lado, uso los formularios 2176 y 2178, los cuales contienen información sobre compras y ventas gravadas, y se utilizan para calcular lo adeudado por la firma por concepto de IVA. Al igual que con los formularios antes descritos, el 2178 es obligatorio para todas las firmas y de frecuencia anual; mientras que el 2176 tiene frecuencia semestral y solo lo completa un subconjunto de firmas.
 
@@ -38,7 +39,7 @@ En tercer lugar, cuento con información del sistema de facturación electrónic
 Por último, cuento con un conjunto reducido de covariables provenientes de microdatos de BPS que indican el sector de actividad y la edad de las firmas.
 
 | Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
-|-----------------|-----------------------|-----------------|-----------------|
+|-----------------------|----------------------------------------------------------------------------------------|-------------------------|--------------------|
 | Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
 | Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
 | Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
@@ -50,20 +51,20 @@ Por último, cuento con un conjunto reducido de covariables provenientes de micr
 
 Las variables de resultados principales surgen de las declaraciones juradas y de los pagos de impuestos realizados.
 
-- **De declaraciones juradas.**
-    - Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
-    - Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
-    - IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
-    - IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
-- **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
+-   **De declaraciones juradas.**
+    -   Ingreso ficto reportado. Ingreso total reportado por la firma, compuesto por ventas y otros ingresos operativos.
+    -   Ventas y compras gravadas por IVA. La firma reporta el total de compras y ventas, y la tasa a la que se grava.
+    -   IVA ventas e IVA compras. IVA adeudado y deducible, de acuerdo a las tasas a las que se gravan las transacciones de la firma.
+    -   IVA adeudado. Surge de la diferencia entre IVA ventas e IVA compras.
+-   **De pagos.** Registro mensual de los pagos de las firmas, incluyendo IVA, IRAE y otros impuestos.
 
 Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara la implementación de la facturación electrónica.
 
 ### Muestra principal
 
-Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^method-1] de ingresos en el formulario 2148 todos los años del período 2009–2016.
+Mi muestra principal es un panel balanceado de firmas que presentan una declaración ficta[^data-2] de ingresos en el formulario 2148 todos los años del período 2009–2016.
 
-[^method-1]: Mantener un registro detallado de sus operaciones es costoso para las firmas pequeñas. Con esto en mente, la DGI permite a las firmas cuya facturación anual no supere 3 millones de UI, presentar un declaración abreviada de su actividad en el formulario 2148. En estos casos, las firmas declaran únicamente sus ingresos anuales y su renta se calcula de forma ficta de acuerdo a tres tramos. Para facturaciones menores a 2 millones de UI, se asume una tasa de beneficio de 13.2%; entre 2 y 3 millones de UI la tasa ficta es de 36%; y para facturaciones mayores a 3 millones de UI la tasa ficta asciende a 48%. La discontinuidad en las tasas busca incentivar a que las firmas hagan declaraciones reales de su actividad y es bastante efectiva: solo 5% de las firmas que presentan declaraciones fictas reportan una facturación mayor a 2 millones de UI.
+[^data-2]: Mantener un registro detallado de sus operaciones es costoso para las firmas pequeñas. Con esto en mente, la DGI permite a las firmas cuya facturación anual no supere 3 millones de UI, presentar un declaración abreviada de su actividad en el formulario 2148. En estos casos, las firmas declaran únicamente sus ingresos anuales y su renta se calcula de forma ficta de acuerdo a tres tramos. Para facturaciones menores a 2 millones de UI, se asume una tasa de beneficio de 13.2%; entre 2 y 3 millones de UI la tasa ficta es de 36%; y para facturaciones mayores a 3 millones de UI la tasa ficta asciende a 48%. La discontinuidad en las tasas busca incentivar a que las firmas hagan declaraciones reales de su actividad y es bastante efectiva: solo 5% de las firmas que presentan declaraciones fictas reportan una facturación mayor a 2 millones de UI.
 
 Uso un panel balanceado para evitar problemas de composición debido a entradas y salidas durante el período. En la @tbl-static-characteristics-desgranamiento y la @tbl-yearly-characteristics-desgranamiento comparo las firmas el panel balanceado y el panel no balanceado. Las firmas en la muestra tenían un menor nivel de facturación promedio en 2009–2010, pero luego presentan mayores niveles de actividad declarada formalmente. Es decir, declaran más compras y ventas, más IVA compras e IVA ventas, y pagan más impuestos. Por otro lado, no hay diferencias significativas por sector de actividad.
 
@@ -79,8 +80,7 @@ Por otra parte, también interesa que las firmas no tengan un poder de influenci
 -   **¿Tratamiento es absorbente?** La recepción de facturas electrónicas opera, en la mayoría de los casos como un tratamiento absorbente. Es decir, una vez una firma recibe un comprobante electrónico, no deja de recibirlos hasta el final del período. Menos de 1% de las firmas en el panel balanceado dejan de recibir comprobantes electrónicos luego de haber recibido alguno. Excluimos a las firmas para las que el tratamiento no es absorbente de la muestra principal. Vale notar que en el universo de firmas la no-absorción del tratamiento supone un problema mayor. De querer hacer un estudio sobre esta muestra habría que usar métodos alternativos, como la propuesta de @dechaisemartinDifferenceinDifferencesEstimatorsIntertemporal2022 para tratamientos no absorbentes.
 -   **Grupo de control.** @callawayDifferenceinDifferencesMultipleTime2021 proponen un método de estimación de diferencias en diferencias con adopción escalonada de tratamiento que contempla dos potenciales grupos de control: las observaciones que nunca reciben tratamiento o las que aún no lo han recibido en el período para el que se estima el efecto de tratamiento. Aunque lo ideal sería tener un único grupo de control que nunca recibiera tratamiento, este grupo representa solo 3% de la muestra y tiene características sustancialmente distintas al grupo que sí recibe tratamiento. Son firmas con elevados niveles de facturación en 2009–2010, pero que en el resto del período reportan muy poca actividad y pagan muy pocos impuestos.
 
-```{r}
-#| label: tbl-static-characteristics
+```{r tbl-static-characteristics}
 #| tbl-cap: Estadísticas descriptivas de la muestra principal (1 obs. = 1 firma).
 varlist <- c(
   "inSample1",
