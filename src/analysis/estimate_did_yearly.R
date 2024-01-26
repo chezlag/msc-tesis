@@ -46,20 +46,17 @@ dty[, ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
 stubnames <- c(
   "deductPurchases",
   "taxableTurnover",
-  "Revenue",
   "vatPurchases",
   "vatSales",
-  "vatDue",
   "vatPaid"
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0("IHS", stubnames, "K")
+  paste0("Scaled1", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "deductPurchases|taxableTurnover|vatPurhcases|vatSales|vatDue",
+  "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatDue",
   "Revenue",
   "vatPaid"
 )
@@ -75,58 +72,42 @@ map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
 
 message("Estimating group-time ATT.")
 ddlist <- varlist %>%
-  map(
-    possibly(
-      \(x) {
-        did::att_gt(
-          yname = x,
-          gname = "yearFirstReception",
-          idname = "fid",
-          tname = "year",
-          xformla = as.formula(params$formula),
-          data = dty,
-          control_group = "notyettreated",
-          weightsname = params$wt,
-          allow_unbalanced_panel = params$unbalanced,
-          clustervars = "fid",
-          est_method = "dr",
-          cores = 8
-        )
-      }, NULL
+  map(possibly(\(x) {
+    did::att_gt(
+      yname = x,
+      gname = "yearFirstReception",
+      idname = "fid",
+      tname = "year",
+      xformla = as.formula(params$formula),
+      data = dty,
+      control_group = "notyettreated",
+      weightsname = params$wt,
+      allow_unbalanced_panel = params$unbalanced,
+      clustervars = "fid",
+      est_method = "dr",
+      cores = 8
     )
-  )
+  }, NULL))
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
-  map(
-    possibly(
-      \(x) {
-        aggte(
-          x,
+  map(possibly(\(x) {
+    aggte(x,
           type = "simple",
           clustervars = "fid",
-          bstrap = TRUE
-        )
-      },
-      NULL
-    )
-  )
+          bstrap = TRUE)
+  },
+  NULL))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
-  map(
-    possibly(
-      \(x) {
-        aggte(
-          x,
+  map(possibly(\(x) {
+    aggte(x,
           type = "dynamic",
           clustervars = "fid",
-          bstrap = TRUE
-        )
-      },
-      NULL
-    )
-  )
+          bstrap = TRUE)
+  },
+  NULL))
 
 # Output ----------------------------------------------------------------------
 

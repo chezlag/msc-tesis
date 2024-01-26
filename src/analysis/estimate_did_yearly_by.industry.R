@@ -46,26 +46,21 @@ dty[, ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
 stubnames <- c(
   "deductPurchases",
   "taxableTurnover",
-  "Revenue",
   "vatPurchases",
   "vatSales",
-  "vatDue",
   "vatPaid"
 )  
 varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0("IHS", stubnames, "K")
+  paste0("Scaled1", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "deductPurchases|taxableTurnover|vatPurhcases|vatSales|vatDue",
-  "Revenue",
+  "deductPurchases|taxableTurnover|vatPurchases|vatSales",
   "vatPaid"
 )
 yearlist <- list(
   2009:2015,
-  2009:2016,
   2010:2015
 )
 map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%

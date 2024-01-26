@@ -44,10 +44,8 @@ dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
 stubnames <- c(
   "deductPurchases",
   "taxableTurnover",
-  "Revenue",
   "vatPurchases",
   "vatSales",
-  "vatDue",
   "vatPaid"
 )  
 varlist <- c(
@@ -57,13 +55,11 @@ varlist <- c(
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "deductPurchases|taxableTurnover|vatPurhcases|vatSales|vatDue",
-  "Revenue",
+  "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatDue",
   "vatPaid"
 )
 yearlist <- list(
   2009:2015,
-  2009:2016,
   2010:2015
 )
 map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
