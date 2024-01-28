@@ -1,30 +1,67 @@
 # Estrategia empírica
 
-## Diseño de investigación
-
 En este trabajo exploto la variación en la fecha de comienzo de recepción de facturas electrónicas entre empresas para estimar el impacto de la política sobre distintos desempeños de la firma. Comparo la variación en los resultados de las firmas que reciben comprobantes electrónicos (tratadas) con la variación en los resultados de las firmas que aún no lo reciben (controles).
 
-Utilizo un diseño de diferencias en diferencias con tratamiento escalonado. Para la identificación asumimos que, en ausencia de tratamiento, los resultados de tratados y controles habrían evolucionado en paralelo; y que no hay anticipación al tratamiento, es decir, que el tratamiento no tiene efecto antes del período en que se aplica.
+Utilizo un diseño de diferencias en diferencias con tratamiento escalonado. Han habido desarrollos importantes en la literatura econométrica respecto a este diseño [ver @rothWhatTrendingDifferenceindifferences2023 para una reseña general; y @dechaisemartinTwowayFixedEffects2023 para una reseña específica a diseños de tratamiento escalonado]. Siendo breve, la forma más extendida de estimar este tipo de diseño es a partir de especificaciones de panel con efectos fijos bidireccionales. Esta forma de estimación puede realizar "comparaciones indebidas" cuando el tratamiento es escalonado en el tiempo –comparando tratados tempranos y tardíos–; y es poco transparente en la forma en que agrega las comparaciones para calcular efectos agregados. Se han desarrollado tests para medir la gravedad del primer problema [@goodman-baconDifferenceindifferencesVariationTreatment2021] y métodos alternativos de estimación que eluden el segundo problema [@dechaisemartinTwoWayFixedEffects2020; @sunEstimatingDynamicTreatment2021; @callawayDifferenceinDifferencesMultipleTime2021; @borusyakRevisitingEventStudy2022]. <-- Reescribir --/>
 
-La literatura de diferencias en diferencias ha tenido desarrollos importantes en el último tiempo, avanzando sobre varios frentes. En lo que respecta a los diseños de tratamiento escalonado, se han detallado varios problemas con la forma más extendida de estimación: panel con efectos fijos bidireccionales. Siendo breve, esta forma de estimación puede realizar "comparaciones indebidas" cuando el tratamiento es escalonado en el tiempo –comparando tratados tempranos y tardíos–; y es poco transparente en la forma en que agrega las comparaciones para calcular efectos agregados. Se han desarrollado tests para medir la gravedad del primer problema [@goodman-baconDifferenceindifferencesVariationTreatment2021] y métodos alternativos de estimación que eluden el segundo problema [@dechaisemartinTwoWayFixedEffects2020; @sunEstimatingDynamicTreatment2021; @callawayDifferenceinDifferencesMultipleTime2021; ver reseñas de @rothWhatTrendingDifferenceindifferences2023 y @dechaisemartinTwowayFixedEffects2023].
+En pocas palabras, los autores plantean estimar efectos de tratamiento por cohorte y distancia de tratamiento; y luego agregarlos de distintas maneras para obtener parámetros de interés, tales como el efecto conjunto de la política, el efecto de la política para una determinada cohorte de tratamiento.  Además, tiene una estructura transparente de agregación de los efectos individuales, que asegura que ningún efecto tenga ponderación negativa.
 
-En este trabajo, sigo la propuesta de @callawayDifferenceinDifferencesMultipleTime2021 para escenarios de adopción escalonada de tratamiento. En pocas palabras, los autores plantean estimar individualmente efectos de tratamiento por cohorte y distancia de tratamiento; y luego agregarlos para obtener efectos agregados, ya globales o dinámicos por tiempo desde el tratamiento o por cohortes de tratamiento. Este método tiene la ventaja de permitir heterogeneidad arbitraria respecto al momento de tratamiento y entre cohortes –a diferencia de la propuesta de @sunEstimatingDynamicTreatment2021, que solo admite la primera–. Además, tiene una estructura transparente de agregación de los efectos individuales, que asegura que ningún efecto tenga ponderación negativa.
+En este trabajo, sigo la propuesta de @callawayDifferenceinDifferencesMultipleTime2021.
+Este método tiene la ventaja de permitir heterogeneidad arbitraria respecto al momento de tratamiento y entre cohortes –a diferencia de la propuesta de @sunEstimatingDynamicTreatment2021, que solo admite la primera–. En lo que sigue presento los supuestos de identificación que involucra este diseño, partiendo de un marco de **resultados potenciales**, junto con los parámetros específicos a estimar. Luego, detallo la estrategia de estimación e inferencia.
 
-Realizo las estimaciones principales en `R` usando el paquete `did` [@callawayDidDifferenceDifferences2021], una implementación de autores de su propia propuesta.
+## Identificación
+
+Considero $T$ períodos indexados por $t = 1, ..., T$. Las firmas pueden recibir el tratamiento en cualquiera de los períodos $t>1$. Notamos $D_{i,t}$ una variable binaria que indica si la firma $i$ está tratada en el período $t$. Asumimos que el tratamiento es un estado absorbente, es decir, si $D_{i,t-1} = 1 \rightarrow D_{i,t}=1$.
+
+Definimos $G_{i}=\min\{t:D_{i,t}=1\}$ como el primer período en que la firma $i$ recibe tratamiento. $G_{i}$ define cohortes de tratamiento, grupos de firmas que comienzan a recibir e-facturas el mismo año. Si una firma no participa del tratamiento, denotamos $G = \infty$. Luego, definimos $G_{i,g} = \mathbb{1}\{G_{i}=g\}$ una variable binaria que indica si la firma $i$ comienza su exposición al tratamiento en el período $g$; y definimos $C_{i} = \mathbb{1}\{G_{i}=\infty\}$ una variable binaria que señala a las firmas que no reciben tratamiento en ningún período.
+
+A continuación presento el marco de resultados potenciales. Sean $\mathbf{0_{s}}$ y $\mathbf{1_{s}}$ vectores s-dimensionales de ceros y unos. $Y_{i,t}(g) = Y_{i,t}(\mathbf{0_{g-1}}, \mathbf{1_{T-g+1}})$ es el resultado potencial de la firma $i$ en el momento $t$ si recibe el tratamiento en el momento $g$. $Y_{i,t}(\infty) = Y_{i,t}(\mathbf{0_{T}})$ es el resultado potencial de $i$ en $t$ si no recibiera tratamiento hasta el período $T$. Los resultados potenciales y observados de cada firma $i$ se relacionan de acuerdo a la siguiente ecuación:
+
+$$Y_{i,t} = Y_{i,t}(\infty) + \sum_{g=2}^{T} (Y_{i,t}(g) - Y_{i,t}(\infty))\cdot G_{i,g}$$
+
+En otras palabras, se observa una única trayectoria de resultados potenciales para cada firma. El diseño exige dos supuestos para identificar parámetros causales, que involucran a las trayectorias de los resultados potenciales, no observados. Como tales, no son directamente testeables en los datos.
+
+En primer lugar, se exige que haya una anticipación limitada al tratamiento. Formalmente, que exista un $\delta>0$ tal que
+
+$$\mathbb{E}[Y_{i,t}(g)|G_{i}=g] = \mathbb{E}[Y_{i,t}(0)|G_{i}=g] \text{ a.s. } \forall\ g\in \mathcal{G}; t \in \{1, ..., T\}:t<g-\delta$$
+
+Este supuesto restringe la forma que puede tomar la anticipación al tratamiento. En caso que $\delta=0$, no habría anticipación al tratamiento. Es decir, los resultados de las firmas que no habían recibido tratamiento en $t$ no depende del período en que reciben tratamiento en el futuro. En el caso que $\delta>0$ las firmas pueden anticipar el tratamiento hasta cierto punto, respondiendo a el "prematuramente". No obstante, incorporar la anticipación al marco de análisis también exige conocimiento preciso del horizonte de anticipación de las unidades tratadas.
+
+En segundo lugar, se restringe la trayectoria de los resultados potenciales en el entorno del tratamiento. @callawayDifferenceinDifferencesMultipleTime2021 consideran dos versiones de este supuesto, de acuerdo al grupo de firmas que se tomará como control. Una primer versión es apropiada si el grupo de control consiste de firmas que nunca reciben tratamiento en $t = 1,...,T$. Una segunda versión permite que el grupo de control consista de firmas "aún-no-tratadas" en el período $t+\delta$. Formalmente, sean $\delta>0$, $g\in\mathcal{G}$ y $(t, t')\in\{2, ..., T\}\times\{2, ..., T\}: t\geq g-\delta\ \land\  t+\delta\leq t' \leq \bar{g}$
+
+$$\mathbb{E}[Y_{i,t}(\infty) - Y_{i,t-1}(\infty)|G_{i}=g]=\mathbb{E}[Y_{i,t}(\infty) - Y_{i,t-1}(\infty)|D_{i,t'} = 1, G_{i}=\infty] \text{ a.s.}$$
+
+@callawayDifferenceinDifferencesMultipleTime2021 señalan que es preferible utilizar al grupo que nunca recibe tratamiento como control, en tanto haya una proporción considerable de estas unidades en los datos. Como se detalla en la siguiente sección, el grupo de firmas que nunca reciben tratamiento representa tan solo 10\% de la muestra seleccionada. Por lo tanto, utilizo al grupo de firmas áun-no-tratadas en el período $t+\delta$ como control. Los autores también señalan que, en caso de que el grupo que nunca recibe tratamiento presente comportamientos muy diferentes al resto de la muestra podría excluírsele de las estimaciones; considero esta posibilidad como un ejercicio de robustez.
+
+### Parámetros causales de interés
+
+@callawayDifferenceinDifferencesMultipleTime2021 toman un enfoque constructivo para la identificación. Su parámetro base es el  el efecto de tratamiento promedio sobre los tratados, para cada cohorte de tratamiento $g$, en un determinado período $t$:
+
+$$ATT(g,t) = \mathbb{E}[Y_{i,t}(g)-Y_{i,t}(\infty)|G_{i}=g]$$
+
+Llaman a este parámetro *group-time average treatment effect on the treated*. La principal ventaja de esta estrategia es que no impone ningún tipo de restricción sobre la heterogeneidad del efecto de tratamiento entre cohortes ni a lo largo del tiempo.
+
+En el Teorema 1 de @callawayDifferenceinDifferencesMultipleTime2021, los autores demuestran que los $ATT(g,t)$ quedan identificados de forma puntual y no-paramétrica con los supuestos mencionados[^extra]. Además, muestran que los parámetros quedan identificados usando estimadores de la forma de *outcome regression* [OR, @heckmanMatchingEconometricEvaluation1997], *inverse probability weighting* [IPW, @abadieSemiparametricDifferenceinDifferencesEstimators2005], o *doubly robust* [DR, @santannaDoublyRobustDifferenceindifferences2020]. Cada uno de ellos explota partes distintas del proceso generador de datos. En la siguiente subsección fundamento la forma de estimación e inferencia que utilizo en el trabajo.
+
+[^extra]: Para llegar a este resultado los autores suponen adicionalmente (i) que se cuenta con una muestra aleatoria de datos de panel o cortes transversales repetidos; y (ii) que una fracción positiva de la población empieza el tratamiento en $g$ y el *propensity score* generalizado para todo $g$ y $t$ está acotado respecto a uno, descartando "identificación irregular".
+
+Luego de estimar esta familia de parámetros, los autores proponen formas de combinar los $ATT(g,t)$ para obtener parámetros causales agregados, que pongan de relieve distintos aspectos del tratamiento. Nos centramos en dos de dichas agregaciones, que estiman (i) el efecto global promedio del tratamiento al período $T$ para todas las cohortes que participan del tratamiento; y (ii) el efecto dinámico del tratamiento a $l$ períodos del inicio del tratamiento. Al final de la siguiente subsección detallo como se calculan estas agregaciones de $ATT(g,t)$.
+
+## Estimación e inferencia
 
 $$
 ATT_{dr}^{ny}(g,t) = \mathbb{E}
 \left[
-  \left( 
-    \frac{
-      G_{g}}{\mathbb{E}[G_{g}]} - 
-      \frac{
-        \frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}}
-        {\mathbb{E}\left[\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}\right]
-      }
-    (Y_{t}-Y_{g-1}-m^{ny}_{g,t}(X))
+  \left(
+    \frac{
+      G_{g}}{\mathbb{E}[G_{g}]} -
+      \frac{
+        \frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}}
+        {\mathbb{E}\left[\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}\right]
+      }
+    (Y_{t}-Y_{g-1}-m^{ny}_{g,t}(X))
 \right)
-\right] 
+\right]
 $$
 
 Los esquemas de agregación toman la forma
@@ -33,3 +70,4 @@ $$
 \theta = \sum_{g\in \mathcal{G}}\sum_{t=2}^{\mathcal{T}}w(g,t)\cdot ATT(g,t)
 $$
 
+Realizo las estimaciones principales en `R` usando el paquete `did` [@callawayDidDifferenceDifferences2021], una implementación de los propios autores de la propuesta.

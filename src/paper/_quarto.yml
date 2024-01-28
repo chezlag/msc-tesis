@@ -18,8 +18,8 @@ book:
     - context.qmd
     - lit_review.qmd
     - hypotheses.qmd
-    - data.qmd
     - method.qmd
+    - data.qmd
     - results.qmd
     - closing_remarks.qmd
     - references.qmd
