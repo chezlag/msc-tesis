@@ -5,6 +5,7 @@
 Rplots*
 src/paper/.quarto/
 src/paper/*_files/
+src/paper/site_libs/
 src/paper/index.tex
 src/paper/index.aux
 src/paper/index.toc
