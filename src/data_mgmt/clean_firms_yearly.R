@@ -129,7 +129,7 @@ create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
 create_lag_by_group(dt, "year == 2009", "turnoverK", "TempTurnover2009", "fid")
 create_lag_by_group(dt, "year == 2010", "turnoverK", "TempTurnover2010", "fid")
 dt[, Scaler1 := (TempTurnover2009 + TempTurnover2010) / 2]
-dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2]
+dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2, fid]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
 
@@ -137,7 +137,7 @@ for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
 create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "TempPurchases2009", "fid")
 create_lag_by_group(dt, "year == 2010", "deductPurchasesK", "TempPurchases2010", "fid")
 dt[, Purch1 := (TempPurchases2009 + TempPurchases2010) / 2]
-dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2]
+dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2, fid]
 
 # Franjas de facturación en MUI
 dt[(djFict), djFictInBracket1 := RevenueMUI < 2]
