@@ -1,5 +1,5 @@
 library(groundhog)
-pkgs <- c("data.table", "fst", "lubridate")
+pkgs <- c("data.table", "fst", "lubridate", "purrr")
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
@@ -37,6 +37,12 @@ dt[, yearFirstEmission := fifelse(!is.na(dateFirstEmission), year(dateFirstEmiss
 
 dt[, neverTreated := is.na(dateFirstReception)]
 
+dt[, sector := fcase(
+  sector == "Agriculture, forestry, fishing, mining and quarrying", "Primary activities",
+  !is.na(ind_code_last), sector,
+  default = "")]
+
 dt[, hasCovariates := !is.na(sector) & !is.na(birth_date)]
+
 
 write_fst(dt, opt$output)
