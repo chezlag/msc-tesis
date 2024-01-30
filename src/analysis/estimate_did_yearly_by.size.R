@@ -50,7 +50,7 @@ stubnames <- c(
 )  
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
-  paste0("IHS", stubnames, "K")
+  paste0("Scaled2", stubnames, "K")
 )
 
 # remove incomplete years from each dataset

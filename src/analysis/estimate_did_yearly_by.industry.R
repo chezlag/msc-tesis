@@ -49,9 +49,10 @@ stubnames <- c(
   "vatPurchases",
   "vatSales",
   "vatPaid"
-)  
+)
 varlist <- c(
-  paste0("Scaled1", stubnames, "K")
+  paste0("Scaled1", stubnames, "K"),
+  paste0("Scaled2", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
@@ -82,7 +83,7 @@ ddlist <-
            gname = "yearFirstReception",
            idname = "fid",
            tname = "year",
-           xformla = as.formula(params$formula) ,
+           xformla = as.formula(params$formula),
            data = dty[sector == y],
            control_group = "notyettreated",
            weightsname = params$wt,

@@ -31,16 +31,23 @@ message("Reading data and setting up variables.")
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
+cohorts <-
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE)
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
-  .[eval(parse(text = params$sample_yearly))]
+  .[eval(parse(text = params$sample_yearly))] %>%
+  merge(cohorts, by = "fid", all.x = TRUE)
 
 # size and age quartiles – sample specific
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
 quartiles <- dty[, quantile(firm_age, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
+dty[is.na(ageQuartile), ageQuartile := 1] # missing as young
+
+# missing sectors as it's own sector
+dty[is.na(sector), sector := ""]
 
 # outcome variable list
 stubnames <- c(
@@ -51,7 +58,8 @@ stubnames <- c(
   "vatPaid"
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K")
+  paste0("Scaled1", stubnames, "K"),
+  paste0("Scaled2", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
@@ -95,7 +103,8 @@ simple <- ddlist %>%
     aggte(x,
           type = "simple",
           clustervars = "fid",
-          bstrap = TRUE)
+          bstrap = TRUE,
+          na.rm = TRUE)
   },
   NULL))
 
@@ -105,7 +114,8 @@ dynamic <- ddlist %>%
     aggte(x,
           type = "dynamic",
           clustervars = "fid",
-          bstrap = TRUE)
+          bstrap = TRUE,
+          na.rm = TRUE)
   },
   NULL))
 
