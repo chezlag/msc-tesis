@@ -66,6 +66,18 @@ rule define_samples:
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
 
+rule define_cohorts:
+    input:
+        script = "src/data_mgmt/" + "define_cohorts.R",
+        data = "out/data/" + "firms_yearly.fst"
+    output:
+        data = "out/data/" + "cohorts.fst"
+    log:
+        "logs/data_mgmt/" + "define_cohorts.Rout"
+    threads: 16
+    shell:
+        "{runR} {input.script} -o {output.data} > {log} {logAll}"
+
 rule fill_firms_yearly:
     input:
         script = "src/data_mgmt/" + "fill_firms_yearly.fst",
