@@ -34,6 +34,9 @@ lookup_list[[2]] <- map(
 # Tiene covariables en BPS
 lookup_list[[3]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 
+# Max turnoverMUI
+lookup_list[[4]] <- dty[, .(maxTurnoverMUI = fmax(turnoverMUI)), fid]
+
 # En todos los años / en algún año / todos los años pre (múltiples variables)
 cols <- c("in214", "in217", "djFict", "activeBusiness")
 colyrs <- list(2009:2016, 2009:2015, 2009:2016, 2009:2015)
@@ -66,7 +69,7 @@ lut <- list(lookup_list, lookup_AllT, lookup_AnyT, lookup_AllTPre) %>%
   unlist(recursive = FALSE) %>%
   reduce(merge, by = "fid", all = TRUE)
 
-cols <- grep("^fid$", names(lut), value = TRUE, invert = TRUE)
+cols <- grep("^fid$|^maxTurnover", names(lut), value = TRUE, invert = TRUE)
 lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)),
   .SDcols = cols
 ]
@@ -75,5 +78,6 @@ lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))]
 lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
 lut[, inSample3 := djFictAllTPre]
+lut[, inSample4 := inSample1 & maxTurnoverMUI < 3]
 
 write_fst(lut, opt$output)
