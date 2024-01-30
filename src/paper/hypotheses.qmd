@@ -1,10 +1,29 @@
 # Pregunta de investigación e hipótesis
 
-- Pregunta: ¿Cuál es el efecto de recibir facturas electrónicas sobre el cumplimiento tributario de las firmas?
-- H1: El pago de IVA no debería aumentar
-- H2: Las compras reportadas deberían aumentar
-- H3: Las ventas reportadas no deberían reducirse
-	- H3a: En principio las ventas declaradas no deberían aumentar.
-	- H3b: Las firmas podrían aumentar sus ventas declaradas si el aumento en las compras declaradas las llevara a una "posición sospechosa" en términos de pago de IVA. Es decir, si la deuda tributaria resultante del aumento en las compras reportadas, implicara un aumento en su probabilidad de auditoría.
-- H4: Hay heterogeneidades en la respuesta por tamaño y sector de actividad
-- H5: Múltiples márgenes de ajuste. Evitar una "posición sospechosa" de IVA puede llevar a las empresas a declarar mayor tamaño y aumentar su pago de IRAE. Otro efecto de CFE sobre cumplimiento.
+A partir de la revisión de literatura y el contexto presentado en las secciones anteriores, en esta sección detallo las principales preguntas de investigación e hipótesis que estructuran el resto del trabajo.
+
+**¿Cuál es el efecto de recibir facturas electrónicas (e-facturas) sobre el cumplimiento tributario de las firmas?**
+
+El objetivo principal de el trabajo es analizar como impacta la recepción de e-facturas sobre el cumplimiento tributario de las firmas. Vale notar que el cumplimiento tributario es un concepto amplio. En este trabajo, me centro dos aspectos. En primer lugar, estudio si la recepción de e-facturas lleva a las firmas a revelar una mayor proporción de su actividad a la autoridad tributaria. En concreto, analizo si induce una variación en las compras y ventas reportadas por las firmas. En segundo lugar, estudio si la recepción de e-facturas afecta el pago de IVA; en tanto es el impuesto más importante en términos de recaudación y el que se relaciona de forma más directa con las compras y ventas reportadas. Planteo las siguientes hipótesis:
+
+**H1:** *Las compras reportadas deberían aumentar.*
+
+Evalúo los efectos potenciales de la política en términos de Información reportada por terceros y riesgo de auditoría. En concreto, considero que el mecanismo detrás de las posibles respuestas de las firmas corre por dos canales: (i) la recepción de e-facturas aumenta la proporción de las compras de las firmas que son reportadas por terceros; y (ii) el formato digital de la nueva información hace que la verificación contra la declaración de las firmas sea más sencillo para la autoridad tributaria, aumentando la probabilidad de detección y auditoría. Por lo tanto, lo primero que espero que suceda es que las firmas receptoras aumenten sus costos reportados, en comparación a las firmas que no están expuestas a la política. En el límite, si las compras declaradas por las firmas fuesen exactamente las compras reportadas por terceros, entonces un aumento de las segundas implicaría un aumento de las primeras. Por otra parte, aún si este no fuese el caso, las firmas pueden ver limitada su capacidad de hacer compras sin factura cuando la firma que le vende emite comprobantes electrónicos. En tal caso, también deberían aumentar sus compras reportadas.
+
+**H2:** *Las ventas reportadas no deberían reducirse.*
+
+Por otra parte, en principio espero que las ventas reportadas no varíen. La recepción de e-facturas solo afecta la proporción de compras reportadas por terceros, no la proporción de ventas reportadas por terceros. Por lo tanto, no debería impactar sobre las ventas declaradas por las firmas.
+
+No obstante, la deuda tributaria de las firmas se calcula de formas complejas y está afectada por distintas variables, lo cuál pone a disposición de la firma múltiples márgenes de optimización. En este contexto, un escenario en el cual las firmas podrían aumentar sus ventas reportadas sería uno en el que el aumento en las compras declaradas –sin un aumento en las ventas declaradas– condujera a una declaración IVA no positiva o cercana a cero. Si esto a su vez implicara un aumento en su probabilidad de auditoría, las firmas podrían verse empujadas a incrementar sus ventas reportadas.
+
+**H3:** *El pago de IVA no debería aumentar.*
+
+**H4:** *Hay heterogeneidades en la respuesta por tamaño y sector de actividad.*
+
+Espero que la respuesta dependa de la distribución de la evasión antes de la implementación de la factura electrónica. En la literatura se señala que hay ciertas características de las firmas que las vuelven más propensas a evadir, por ejemplo, cuando su sector de actividad tiene un mayor volumen de transacciones en efectivo; o cuando tienen un menor tamaño, volviéndose más fácil camuflar sus niveles de actividad. Por lo tanto, espero encontrar respuestas diferentes de acuerdo al sector de actividad y al tamaño de la firma.
+
+**¿Cuál es el efecto de la recepción de e-facturas sobre los comportamientos reales de las firmas?**
+
+Un segundo objetivo del trabajo es lograr diferenciar respuestas nominales de respuestas reales de las firmas. Dado que en el período de análisis de este estudio la facturación electrónica solo se había implementado de forma parcial, es posible que las firmas evasoras todavía tuvieran un margen sustancial para encontrar socios no-emisores que les permitieran mantenerse en funcionamiento con sus comportamientos evasivos. Es posible que esto haya cambiado a medida que la política amplió su cobertura.
+
+**H5:** *No hay respuestas reales de las firmas en el período analizado.*
