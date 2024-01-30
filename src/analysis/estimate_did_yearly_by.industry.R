@@ -31,9 +31,13 @@ message("Reading data and setting up variables.")
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
+cohorts <-
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
+  .[G1 < 2016]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
+  .[cohorts, on = "fid"] %>%
   .[eval(parse(text = params$sample_yearly))]
 
 # size and age quartiles – sample specific
@@ -51,8 +55,7 @@ stubnames <- c(
   "vatPaid"
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0("Scaled2", stubnames, "K")
+  paste0("Scaled1", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
@@ -80,7 +83,7 @@ ddlist <-
        possibly(\(x, y) {
          att_gt(
            yname = x,
-           gname = "yearFirstReception",
+           gname = "G1",
            idname = "fid",
            tname = "year",
            xformla = as.formula(params$formula),
@@ -92,8 +95,7 @@ ddlist <-
            est_method = "dr",
            cores = 8
          )
-       },
-       NULL))
+       }))
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
@@ -102,8 +104,7 @@ simple <- ddlist %>%
           type = "simple",
           clustervars = "fid",
           bstrap = TRUE)
-  },
-  NULL))
+  }))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
@@ -112,8 +113,7 @@ dynamic <- ddlist %>%
           type = "dynamic",
           clustervars = "fid",
           bstrap = TRUE)
-  },
-  NULL))
+  }))
 
 # Output ----------------------------------------------------------------------
 

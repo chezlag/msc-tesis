@@ -251,7 +251,7 @@ tidy_size <- simple_size %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
-  .[, variable := str_remove_all(y.name, "^Scaled2|K$") %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
     as_factor()]
 
 quantlist <- paste0("Quartile ", 1:4)
@@ -286,7 +286,7 @@ tidy_size[variable %in% varlist] %>%
 
 ### Heterogeneidad por sector de actividad
 
-Al realizar las estimaciones por sector de actividad, se observa que la recepción de e-facturas tiene efectos significativos únicamente en algunos sectores. En particular, en el comercio minorista y en la industria manufacturera se observa un aumento de los costos reportados de entre \$0.17-\$0.20 por peso de facturación rezagada. A su vez, la industria manufacturera es el único sector en el cual la recepción de e-facturas aumenta significativamente los ingresos reportados, con una estimación puntual de \$0.236 por peso de facturación rezagada. Por último, hay aumentos significativos del pago de IVA en el sector servicios y, nuevamente, las manufacturas. El pago de IVA aumenta en promedio \$0.01–\$0.03 por peso de facturación rezagada.
+Al realizar las estimaciones por sector de actividad, se observa que la recepción de e-facturas tiene efectos significativos únicamente en algunos sectores. En particular, en el comercio minorista y en la industria manufacturera se observa un aumento de los pagos de IVA de entre \$0.012–\$0.015 por peso de facturación rezagada. No encuentro efectos significativos en los demás sectores ni para las demás variables.
 
 ```{r fig-by.industry-overall}
 simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S2.bal.base_aggte.simple.RDS"))
@@ -297,7 +297,7 @@ tidy_ind <- simple_ind %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
-  .[, variable := str_remove_all(y.name, "^Scaled2|K$") %>%
+  .[, variable := str_remove_all(y.name, "^Scaled1|K$") %>%
     as_factor()] %>%
   .[variable %in% c("deductPurchases", "Revenue", "vatPaid")]
 
