@@ -42,7 +42,7 @@ main_est_list <-
 names(main_est_list) <- estname
 stubnames <- c(
   "deductPurchases",
-  "taxableTurnover",
+  "Revenue",
   "vatPurchases",
   "vatSales",
   "vatPaid"
@@ -107,9 +107,9 @@ dtycj <-
 
 ### Recepción de e-facturas y costos reportados
 
-En primer lugar, muestro evidencia en apoyo del supuesto de tendencias paralelas en los costos declarados, un requerimiento para la identificación en el diseño de diferencias en diferencias. Primero, realizo un test de Wald de significación conjunta de los $ATT(g,t)$ previos al tratamiento y no rechazo que sean conjuntamente iguales a cero, con un p-valor de `r main_est_list$S1.bal.ctrl$Scaled2deductPurchasesK$Wpval`. Segundo, la @fig-cost-dynamic presenta la agregación de los $ATT(g,t)$ respecto al tiempo desde el tratamiento, un gráfico equivalente al estudio de eventos. Se observa que las bandas de confianza de los eventos pre-tratamiento incluyen al cero en todos los casos. Si bien ninguno de estos tests confirma que el supuesto de tendencias paralelas se cumple, si dota de mayor credibilidad al diseño seleccionado: indica que, en los años antes de recibir e-facturas, los costos reportados por tratados y controles venían evolucionando en paralelo. 
+En primer lugar, muestro evidencia en apoyo del supuesto de tendencias paralelas en los costos declarados, un requerimiento para la identificación en el diseño de diferencias en diferencias. Primero, realizo un test de Wald de significación conjunta de los $ATT(g,t)$ previos al tratamiento y no rechazo que sean conjuntamente iguales a cero, con un p-valor de `r main_est_list$S1.bal.ctrl$Scaled1deductPurchasesK$Wpval`. Segundo, la @fig-cost-dynamic presenta la agregación de los $ATT(g,t)$ respecto al tiempo desde el tratamiento, un gráfico equivalente al estudio de eventos. Se observa que las bandas de confianza de los eventos pre-tratamiento incluyen al cero en todos los casos. Si bien ninguno de estos tests confirma que el supuesto de tendencias paralelas se cumple, si dota de mayor credibilidad al diseño seleccionado: indica que, en los años antes de recibir e-facturas, los costos reportados por tratados y controles venían evolucionando en paralelo.
 
-Formalizo esta evidencia en la primera columna de la @tbl-main-overall-att, donde presento la agregación de los $ATT(g,t)$ que aproxima el efecto promedio de la política para todos los grupos, para todos los períodos post-tratamiento. En conjunto, la recepción de e-facturas genera un aumento promedio en los costos reportados de \$0.032 por peso de facturación declarada en 2009–2010. En términos porcentuales respecto a la media pre-2011, representa un aumento de 5%.
+Formalizo esta evidencia en la primera columna de la @tbl-main-overall-att, donde presento la agregación de los $ATT(g,t)$ que aproxima el efecto promedio de la política para todos los grupos, para todos los períodos post-tratamiento. En conjunto, la recepción de e-facturas genera un aumento promedio en los costos reportados de \$0.04 por peso de facturación declarada en 2009–2010. En términos porcentuales respecto a la media pre-2011, representa un aumento de 6%.
 
 ```{r fig-cost-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre costos reportados
@@ -121,7 +121,7 @@ tidy <-
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
 
-tidy[y.name == "Scaled2deductPurchasesK"] %>%
+tidy[y.name == "Scaled1deductPurchasesK"] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -141,34 +141,38 @@ tidy[y.name == "Scaled2deductPurchasesK"] %>%
 estlist <- readRDS(awd("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS"))
 tbl <- estlist %>%
   map(possibly(tidy_did_list, NULL)) %>%
-  list.filter(str_detect(tidy$y.name[[1]], "^Scaled2"))
+  list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
 colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
-names(tbl) <- str_remove_all(colnames, "^Scaled2|K$")
-var_regex <- "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid"
-# ar <- data.frame(
-#   "Mean Y pre-2011",
-#   lapply(
-#     grep(var_regex, colnames, value = TRUE),
-#     \(x) dty[year <= 2011, fmean(get(x), na.rm = TRUE)]
-#   )
-# )
+names(tbl) <- str_remove_all(colnames, "^Scaled1|K$")
+var_regex <- "deductPurchases|Revenue|vatPurchases|vatSales|vatPaid"
+ar <- data.frame(
+  "Mean Y pre-2011",
+  lapply(
+    grep(var_regex, colnames, value = TRUE),
+    \(x) dty[year <= 2011 & G1 < 2016, fmean(get(x), na.rm = TRUE)]
+  )
+)
 tbl %>%
   list.match(var_regex) %>%
   msummary(
     statistic = "conf.int",
-    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation")
+    gof_map = c("nobs", "clustervars", "panel.balanced", "control.group", "anticipation"), 
+    add_rows = ar
   )
 ```
 
 ### Recepción de e-facturas e ingresos reportados
 
-En segundo lugar, exploro los ingresos reportados. Al igual que en la sección anterior, comienzo por verificar la existencia de tendencias paralelas previas al tratamiento. Nuevamente, el test de significación conjunta no resulta estadísticamente significativo y la @fig-revenue-dynamic muestra que los coeficientes agregados al estilo de un estudio de eventos no resultan individualmente significativos antes del inicio del tratamiento.
+En segundo lugar, exploro los ingresos reportados. Al igual que en la sección anterior, comienzo por verificar la existencia de tendencias paralelas previas al tratamiento. Nuevamente, el test de significación conjunta no resulta estadísticamente significativo [^pv2] y la @fig-revenue-dynamic muestra que los coeficientes agregados al estilo de un estudio de eventos no resultan individualmente significativos antes del inicio del tratamiento.
 
-En la segunda columna de la @tbl-main-overall-att muestro la estimación del efecto agregado promedio sobre los tratados. La estimación puntual es de \$0.107 por peso de facturación declarada en 2009–2010, pero no es significativa al 95%. 
+[^pv2]: El p-valor del test de Wald de significación conjunta es `r main_est_list$S1.bal.ctrl$Scaled1RevenueK$Wpval`.
+
+En la segunda columna de la @tbl-main-overall-att muestro la estimación del efecto agregado promedio sobre los tratados. La estimación puntual es de \$0.127 por peso de facturación declarada en 2009–2010 –un 11% de la media pre-2011–, pero no es significativa al 95%.
 
 ```{r fig-revenue-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre ingresos reportados
-dynamic$S1.bal.base[y.name == "Scaled1taxableTurnoverK"] %>%
+
+tidy[y.name == "Scaled1RevenueK"] |>
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   geom_errorbar(
@@ -180,8 +184,7 @@ dynamic$S1.bal.base[y.name == "Scaled1taxableTurnoverK"] %>%
   ) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
-  scale_x_continuous(limits = c(-4.1, 2.1), breaks = -4:2) +
-  ylim(-.25,.8) +
+  scale_x_continuous(limits = c(-3.1, 2.1), breaks = -4:2) +
   labs(caption = "[ 95% Simult. CI ]")
 ```
 
@@ -189,27 +192,29 @@ dynamic$S1.bal.base[y.name == "Scaled1taxableTurnoverK"] %>%
 
 Por último analizo el pago anual de IVA, junto con IVA compras e IVA ventas declarados por las firmas. Cabe aclarar que aunque IVA compras e IVA ventas tienen un vínculo directo con costos y ventas reportados, respectivamente, dicho vínculo no es lineal. Hay productos y servicios que están sujetos a distintas tasas de IVA, lo cual crea no-linealidades en la relación entre IVA compras y costos (e IVA ventas e ingresos). Por otra parte, el IVA adeudado surge principalmente de la diferencia entre IVA ventas e IVA compras; pero la firma toma decisiones respecto a como afrontar esa deuda.
 
-La @fig-vat-dynamic ilustra los efectos de tratamiento dinámicos sobre IVA compras (panel 1), IVA ventas (panel 2) y pago de IVA (panel 3). En ningún caso hay efectos significativos antes del tratamiento. Hay efectos significativos en el segundo período luego del tratamiento, tanto en IVA compras e IVA ventas.
+La @fig-vat-dynamic ilustra los efectos de tratamiento dinámicos sobre IVA compras (panel 1), IVA ventas (panel 2) y pago de IVA (panel 3). En ningún caso hay efectos significativos antes del tratamiento y rechazo el test de significación conjunta de los coeficientes pre-tratamiento[^pv3].  Hay efectos significativos en el segundo período luego del tratamiento, tanto en IVA compras e IVA ventas.
 
-Las últimas tres columnas de la @tbl-main-overall-att muestran el efecto agregado promedio sobre los tratados, para cada una de estas tres variables. La recepción de e-facturas tiene un impacto estadísticamente significativo de $0.008 por peso de facturación en 2009-2010. Representa un aumento de 6% en términos porcentuales. No hay efectos significativos sobre IVA ventas ni en pagos de IVA.
+[^pv3]: El p-valor del test es de `r main_est_list$S1.bal.ctrl$Scaled1vatPurchasesK$Wpval` para IVA Compras, `r main_est_list$S1.bal.ctrl$Scaled1vatSalesK$Wpval` para IVA Ventas, y `r main_est_list$S1.bal.ctrl$Scaled1vatPaidK$Wpval` para pago de IVA.
+
+Las últimas tres columnas de la @tbl-main-overall-att muestran el efecto agregado promedio sobre los tratados, para cada una de estas tres variables. La recepción de e-facturas tiene un impacto estadísticamente significativo sobre IVA compras, IVA ventas y sobre los pagos de IVA. La estimación puntual del efecto es de \$0.006, \$0.014, y \$0.008 por peso de facturación rezagada, respectivamente. Los efectos representan 4%, 5% y 11% de la media de cada una de las variables pre-2011.
 
 ```{r fig-vat-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre componentes del IVA
-dynamic$S1.bal.base[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% paste0("Scaled1", ., "K"))] %>%
+
+tidy[y.name %in% (c("vatSales", "vatPurchases", "vatPaid") %>% 
+                    paste0("Scaled1", ., "K"))] %>%
   ggplot(aes(x = event, y = estimate)) +
   geom_point(size = 2) +
   # geom_line(size = 1) +
   # geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .3) +
-  geom_errorbar(
-    aes(
-      ymin = conf.low,
-      ymax = conf.high
-    ),
-    width = .2
-  ) +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "maroon") +
+  geom_errorbar(aes(ymin = conf.low,
+                    ymax = conf.high),
+                width = .2) +
+  geom_hline(yintercept = 0,
+             linetype = "dashed",
+             color = "maroon") +
   geom_vline(xintercept = -.5, linetype = "dashed") +
-  facet_wrap(~variable, nrow = 3) +
+  facet_wrap( ~ variable, nrow = 3) +
   labs(caption = "[ 95% Simult. CI ]")
 ```
 
@@ -255,7 +260,7 @@ nvars <- tidy_size[, .N, y.name] %>%
   .[1]
 tidy_size[, sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
 
-varlist <- c("deductPurchases", "taxableTurnover", "vatPaid")
+varlist <- c("deductPurchases", "Revenue", "vatPaid")
 tidy_size[variable %in% varlist] %>%
   ggplot(aes(x = estimate, y = sizeQuartile, color = variable)) +
   geom_point(
@@ -286,7 +291,7 @@ Al realizar las estimaciones por sector de actividad, se observa que la recepci�
 ```{r fig-by.industry-overall}
 simple_ind <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.industry_S2.bal.base_aggte.simple.RDS"))
 
-tgtcols <- c("deductPurchases", "taxableTurnover", "vatPaid")
+tgtcols <- c("deductPurchases", "Revenue", "vatPaid")
 
 tidy_ind <- simple_ind %>%
   map(possibly(tidy_did, NULL)) %>%
@@ -294,7 +299,7 @@ tidy_ind <- simple_ind %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled2|K$") %>%
     as_factor()] %>%
-  .[variable %in% c("deductPurchases", "taxableTurnover", "vatPaid")]
+  .[variable %in% c("deductPurchases", "Revenue", "vatPaid")]
 
 industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
 nvars <- tidy_ind[, .N, y.name][N == length(industrylist)] %>%
@@ -357,7 +362,16 @@ El impacto es cuantitativamente similar sobre el pago total de impuestos. No obs
 Por otra parte, hay reducciones importantes en la probabilidad de pagar IVA y otros impuestos, de 9.8 y 16 puntos porcentuales, respectivamente. Son reducciones considerables, más considerando la probabilidad de pagar estos impuestos antes del inicio del tratamiento: corresponden a reducciones de 12% y 18%, respectivamente. 
 
 ```{r fig-ext.survival-dynamic}
-est_dyn_survival <- readRDS(paste0(ROOT, "out/analysis/did_yearly_ext.survival_S3.bal.base_aggte.dynamic.RDS"))
+est_dyn_survival <-
+  readRDS(awd(
+    "out/analysis/did_yearly_ext.survival_S3.bal.base_aggte.dynamic.RDS"
+  ))
+
+est_survival <- 
+  readRDS(awd(
+    "out/analysis/did_yearly_ext.survival_S3.bal.base.RDS"
+  ))
+
 tidy <- est_dyn_survival %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%

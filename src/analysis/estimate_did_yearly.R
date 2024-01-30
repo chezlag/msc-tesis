@@ -32,27 +32,28 @@ sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
-  read_fst("out/data/cohorts.fst", as.data.table = TRUE)
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
+  .[G1 < 2016]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
-  .[eval(parse(text = params$sample_yearly))] %>%
-  merge(cohorts, by = "fid", all.x = TRUE)
+  .[cohorts, on = "fid"] %>%
+  .[eval(parse(text = params$sample_yearly))]
 
 # size and age quartiles – sample specific
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
-quartiles <- dty[, quantile(firm_age, probs = seq(0, 1, 0.25), na.rm = TRUE)]
-dty[, ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
-dty[is.na(ageQuartile), ageQuartile := 1] # missing as young
+quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
+dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
 
-# missing sectors as it's own sector
-dty[is.na(sector), sector := ""]
+# missing sectors as Services (what BCS did)
+dty[is.na(sector), sector := "Services"]
 
 # outcome variable list
 stubnames <- c(
   "deductPurchases",
-  "taxableTurnover",
+  "Revenue",
   "vatPurchases",
   "vatSales",
   "vatPaid"
@@ -83,7 +84,7 @@ ddlist <- varlist %>%
   map(possibly(\(x) {
     did::att_gt(
       yname = x,
-      gname = "yearFirstReception",
+      gname = "G1",
       idname = "fid",
       tname = "year",
       xformla = as.formula(params$formula),
@@ -95,29 +96,31 @@ ddlist <- varlist %>%
       est_method = "dr",
       cores = 8
     )
-  }, NULL))
+  }))
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
   map(possibly(\(x) {
-    aggte(x,
-          type = "simple",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
-  },
-  NULL))
+    aggte(
+      x,
+      type = "simple",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
+  }))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
   map(possibly(\(x) {
-    aggte(x,
-          type = "dynamic",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
-  },
-  NULL))
+    aggte(
+      x,
+      type = "dynamic",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
+  }))
 
 # Output ----------------------------------------------------------------------
 
