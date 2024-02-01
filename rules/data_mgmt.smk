@@ -8,6 +8,7 @@ rule data:
     input: 
         "out/data/firms_yearly.fst",
         "out/data/samples.fst",
+        "out/data/cohorts.fst",
         "out/data/firms_yearly_filled.fst"
 
 # --- Build Rules --- #
@@ -80,7 +81,7 @@ rule define_cohorts:
 
 rule fill_firms_yearly:
     input:
-        script = "src/data_mgmt/" + "fill_firms_yearly.fst",
+        script = "src/data_mgmt/" + "fill_firms_yearly.R",
         data = "out/data/" + "firms_yearly.fst"
     output:
         data = "out/data/" + "firms_yearly_filled.fst"
