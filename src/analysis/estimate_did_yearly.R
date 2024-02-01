@@ -37,7 +37,7 @@ cohorts <-
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
-  .[cohorts, on = "fid"] %>%
+  merge(cohorts, by = "fid") %>%
   .[eval(parse(text = params$sample_yearly))]
 
 # size and age quartiles – sample specific
@@ -46,9 +46,6 @@ dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
 quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
 dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
-
-# missing sectors as Services (what BCS did)
-dty[is.na(sector), sector := "Services"]
 
 # outcome variable list
 stubnames <- c(

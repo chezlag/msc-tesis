@@ -37,14 +37,15 @@ cohorts <-
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
-  .[cohorts, on = "fid"] %>%
+  merge(cohorts, by = "fid") %>%
   .[eval(parse(text = params$sample_yearly))]
 
 # size and age quartiles – sample specific
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
-quartiles <- dty[, quantile(firm_age, probs = seq(0, 1, 0.25), na.rm = TRUE)]
-dty[, ageQuartile := cut(firm_age, breaks = quartiles, labels = 1:4)]
+quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
+dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
 
 # outcome variable list
 stubnames <- c(
@@ -73,6 +74,11 @@ map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
 # sector list
 dty[sector == "Agriculture, forestry, fishing, mining and quarrying", sector := "Primary activities"]
 industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
+
+# replace sector with ind_code_2d if spec == ctrl
+if (grepl("ctrl", opt$spec)) {
+  params$formula <- "~ sizeQuartile + ageQuartile"
+}
 
 # Estimate --------------------------------------------------------------------
 
