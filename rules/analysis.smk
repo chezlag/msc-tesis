@@ -2,31 +2,30 @@
 
 # --- Dictionaries --- #
 
-EST_LIST = ["S1.bal.base", "S1.bal.ctrl", "S1.bal.wt", "S2.bal.base", "S3.unbal.base", "S3.unbal.ctrl"]
 SAMPLE_LIST = ["0", "1", "2", "3"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 
 DID_YEARLY = expand(
     "out/analysis/did_yearly_{estimates}.RDS",
-    estimates = ["S1.bal.base", "S2.bal.base", "S3.unbal.base"]
+    estimates = ["S1.bal.ctrl"]
 )
 DID_YEARLY_BYV = expand(
     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S1.bal.base", "S2.bal.base", "S3.unbal.base"]
+    estimates = ["S1.bal.base", "S1.bal.ctrl"]
 )
 DID_YEARLY_SURV = expand(
     "out/analysis/did_yearly_ext.survival_{estimates}.RDS",
-    estimates = ["S2.bal.base", "S3.bal.base"]
+    estimates = ["S3.bal.base", "S3.bal.ctrl"]
 )
 DID_YEARLY_BCKT = expand(
     "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
-    estimates = ["S1.bal.base", "S2.bal.base"]
+    estimates = ["S1.bal.ctrl", "S2.bal.ctrl"]
 )
 DID_YEARLY_REAL = expand(
     "out/analysis/did_yearly_ext.real_{estimates}.RDS",
-    estimates = ["S2.bal.base"]
+    estimates = ["S2.bal.ctrl"]
 )
 
 # --- Target rules --- #
@@ -46,6 +45,7 @@ rule estimate_did_yearly:
         script = "src/analysis/" + "estimate_did_yearly.R",
         data = "out/data/" + "firms_yearly.fst",
         samples = "out/data/" + "samples.fst",
+        cohorts = "out/data/" + "cohorts.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
         params_panel = "src/model_specs/" + "panel_{panel}.json",
         params_spec = "src/model_specs/" + "spec_{spec}.json"
