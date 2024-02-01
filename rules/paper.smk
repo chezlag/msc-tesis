@@ -30,12 +30,7 @@ rule build_paper:
         text_files = QMD_FILES,
         yaml_files = YAML_FILES,
         biblo      = BIB_FILES,
-        tex_style  = TEX_FILES,
-        did_main   = DID_YEARLY,
-        did_heterg = DID_YEARLY_BYV,
-        did_ext1   = DID_YEARLY_SURV,
-        did_ext2   = DID_YEARLY_BCKT,
-        did_ext3   = DID_YEARLY_REAL
+        tex_style  = TEX_FILES
     output:
         "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     log:
