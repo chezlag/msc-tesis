@@ -14,9 +14,9 @@ book:
   date: "2024-01"
   chapters:
     - index.qmd
-    - intro.qmd
+    - intro0.qmd
     - context.qmd
-    - lit_review.qmd
+    - lit_review0.qmd
     - hypotheses.qmd
     - method.qmd
     - data.qmd
@@ -39,20 +39,31 @@ execute:
   warning: false
 
 format:
-  html:
-    theme: simplex
-    fontsize: 1.2em
-    linestretch: 1.7
-    mainfont: Helvetica Neue, Helvetica, Arial, sans
-    monofont: Cascadia Mono, Menlo, Consolas, Courier New, Courier
-    backgroundcolor: "white"
-    fontcolor: "black"
-    knitr:
-      opts_chunk:
-        dev: "ragg_png"
+  # html:
+  #   theme: simplex
+  #   fontsize: 1.2em
+  #   linestretch: 1.7
+  #   mainfont: Helvetica Neue, Helvetica, Arial, sans
+  #   monofont: Cascadia Mono, Menlo, Consolas, Courier New, Courier
+  #   backgroundcolor: "white"
+  #   fontcolor: "black"
+  #   knitr:
+  #     opts_chunk:
+  #       dev: "ragg_png"
   pdf:
     documentclass: scrreprt
     papersize: a4
+    geometry:
+      - inner=3cm
+      - outer=4cm
+      - top=3cm
+      - bottom=4cm
+      - headsep=22pt
+      - headheight=11pt
+      - footskip=33pt
+      - ignorehead
+      - ignorefoot
+      - heightrounded
     template-partials:
       - before-body.tex
     include-in-header:
