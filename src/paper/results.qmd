@@ -350,9 +350,17 @@ En esta sección presento evidencia sobre los efectos de la recepción de e-fact
 
 ### Salidas
 
+```{r read-est-ext.survival}
+est_survival <- readRDS(awd("out/analysis/did_yearly_ext.survival_S3.bal.ctrl.RDS"))
+colnames <- est_survival |> lapply(\(x) x$DIDparams$yname) |> unlist()
+names(est_survival) <- colnames
+```
+
 En primer lugar, estudio el impacto de la recepción de e-facturas sobre las salidas de las firmas de los registros tributarios. Para ello cambio la muestra: utilizo un panel de firmas balanceado en el período antes del primer tratamiento, pero permito salidas luego del inicio del tratamiento. Balanceo el panel artificialmente, de forma que las firmas aparezcan en todos los períodos a pesar de su salida. Luego cuantifico el impacto de la recepción de e-facturas sobre la probabilidad de que la firma registre distintos tipos de actividad con la autoridad tributaria. Considero como variables dependientes la probabilidad de que la firma presente el formulario 2148 (asociado al pago de IRAE e IPAT), el formulario 2178 (asociado al pago de IVA), y la probabilidad de que la firma registre un pago de IVA en el período.
 
-La @fig-ext.survival-dynamic muestra los efectos de tratamiento dinámicos para cada una de las variables mencionadas. Ninguno de los coeficientes pre-tratamiento resulta significativo. A su vez, en ningún caso encuentro que los coeficientes pre-tratamiento sean conjuntamente significativos.
+La @fig-ext.survival-dynamic muestra los efectos de tratamiento dinámicos para cada una de las variables mencionadas. Ninguno de los coeficientes pre-tratamiento resulta significativo, y en ningún caso encuentro que los coeficientes pre-tratamiento sean conjuntamente significativos. [^wald-survival]
+
+[^wald-survival]: Los p-valores del test de Wald para la probabilidad de presentar el formulario 2148, el formulario 2178 y de realizar algún pago de IVA son `r est_survival$in214$Wpval`, `r est_survival$in217$Wpval`, y `r est_survival$anyVatPaid$Wpval`, respectivamente.
 
 La @tbl-ext.survival-overall-att formaliza la evidencia gráfica y presenta los efectos agregados de tratamiento sobre cada una de las probabilidades mencionadas. Se observa que la recepción de e-facturas tiene una asociación negativa con la supervivencia (formal) de las firmas, aunque su magnitud es limitada y los efectos son significativos solamente al 10% de confianza. La recepción de e-facturas reduce, en promedio, 0.8 puntos porcentuales la probabilidad de presentar el formulario 2148 y 0.9 puntos porcentuales la probabilidad de presentar el formulario 2178. Por otra parte, no aparecen efectos significativos sobre la probabilidad de que las firmas realicen pagos de IVA.
 
@@ -414,17 +422,25 @@ tbl[c("in214", "in217", "anyVatPaid")] %>%
 
 ### Cambios de franja de renta ficta
 
+```{r read-est-ext.bracket}
+est_bracket <- readRDS(awd("out/analysis/did_yearly_ext.bracket_S1.bal.ctrl.RDS"))
+colnames <- est_bracket |> lapply(\(x) x$DIDparams$yname) |> unlist()
+names(est_bracket) <- colnames
+```
+
 Como ya mencioné, utilizo una muestra de firmas que presentan declaraciones fictas de actividad, en las cuales reportan únicamente sus ingresos. Luego, la DGI adjudica a las firmas una ganancia ficta y aplica sobre esta una tasa de 25% para calcular el IRAE adeudado. Una consecuencia de esto, como se observaba en la subsección anterior, es que este subconjunto de firmas reporta implícitamente ganancias en todos los períodos –y paga IRAE por estos–.
 
 La renta ficta no se calcula de forma lineal. La tasa de rentabilidad ficta varía por tramos de facturación: para las firmas que facturan menos de 2M de UI es de 13.2%, para las que facturan entre 2M y 3M de UI es de 36%, y para las que facturan más de 3M de UI es de 48%. El régimen busca incentivar a las firmas a hacer declaraciones reales de su actividad luego de que superan cierto volumen de facturación.
 
-El diseño, sin embargo, genera saltos discretos importantes en los pagos de las firmas. Para ilustrar, en el márgen, una firma que factura 1:999.999 UI debería pagar 66.000 UI por IRAE, mientras que facturando 2:000.001 UI pasaría a pagar 180.000 UI, casi triplicando su deuda tributaria. Es esperable que las firmas respondan a estos incentivos y la @fig-dens-trunover-fict muestra que lo hacen, concentrando sus declaraciones justo por debajo y por encima del punto de corte de 2M UI. [^bunch_excede]
+El diseño, sin embargo, genera saltos discretos en la deuda tributaria de las firmas. Para ilustrar, en el márgen, una firma que factura 1:999.999 UI debería pagar 66.000 UI por IRAE, mientras que facturando 2:000.001 UI pasaría a pagar 180.000 UI, casi triplicando su deuda tributaria. Es esperable que las firmas respondan a estos incentivos y la @fig-dens-trunover-fict muestra que lo hacen, concentrando sus declaraciones justo por debajo y por encima del punto de corte de 2M UI. [^bunch_excede]
 
-[^bunch_excede]: Si bien podríamos explotar esta discontinuidad con un diseño de *bunching*, hacerlo excede el alcance actual de este trabajo.
+[^bunch_excede]: Si bien podríamos explotar esta discontinuidad con un diseño de *bunching*, excede el alcance actual de este trabajo.
 
-En esta subsección, exploro si la recepción de e-facturas tiene un impacto suficientemente fuerte como para empujar a las firmas a cambiar de tramo de declaración. Primero, presento evidencia que apoye el supuesto de tendencias paralelas en la probabilidad de cambiar de tramo de renta ficta (@fig-ext.bracket-dynamic). Testeo el cambio de tramo con cuatro especificaciones, utilizando (i) la probabilidad de pasar del primer al segundo tramo de renta ficta; (ii) la probabilidad de pasar a un tramo mayor de un período al siguiente; (iii) la probabilidad de pasar a un tramo menor de un período al siguiente; y (iv) la probabilidad de cambiar de tramo, independientemente de si implica una mayor o menor deuda tributaria. Ninguno de los coeficientes pre- ni post- tratamiento es significativamente distinto de cero al 95%.
+En esta subsección, exploro si la recepción de e-facturas tiene un impacto suficientemente fuerte como para empujar a las firmas a cambiar de tramo de declaración. Primero, presento evidencia que apoye el supuesto de tendencias paralelas en la probabilidad de cambiar de tramo de renta ficta (@fig-ext.bracket-dynamic). Testeo el cambio de tramo con cuatro especificaciones, utilizando (i) la probabilidad de pasar del primer al segundo tramo de renta ficta; (ii) la probabilidad de pasar a un tramo mayor de un período al siguiente; (iii) la probabilidad de pasar a un tramo menor de un período al siguiente; y (iv) la probabilidad de cambiar de tramo, independientemente de si implica una mayor o menor deuda tributaria. Ninguno de los coeficientes pre- ni post- tratamiento es significativamente distinto de cero al 95%. A su vez, el test de Wald no rechaza que los coeficientes pre-tratamiento sean conjuntamente iguales a cero en todas las variables analizadas. [^wald-bracket]
 
-La @tbl-ext.bracket-overall-att presenta los efectos de tratamiento agregados. Nuevamente, ninguno de los coeficientes resulta estadísticamente significativo. En otras palabras, la recepción de e-facturas no parece tener un efecto de suficiente magnitud sobre el ingreso reportado como para llevar a las firmas a cambiar de tramo de facturación. El resultado es coherente con lo hallado al analizar el ingreso reportado, ya que tampoco aparecían efectos significativos de la e-factura sobre dicha variable en términos continuos. Considerando, a su vez, la importante variación en la deuda tributaria que implicaría un cambio de tramo, la firma tiene incentivos fuertes para evitar que esto ocurra.
+[^wald-bracket]: Los p-valores del test de Wald son `r est_bracket$bracket1to2$Wpval`, `r est_bracket$bracketShiftUp$Wpval`, `r est_bracket$bracketShiftDown$Wpval`, `r est_bracket$bracketShiftAny$Wpval`.
+
+La @tbl-ext.bracket-overall-att presenta los efectos de tratamiento agregados. La recepción de e-facturas tiene una asociación positiva con cambios a tramos superiores de renta ficta y negativa con el pasaje a tramos inferiores. Sin embargo, la relación es débil y ninguno de los coeficientes resulta estadísticamente significativo. En otras palabras, la recepción de e-facturas no parece tener un efecto de suficiente magnitud sobre el ingreso reportado como para llevar a las firmas a cambiar de tramo de facturación. El resultado es coherente con lo hallado al analizar el ingreso reportado, ya que tampoco aparecían efectos significativos de la e-factura sobre dicha variable en términos continuos. Considerando, a su vez, la importante variación en la deuda tributaria que implicaría un cambio de tramo, la firma tiene incentivos fuertes para evitar que esto ocurra.
 
 ```{r fig-ext.bracket-dynamic}
 #| fig-cap: Efecto dinámico de la recepción de e-factura sobre probabilidad de cambiar de franja de renta ficta.
@@ -471,11 +487,17 @@ tbl %>%
 
 ### Declaración real de actividad
 
+```{r read-est-ext.real}
+est_real <- readRDS(awd("out/analysis/did_yearly_ext.real_S2.bal.ctrl.RDS"))
+colnames <- est_real |> lapply(\(x) x$DIDparams$yname) |> unlist()
+names(est_real) <- colnames
+```
+
 Por último, en esta subsección analizo el impacto de recibir e-facturas sobre la probabilidad de que las firmas pasen a hacer una declaración real de ingresos. El pasaje de un tipo de declaración a otra está relacionado con el diseño escalonado y el salto discreto en la deuda tributaria de las firmas al superar un cierto umbral de facturación cuando realizan una declaración ficta. En tal caso, cambiar el tipo de declaración puede resultar más redituable para las firmas.
 
 Para explorar este margen de respuesta, selecciono una muestra balanceada de firmas que presentaban declaraciones fictas en 2009–2011, y permito que en algún momento después del tratamiento puedan pasar a presentar declaraciones reales. En primer lugar, realizo un test de Wald de significación conjunta de los estimandos pre-tratamiento y no rechazo que sean iguales a cero[^wald-real]. En otras palabras, las firmas tratadas tempranamente y las firmas tratadas tardíamente no diferían en la probabilidad de pasar a realizar declaraciones reales antes de empezar a recibir e-facturas.
 
-[^wald-real]: P-valor del test: 0.97061
+[^wald-real]: P-valor del test: `r est_real$djReal$Wpval`
 
 La @tbl-ext.real-overall-att presenta el efecto agregado sobre la probabilidad de presentar una declaración real. Se observa que la recepción de e-facturas se asocia con un aumento de 1.5 puntos porcentuales en la probabildad de presentar DJ real. Por otro lado, la @fig-ext.real-dynamic muestra los efectos de tratamiento dinámicos respecto al año en que la firma comienza recibir e-facturas. Se observa que el efecto es creciente en el tiempo y se vuelve significativo a partir del segundo año luego de recibir e-facturas.
 
@@ -522,5 +544,6 @@ tbl %>%
   )
 ```
 
-
 ## Robustez
+
+(Pendiente)
