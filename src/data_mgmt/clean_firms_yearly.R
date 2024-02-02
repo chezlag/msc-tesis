@@ -76,7 +76,6 @@ csls <- collap(sls, slsformula, fsum)
 for (v in slsvarlist) csls[, (v) := get(v) * 1e03]
 rm(sls)
 
-
 # Pagos y retenciones de impuestos ---------------------------------------------
 
 message("Processing tax paid and tax retained by third parties.")
@@ -151,10 +150,18 @@ create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
 }
 create_lag_by_group(dt, "year == 2009", "turnoverK", "Turnover2009", "fid")
 create_lag_by_group(dt, "year == 2010", "turnoverK", "Turnover2010", "fid")
+create_lag_by_group(dt, "year == 2009", "activoContableK", "Assets2009", "fid")
+create_lag_by_group(dt, "year == 2010", "activoContableK", "Assets2010", "fid")
+create_lag_by_group(dt, "year == 2009", "patrimonioContableK", "Equity2009", "fid")
+create_lag_by_group(dt, "year == 2010", "patrimonioContableK", "Equity2010", "fid")
 dt[, Scaler1 := (Turnover2009 + Turnover2010) / 2]
 dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2, fid]
+dt[, Scaler3 := (Assets2009 + Assets2010) / 2]
+dt[, Scaler4 := (Equity2009 + Equity2010) / 2]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
+for (v in paste0(varlist, "K")) dt[, (paste0("Scaled3", v)) := get(v) / Scaler3]
+for (v in paste0(varlist, "K")) dt[, (paste0("Scaled4", v)) := get(v) / Scaler4]
 
 # Compras reportadas al inicio del período y en los dos años anteriores
 create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "Purch2009", "fid")
