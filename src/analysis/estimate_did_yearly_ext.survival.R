@@ -53,6 +53,9 @@ dtycj[, sizeQuartile := cut(Scaler1.y, breaks = quartiles, labels = 1:4)]
 quartiles <- dtycj[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dtycj[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
 dtycj[is.na(ageQuartile), ageQuartile := 4] # missing as young
+quartiles <- dtycj[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dtycj[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
+dtycj[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 
 # outcome variable list

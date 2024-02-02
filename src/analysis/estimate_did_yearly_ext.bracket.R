@@ -47,6 +47,9 @@ dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
 quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
 dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
+quartiles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
+dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
+dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # define dependent variables
 dty[, bracket1to2 := djFictInBracket2 & shift(djFictInBracket1)]
