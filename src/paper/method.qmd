@@ -52,18 +52,7 @@ En el Teorema 1 de @callawayDifferenceinDifferencesMultipleTime2021, los autores
 Sea $m_{g,t}^{ny}(X_{i})=\mathbb{E}[Y_{i,t}- Y_{i,g-1}|X_{i}, D_{t}=0, G_{g}=0]$ el *outcome regression* poblacional para el grupo de firma aún no tratadas. Formalmente, el Teorema 1 de @callawayDifferenceinDifferencesMultipleTime2021 señala que, bajo los supuestos mencionados, $ATT(g,t)$ es igual a:
 
 $$
-ATT_{dr}^{ny}(g,t) = \mathbb{E}
-\left[
-  \left(
-    \frac{
-      G_{g}}{\mathbb{E}[G_{g}]} -
-      \frac{
-        \frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}}
-        {\mathbb{E}\left[\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}\right]
-      }
-    (Y_{t}-Y_{g-1}-m^{ny}_{g,t}(X))
-\right)
-\right]
+ATT_{dr}^{ny}(g,t) = \mathbb{E}\left[\left(\frac{G_{g}}{\mathbb{E}[G_{g}]} - \frac{\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}}{\mathbb{E}\left[\frac{p_{g,t}(X)(1-D_{t})1-G_{g}}{1-p_{g,t}(X)}\right]}(Y_{t}-Y_{g-1}-m^{ny}_{g,t}(X))\right)\right]
 $$
 
 

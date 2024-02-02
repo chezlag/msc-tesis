@@ -197,7 +197,7 @@ dty[turnoverMUI < 5 & inSample1 & eventtime %in% c(-1, 1)] |>
 ```
 
 ```{r fig-by.size-dynamic}
-tidy_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S2.bal.base_aggte.dynamic.RDS")) %>%
+tidy_size <- readRDS(paste0(ROOT, "out/analysis/did_yearly_by.size_S1.bal.ctrl_aggte.dynamic.RDS")) %>%
   map(possibly(tidy_did, NULL)) %>%
   reduce(rbind) %>%
   setDT() %>%
@@ -208,7 +208,8 @@ quantlist <- 1:4
 nvars <- tidy_size[, .N, y.name] %>%
   dim() %>%
   .[1]
-tidy_size[term == "ATT (l = 3)", sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
+tidy_size[term == "ATT (l = -3)", sizeQuartile := rep(quantlist, nvars) %>% as_factor()]
+tidy_size[term != "ATT (l = -4)", sizeQuartile := nafill(as.integer(sizeQuartile), type = "locf")]
 tidy_size[, sizeQuartile := nafill(as.integer(sizeQuartile), type = "nocb")]
 tidy_size[, sizeQuartile := fcase(
   sizeQuartile == 1, "Quartile 1",
@@ -217,7 +218,7 @@ tidy_size[, sizeQuartile := fcase(
   sizeQuartile == 4, "Quartile 4"
 )]
 
-varlist <- c("deductPurchases", "taxableTurnover", "vatPaid")
+varlist <- c("deductPurchases", "vatSales", "vatPaid")
 tidy_size[variable %in% varlist & term != "ATT (l = 3)"] %>%
   ggplot(aes(x = event, y = estimate, color = variable)) +
   geom_point(position = position_dodge(width = .5)) +

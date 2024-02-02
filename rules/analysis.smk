@@ -13,7 +13,7 @@ DID_YEARLY = expand(
 DID_YEARLY_BYV = expand(
     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S1.bal.base", "S1.bal.ctrl"]
+    estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"]
 )
 DID_YEARLY_SURV = expand(
     "out/analysis/did_yearly_ext.survival_{estimates}.RDS",
@@ -38,7 +38,7 @@ rule did:
         DID_YEARLY_BCKT,
         DID_YEARLY_REAL
 
-# --- Build rules --- #
+--- Build rules --- #
 
 rule estimate_did_yearly:
     input:

@@ -39,7 +39,7 @@ A pesar de que pueda parecer un número reducido de firmas, sus altos volúmenes
 
 ```{r}
 #| label: fig-adoption
-#| fig-cap: FDA de la fecha de primera emisión (der.) y fecha de primera recepción (izq.)
+#| fig-cap: FDA de la fecha de primera emisión (izq.) y fecha de primera recepción (der.)
 # densidad de la primera adopción
 p1 <- dts %>%
   ggplot() +
