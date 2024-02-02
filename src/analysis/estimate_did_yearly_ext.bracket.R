@@ -13,6 +13,8 @@ date <- "2024-01-15"
 groundhog.library(pkgs, date)
 source("src/lib/cli_parsing_om.R")
 
+set.seed(20240115)
+
 message("Parsing model parameters.")
 message("Sample: ", opt$sample)
 message("Panel: ", opt$panel)

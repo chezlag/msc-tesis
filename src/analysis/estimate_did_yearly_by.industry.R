@@ -12,6 +12,8 @@ pkgs <- c(
 groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_om.R")
 
+set.seed(202401151642)
+
 message("Parsing model parameters.")
 message("Sample: ", opt$sample)
 message("Panel: ", opt$panel)
