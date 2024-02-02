@@ -12,7 +12,7 @@ pkgs <- c(
 groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_om.R")
 
-set.seed(202401151642)
+set.seed(20240115)
 
 message("Parsing model parameters.")
 message("Sample: ", opt$sample)
@@ -55,7 +55,7 @@ dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 # outcome variable list
 stubnames <- c(
   "deductPurchases",
-  "taxableTurnover",
+  "Revenue",
   "vatPurchases",
   "vatSales",
   "vatPaid"
@@ -82,7 +82,7 @@ industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "
 
 # replace sector with ind_code_2d if spec == ctrl
 if (grepl("ctrl", opt$spec)) {
-  params$formula <- "~ sizeQuartile + ageQuartile"
+  params$formula <- "~ sizeQuartile + ageQuartile + assetsQuartile"
 }
 
 # Estimate --------------------------------------------------------------------
@@ -114,7 +114,8 @@ simple <- ddlist %>%
     aggte(x,
           type = "simple",
           clustervars = "fid",
-          bstrap = TRUE)
+          bstrap = TRUE,
+          na.rm = TRUE)
   }))
 
 message("Estimating dynamic ATT.")
@@ -123,7 +124,8 @@ dynamic <- ddlist %>%
     aggte(x,
           type = "dynamic",
           clustervars = "fid",
-          bstrap = TRUE)
+          bstrap = TRUE,
+          na.rm = TRUE)
   }))
 
 # Output ----------------------------------------------------------------------
