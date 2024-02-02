@@ -13,7 +13,9 @@ source("src/lib/stata_helpers.R")
 
 message("Processing corporate income tax affidavits and balance sheets.")
 
-bal <- read_fst("src/data/dgi_firmas/out/data/balances_allF_allY.fst", as.data.table = TRUE)
+bal <-
+  read_fst("src/data/dgi_firmas/out/data/balances_allF_allY.fst",
+           as.data.table = TRUE)
 
 bal[, turnover := ventas]
 
@@ -34,7 +36,15 @@ bal[, CorpTaxDue := fcase(
 bal[irae > CorpTaxDue, CorpTaxDue := CorpTaxDue + 1]
 
 idvars <- c("fid", "year")
-balvarlist <- c("turnover", "Revenue", "Cost", "Profit", "CorpTaxDue")
+balvarlist <-
+  c("turnover",
+    "Revenue",
+    "Cost",
+    "Profit",
+    "CorpTaxDue",
+    "deduccFict",
+    "activoContable",
+    "patrimonioContable")
 balformula <- arsenal::formulize(balvarlist, idvars)
 cbal <- collap(bal, balformula, fsum) |>
   merge(bal[, .(djFict = fmax(djFict) |> as.logical()), by = idvars])
@@ -44,15 +54,24 @@ rm(bal)
 
 message("Processing VAT affidavits and taxable sales/purchases.")
 
-sls <- read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst", as.data.table = TRUE)
+sls <-
+  read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst",
+           as.data.table = TRUE)
 
 slsvarlist <- c(
-  "vatSales", "vatPurchases", "vatDue", "vatDueV2", "vatLiability", "turnoverNetOfTax",
-  "taxableTurnover", "deductPurchases", "vatDeductions"
+  "vatSales",
+  "vatPurchases",
+  "vatDue",
+  "vatDueV2",
+  "vatLiability",
+  "turnoverNetOfTax",
+  "taxableTurnover",
+  "deductPurchases",
+  "vatDeductions"
 )
 slsformula <- arsenal::formulize(slsvarlist, idvars)
 
-for (v in slsvarlist) sls[, (v) := get(v) / 1e03] # to avoid int overflow in collap()
+for (v in slsvarlist) sls[, (v) := get(v) / 1e03] # avoid int overflow in collap
 csls <- collap(sls, slsformula, fsum)
 for (v in slsvarlist) csls[, (v) := get(v) * 1e03]
 rm(sls)
@@ -62,13 +81,15 @@ rm(sls)
 
 message("Processing tax paid and tax retained by third parties.")
 
-tax <- read_fst("src/data/dgi_firmas/out/data/tax_paid_retained.fst", as.data.table = TRUE)
+tax <-
+  read_fst("src/data/dgi_firmas/out/data/tax_paid_retained.fst",
+           as.data.table = TRUE)
 tax[, year := lubridate::year(date)]
 
 taxvarlist <- grep("Paid$|Retained$", names(tax), value = TRUE)
 taxformula <- arsenal::formulize(taxvarlist, idvars)
 
-for (v in taxvarlist) tax[, (v) := get(v) / 1e03] # to avoid int overflow in collap()
+for (v in taxvarlist) tax[, (v) := get(v) / 1e03] # avoid int overflow in collap
 ctax <- collap(tax, taxformula, fsum)
 for (v in taxvarlist) ctax[, (v) := get(v) * 1e03]
 rm(tax)
@@ -109,7 +130,9 @@ message("Defining new variables.")
 
 # Deflacto y paso a Millones de UI
 cfevarlist <- c(
-  "grossAmountReceived", "netAmountReceived", "grossAmountEmitted",
+  "grossAmountReceived",
+  "netAmountReceived",
+  "grossAmountEmitted",
   "netAmountEmitted"
 )
 varlist <- c(balvarlist, slsvarlist, taxvarlist, cfevarlist)
@@ -126,17 +149,17 @@ create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
   dt[eval(parse(text = condition)), (newvarname) := get(oldvarname)]
   dt[, (newvarname) := fmax(get(newvarname)), by = idvars]
 }
-create_lag_by_group(dt, "year == 2009", "turnoverK", "TempTurnover2009", "fid")
-create_lag_by_group(dt, "year == 2010", "turnoverK", "TempTurnover2010", "fid")
-dt[, Scaler1 := (TempTurnover2009 + TempTurnover2010) / 2]
+create_lag_by_group(dt, "year == 2009", "turnoverK", "Turnover2009", "fid")
+create_lag_by_group(dt, "year == 2010", "turnoverK", "Turnover2010", "fid")
+dt[, Scaler1 := (Turnover2009 + Turnover2010) / 2]
 dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2, fid]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
 
 # Compras reportadas al inicio del período y en los dos años anteriores
-create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "TempPurchases2009", "fid")
-create_lag_by_group(dt, "year == 2010", "deductPurchasesK", "TempPurchases2010", "fid")
-dt[, Purch1 := (TempPurchases2009 + TempPurchases2010) / 2]
+create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "Purch2009", "fid")
+create_lag_by_group(dt, "year == 2010", "deductPurchasesK", "Purch2010", "fid")
+dt[, Purch1 := (Purch2009 + Purch2010) / 2]
 dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2, fid]
 
 # Franjas de facturación en MUI
