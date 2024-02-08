@@ -1,21 +1,59 @@
-# Revisión bibliográfica
+# Revisión bibliográfica y contribución a la literatura
 
-Esta tesis se enmarca en varias discusiones actuales de la literatura sobre cumplimiento tributario. 
+## ¿Por qué es relevante la evasión?
 
-En primer lugar, busca dialogar con los trabajos que estudian respuestas a la evasión tributaria desde las políticas públicas [ver reseña de @slemrodTaxComplianceEnforcement2019]. 
+La evasión[^noncomp] de impuestos es un problema crucial en el diseño de sistemas impositivos, en tanto afecta el costo de recaudar impuestos y la distribución de la carga impositiva. Por lo tanto, tiene consecuencias específicas a la hora de evaluar la equidad y la eficiencia de cualquier diseño tributario.
 
-- Relevancia de la información reportada por terceros para apuntalar el cumplimiento tributario. 
-    - Contribuyentes individuales 
-    - Firmas. Teórico y empírico.
-- Impacto de la probabilidad de auditoría sobre cumplimiento tributario – e-facturas crean un registro que permite detectar incumplimientos con mayor facilidad, lo cual se traduce en un mayor riesgo de auditoría. 
+Primero, la evasión puede impactar en la equidad horizontal y vertical de un sistema tributario. Por un lado, no todas las personas evaden en igual medida, ya sea por diferencias en sus características –disposición hacia el riesgo, honestidad– o por contar con diferentes oportunidades para evadir. En tal caso, la evasión puede traer problemas de *equidad horizontal*, donde dos personas con ingresos similares pueden enfrentar una carga impositiva dispar [@slemrodCheatingOurselvesEconomics2007]. Por otro lado, la fiscalización de la evasión puede traer *inequidad vertical*, si la autoridad tributaria pusiera su ojo auditor con desproporcionada frecuencia sobre los contribuyentes de menores ingresos por un menor costo de fiscalización. En la práctica, esto se traduciría en una mayor permisividad con los comportamientos elusivos de los contribuyentes de mayores ingresos, en tanto el contralor de este segmento sea más costoso y/o complejo de efectivizar. A su vez, si la evasión está sistemáticamente correlacionada con el ingreso, los análisis de incidencia basados únicamente en las tasas y bases impositivas vigentes pueden no reflejar la verdadera progresividad de un determinado sistema tributario [@slemrodTaxAvoidanceEvasion2002].
 
-- Tecnologías digitales
+Segundo, la evasión de impuestos acarrea *costos de eficiencia* propios que deben incorporarse en la evaluación del sistema tributario. En un análisis tradicional, los costos de eficiencia de los impuestos se deben a cambios en los precios relativos, que llevan a los agentes a decisiones ineficientes. La evasión de impuestos supone distorsiones específicas a la producción, volviendo más rentables ciertas actividades o formas de empleo que presenten mayores oportunidades de evasión. Es así que el empleo por cuenta propia puede ser ineficientemente preferido al empleo asalariado [@pestieauTaxEvasionOccupational1991] y ciertos sectores de actividad donde es más sencillo evadir pueden ser ineficientemente grandes [@skinnerEconomicPerspectiveTax1985; @slemrodTaxComplianceEnforcement2019]. Por otra parte, la evasión acarrea gastos específicos de recursos que también deben ser considerados. En esta categoría, @slemrodTaxAvoidanceEvasion2002 destacan los costos de administración, los costos de cumplimiento –tanto públicos como privados, incluyendo las retenciones de impuestos ajenos y el reporte de información de terceros–, los costos incurridos para evadir, y la mayor exposición al riesgo de los contribuyentes que evaden. 
 
+Tercero, la evasión puede modificar las políticas tributarias óptimas. 
+En primer lugar, ponen de relieve *nuevos instrumentos de política* con niveles óptimos a explorar. Estos incluyen, por ejemplo, la cobertura de las auditorías y la magnitud de las penalidades por incumplimiento [@slemrodTaxAvoidanceEvasion2002]. En segundo lugar, contemplar el costo marginal de eficiencia de la evasión puede redefinir las *tasas y nivel de progresividad óptimos* de los impuestos. A su vez, también puede modificar la *base impositiva óptima*, en tanto las alternativas difieran en sus oportunidades de evasión [@slemrodTaxComplianceEnforcement2019].
+
+## Evasión y desarrollo económico
+
+Toda esta discusión es especialmente relevante para el diseño de sistemas impositivos en países en desarrollo. 
+
+@besleyWhyDevelopingCountries2014 diseccionan por qué la teoría clásica de imposición óptima tiene problemas para aplicarse a países en desarrollo. Señalan factores económicos, sociales, culturales y políticos. Coevolución. 
+
+## Nuevas tecnologías y cumplimiento tributario
+
+Las nuevas tecnologías suponen 
+
+
+
+
+
+
+## ¿Por qué hay evasión?
+
+El primer abordaje a la evasión de impuestos desde la economía fue a partir de los costos y beneficios privados de la evasión. El modelo canónico de @allinghamIncomeTaxEvasion1972 adapta el modelo de crimen de @beckerCrimePunishmentEconomic1968 al incumplimiento tributario. Esencialmente, el agente se aproxima a la decisión de evadir como una apuesta contra la administración tributaria. La decisión de evadir o no depende de la aversión al riesgo individual y del contexto de decisión –la probabilidad de detección/auditoría y la penalización por incumplimiento–. 
+
+El modelo canónico predice niveles de evasión muy superiores a los observados en estimaciones empíricas, lo cual sugiere que el modelo omite factores relevantes para la decisión de evasión. Varios autores han señalado que la divergencia de la realidad respecto al modelo puede explicarse a partir de factores culturales o psicológicos del cumplimiento tributario, tales como las normas sociales, patriotismo, "moral tributaria", o culpa o vergüenza [por ejemplo, ver @andreoniTaxCompliance1998]. 
+
+Aunque sin duda los factores culturales y psicológicos juegan un rol, literatura reciente ha puesto el ojo en otro aspecto que el modelo canónico deja fuera: el contexto informacional en el cual los agentes toman la decisión de evadir. En particular, estudios recientes destacan que la información reportada por terceros es central para asegurar el cumplimiento tributario.
+
+## Evasión de impuestos con información reportada por terceros
+
+En los últimos años se ha jerarquizado el rol de la información reportada por terceros en el cumplimiento tributario. 
+
+
+
+@klevenUnwillingUnableCheat2011 expanden el modelo canónico de evasión para incorporar la distinción entre el ingreso reportado por terceros y el ingreso autorreportado en la declaración. Argumentan que la probabilidad de detección varía de acuerdo a la forma en que el ingreso es reportado a la autoridad tributaria. Por ejemplo, sería muy riesgoso subdeclarar el ingreso laboral si este fuera reportado directamente por la empresa empleadora a la autoridad tributaria, ya que ésta puede contrastar lo declarado de forma simple y poco costosa. Por el contrario, verificar el ingreso autorreportado por trabajo independiente puede ser muy complicado para la autoridad monetaria sin incurrir en auditorías costosas. @klevenUnwillingUnableCheat2011 testean su modelo en el caso danés y encuentran evidencia que apoya sus hipótesis, a saber: tasas de evasión globales bajas (2.2%) conviven con fuertes heterogeneidades, con contribuyentes declaran los items reportados por terceros y subdeclaran casi la totalidad de su ingreso autorreportado. @klevenWhyCanModern2016 enfatizan que la posibilidad de verificar información declarada por los contribuyentes con otras fuentes de información es un factor clave para explicar por qué los gobiernos en las economías avanzadas son capaces de fijar impuestos tan altos. 
+
+Múltiples estudios empíricos han destacado la importancia del ingreso reportado por terceros para explicar la evasión de las firmas. @pomeranzNoTaxationInformation2015 hace un RCT con más de 400.000 firmas en Chile y encuentra que al recibir comunicación de que la autoridad tributaria encuentra discrepancias en estos ítems verificados por terceros, las firmas incrementaron el valor agregado reportado. El resultado venía impulsado por un aumento en el reporte de las ventas a consumidores finales, que tienen un menor rastro de papel que las transacciones entre firmas. @carrilloDodgingTaxmanFirm2017 estudian la respuesta de firmas ecuatorianas ante la notificación de que la autoridad tributaria encuentró discrepancias entre su ingreso reportado y otras fuentes de información. Los autores destacan que la efectividad de las fuentes de información reportadas por terceros para lograr cumplimiento puede verse mermada en contextos de baja capacidad institucional por la dificultad de las autoridades tributarias de hacer amenazas creíbles; y por el ajuste de las firmas en otros márgenes. Por su parte, @adhikariSmallBusinessTax2021 estudian un aumento a la verificación de las compras con tarjetas de crédito en PyMEs de Estados Unidos. Encuentran que las zonas con mayor utilización de tarjetas de crédito, y por lo tanto más expuestas al reporte de terceros, encuentran mayores aumentos de los ingresos reportados a la autoridad tributaria. 
 
 ## Literatura relacionada
 
-Hay una serie de trabajos que también realizan evaluaciones de sistemas de facturación electrónica. Bellon, Fan et al., Eissa et al.
+Hay una serie de trabajos que estudian específicamente los efectos de los sistemas de facturación electrónica sobre los comportamientos de las firmas. Sin embargo, los trabajos reseñados se centran en el impacto de la *emisión* de e-facturas y no analizan los potenciales efectos de la *recepción* de e-facturas.
 
-Para Uruguay, Bérgolo et al. ...
+@bellonDigitalizationImproveTax2022 estudian el efecto de la emisión de e-facturas en Perú. Explotan la variación cuasi-experimental producto del calendario de adopción obligatoria de la emisión de e-facturas, empleando un diseño de diferencias en diferencias con tratamiento escalonado. Encuentran que las firmas aumentan ventas y compras declaradas en 7.4 y 5.5% respectivamente en el año posterior a la adopción, y que el efecto es creciente en el año. En el cuarto trimestre después de la reforma las ventas y compras declaradas habían aumentado 15% y 11% respectivamente. La respuesta se explica por cambios comportamentales en las empresas que más evadían antes de la implementación: al analizar por tamaño de firma, encuentran que las PyMEs explican casi la totalidad del efecto encontrado; y encuentran respuestas mucho más fuertes en los sectores con mayores brechas de cumplimiento previas.
+
+@fanDynamicEffectsComputerizing2023 
+
+@eissaEvaluationElectronicBilling2015 
+
+@bergoloFacturaElectronicaCumplimiento2018 estudiaron los efectos de la facturación electrónica sobre los comportamientos evasivos de las firmas uruguayas. Aplican una metodología de estudio de eventos explotando la variación en el momento de adopción de la facturación electrónica entre firmas. A pesar de que el nuevo régimen entró en vigencia en 2012, no fue sino hasta 2015 que se anunciaron fechas preceptivas para la incorporación de las firmas al mismo. Sus datos cubren el período 2010–2016 y de acuerdo con el calendario anunciado (ver Cuadro 1) solo alcanzan a ver la adopción de las firmas de mayor porte y sus respuestas en los seis meses posteriores. Encuentran que los pagos y retenciones del Impuesto al Valor Agregado (IVA) aumentan 3,7% en los seis meses posteriores al ingreso al régimen de facturación electrónica. 
 
 Todos los trabajos mencionados analizan los efectos de emitir comprobantes electrónicos. Sin embargo, en ninguno de los trabajos mencionados se analiza que sucede con las firmas que reciben dichos comprobantes.
