@@ -107,6 +107,7 @@ ddlist <-
            cores = 8
          )
        }))
+names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
