@@ -17,9 +17,9 @@ dts <-
   .[samples[(activeBusinessAnyT)], on = "fid"]
 ```
 
-## Impuestos a las empresas en Uruguay
+## Impuestos en Uruguay
 
-La Dirección General Impositiva (DGI) recauda por impuestos cerca de 19% del PIB (2019). El IVA representa cerca del 50% de la recaudación. La DGI (2013) estimaba que la tasa de evasión de IVA en 2012 era cercana al 13%. Es una tasa de evasión baja para la región [^vatGapLAC] y comparable a las estimadas para algunos países desarrollados. [^vatGapEU] 
+La Dirección General Impositiva (DGI) recauda por impuestos cerca de 19% del PIB (2019). El IVA representa cerca del 50% de la recaudación. La DGI (2013) estimaba que la tasa de evasión de IVA en 2012 era cercana al 13%. Es una tasa de evasión baja para la región [^vatGapLAC] y comparable a las estimadas para algunos países desarrollados[^vatGapEU].
 
 [^vatGapLAC]: @gomezsabainiTaxStructureTax2012, 34-36 estimaban que la brecha de cumplimiento del IVA en América Latina era en promedio 25,9% en 2006, variando desde 11,0% en Chile hasta 38,1% en Nicaragua. La brecha estimada para Uruguay en 2006 era de 26,3%, muy cercana a la media regional del momento. 
 
@@ -31,11 +31,13 @@ Además del IVA, las empresas están sujetas a distintos impuestos de acuerdo a 
 
 La facturación electrónica involucra la emisión de comprobantes digitales que documentan las operaciones comerciales de una firma. Desde la perspectiva de la administración tributaria, la tecnología permite un acceso a información tributaria prácticamente en tiempo real, lo cual permite hacer mejores proyecciones de recaudación, comprender mejor la dinámica de la actividad de las firmas, y automatizar procesos de control y fiscalización. La política también tiene beneficios para los contribuyentes, en tanto reduce los costos de cumplimiento y puede mejorar la eficiencia a partir de la reducción de costos operativos y a las ganancias de potenciales procesos de automatización e integración entre firmas.
 
-La facturación electrónica comienza en Uruguay en el año 2012. Desde ese momento pueden ingresar al régmien las empresas que así lo soliciten. El régimen contempla la inclusión de documentación de operaciones entre contribuyentes (e-facturas) y de operaciones con consumidores finales (e-tickets). En 2015 se establece un calendario de inclusión preceptiva en el régimen de facturación electrónica. Se incluyen ocho fechas límite para la inclusión, delimitadas en base al volumen de facturación de las empresas en 2014.
+La facturación electrónica comienza a implementarse en Uruguay en el año 2012. Desde ese momento, las firmas que así lo elijan pueden convertirse voluntariamente en emisoras de comprobantes electrónicos. La política contempla la emisión de comprobantes documentando operaciones entre contribuyentes (e-facturas) y de operaciones con consumidores finales (e-tickets). En 2015 se establece un calendario de adopción preceptiva de la emisión de comprobantes electrónicos, con ocho fechas límite para la inclusión, delimitadas en base al volumen de facturación de las empresas en 2014.
 
-Dada la disponibilidad de datos para este trabajo contamos únicamente con información hasta fines de 2016. En dicho período, solo las firmas con más de 30 millones de UI de facturación anual estaban mandatadas a entrar al régimen de facturación electrónica. A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica. El lado derecho de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo.
+La información de la que dispongo para este trabajo cubre hasta fines de 2016. En dicho período, solamente las firmas con más de 30 millones de UI de facturación anual[^context-3] habían sido mandatadas a entrar al régimen de facturación electrónica. A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica. El lado derecho de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo.
 
-A pesar de que pueda parecer un número reducido de firmas, sus altos volúmenes de facturación resultaron en que un gran número de firmas recibieran alguna factura electrónica en relativamente poco tiempo. El lado izquierdo de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las firmas en Uruguay había recibido algún tipo de factura electrónica.
+[^context-3]: Equivalente en ese momento a 3.3 millones de USD de facturación anual.
+
+A pesar de tratarse de un número reducido de firmas emisoras, quizás por sus altos volúmenes de facturación, la política resultó en que una proporción sustancial de las firmas uruguayas recibieran alguna factura electrónica en relativamente poco tiempo. El lado derecho de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las firmas en Uruguay había recibido algún tipo de comprobante electrónica.
 
 ```{r}
 #| label: fig-adoption
