@@ -14,9 +14,9 @@ book:
   date: "2024-01"
   chapters:
     - index.qmd
-    - intro0.qmd
+    - intro.qmd
     - context.qmd
-    - lit_review0.qmd
+    - lit_review.qmd
     - hypotheses.qmd
     - method.qmd
     - data.qmd
