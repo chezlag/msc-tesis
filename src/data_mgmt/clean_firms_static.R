@@ -35,6 +35,11 @@ dt[, emittedAnyT := !is.na(dateFirstEmission)]
 dt[, yearFirstReception := fifelse(!is.na(dateFirstReception), year(dateFirstReception), Inf)]
 dt[, yearFirstEmission := fifelse(!is.na(dateFirstEmission), year(dateFirstEmission), Inf)]
 
+dt[, quarterFirstReception := floor_date(dateFirstReception, unit = "quarter")]
+dt[is.na(quarterFirstReception), quarterFirstReception := Inf]
+dt[, quarterFirstEmission := floor_date(dateFirstEmission, unit = "quarter")]
+dt[is.na(quarterFirstEmission), quarterFirstEmission := Inf]
+
 dt[, neverTreated := is.na(dateFirstReception)]
 
 dt[, sector := fcase(
