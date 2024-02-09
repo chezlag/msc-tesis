@@ -91,3 +91,16 @@ rule fill_firms_yearly:
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"
 
+rule clean_firms_quarterly:
+    input:
+        script = "src/data_mgmt/" + "clean_firms_quarterly.R",
+        data_cfe = "out/data/eticket_yearly.fst",
+        data_static = "out/data/firms_static.fst",
+        data_yearly = "out/data/firms_yearly.fst"
+    output:
+        data = "out/data/" + "firms_quarterly.fst"
+    log:
+        "logs/data_mgmt/" + "clean_firms_quarterly.Rout"
+    threads: 16
+    shell:
+        "{runR} {input.script} -o {output.data} > {log} {logAll}"
