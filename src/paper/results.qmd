@@ -40,18 +40,6 @@ main_est_list <-
   map(readRDS)
 # assign names
 names(main_est_list) <- estname
-stubnames <- c(
-  "deductPurchases",
-  "Revenue",
-  "vatPurchases",
-  "vatSales",
-  "vatPaid"
-)
-varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0("Scaled2", stubnames, "K")
-)
-main_est_list <- map(main_est_list, \(x) set_names(x, varlist))
 
 # read simple overall att
 filelist <- estname %>% paste0(ROOT, "out/analysis/did_yearly_", ., "_aggte.simple.RDS")
