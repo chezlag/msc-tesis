@@ -17,8 +17,9 @@ source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
 est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
+att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
 
-tidy <- 
+tidy <-
   readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.dynamic.RDS") |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
@@ -29,7 +30,7 @@ yvar <- "Scaled1vatPaidK"
 
 tidy[y.name == yvar] %>%
   .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
-  ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
+  ggplot(aes(x = event, y = estimate, color = treat)) +
   geom_point(size = 2) +
   geom_rect(
     aes(
@@ -44,7 +45,7 @@ tidy[y.name == yvar] %>%
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_x_continuous(breaks = -3:2) +
-  scale_y_continuous(labels = scales::dollar_format()) + 
+  scale_y_continuous(labels = scales::dollar_format()) +
   scale_color_startrek() +
   scale_fill_startrek() +
   labs(

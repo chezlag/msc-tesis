@@ -26,6 +26,7 @@ tidy <-
   .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
 
 est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
+att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
 
 yvar <- "Scaled1vatPurchasesK"
 
@@ -53,8 +54,11 @@ tidy[y.name == yvar] %>%
   scale_fill_startrek() +
   labs(
     x = "Años desde el tratamiento", y = "IVA Compras",
-    caption = paste0("p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3))
+    caption = paste0(
+      "p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3), "\n",
+      "Overall ATT: ", round(att[[yvar]]$overall.att, 3), "**" # sig al 5%
+    )
   ) +
   theme(legend.position = "none")
 
-ggsave("out/figures/did_main_vatPurchases.png", width = 170, height = 100, units = "mm")
+ggsave("out/figures/did_main_vatPurchases.png", width = 85, height = 100, units = "mm")

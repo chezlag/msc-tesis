@@ -4,7 +4,7 @@
 
 # --- Dictionaries --- #
 
-PLOTS = glob.glob("src/figures/" + "*.R")
+PLOTS = glob_wildcards("src/figures/" + "{fname}.R").fname
 
 # --- Target rules --- #
 
