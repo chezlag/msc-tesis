@@ -144,18 +144,14 @@ Defino el tratamiento de forma binaria y absorbente. Tomo el **año donde la fir
 
 **Adopción del tratamiento.** La emisión de comprobantes electrónicos comienza en 2012, con unas pocas empresas piloto de gran tamaño: a fines de 2016 solo `r dts[(emittedAnyT), .N]` firmas habían adoptado la emisión de comprobantes electrónicos. No obstante, las firmas emisoras, ya por su volumen de facturación o por su localización en la red productiva, alcanzaron a establecer relaciones comerciales con una parte sustancial de las firmas uruguayas. En la muestra principal de este trabajo, solo `r round(100 * dts[(inSample1), fmean(neverTreated)], digits = 1)`% de las firmas llega a 2016 sin haber recibido algún comprobante electrónico. La @fig-adoption-inSample presenta la FDA de la primera recepción, contrastando el universo de firmas con la muestra. Se observa que la adopción se extiende más rápido en la muestra: para principios de 2015 el 80% de la firmas de la muestra había recibido alguna e-factura.
 
-```{r fig-adoption-inSample}
-#| fig-cap: FDA de la fecha de primera recepción. Todas las firmas y muestra.
-dalt <- dts[, dateFirstReception := fifelse(is.na(dateFirstReception), ymd("2020-12-12"), dateFirstReception)] %>%
-  .[, .(fid, inSample1, dateFirstReception)]
-dfig <- rbind(dalt[, color := "All firms"], dalt[(inSample1), color := "In sample"])
-dfig %>%
-  ggplot(aes(color = color)) +
-  stat_ecdf(aes(dateFirstReception), geom = "step") +
-  coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
-  scale_color_aaas() +
-  labs(color = NULL)
-```
+::: {#fig-adoption-inSample}
+
+![](../../out/figures/takeup_sample.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas. Se distingue entre el universo de empresas en los microdatos de DGI (línea roja) y en la muestra principal de análisis (línea azul). La muestra principal consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016. En los análisis que siguen se excluye al 10% de firmas que no reciben ninguna e-factura en el período de análisis, dado que no constituyen un grupo de control comparable al resto de las firmas en la muestra.
+
+Función de distribución acumulada de la fecha de primera recepción de e-facturas.
+:::
 
 
 ```{r fig-adoption-by.size, include=FALSE}

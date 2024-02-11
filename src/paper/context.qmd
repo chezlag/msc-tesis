@@ -39,20 +39,11 @@ La información de la que dispongo para este trabajo cubre hasta fines de 2016. 
 
 A pesar de tratarse de un número reducido de firmas emisoras, quizás por sus altos volúmenes de facturación, la política resultó en que una proporción sustancial de las firmas uruguayas recibieran alguna factura electrónica en relativamente poco tiempo. El lado derecho de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las firmas en Uruguay había recibido algún tipo de comprobante electrónica.
 
-```{r}
-#| label: fig-adoption
-#| fig-cap: FDA de la fecha de primera emisión (izq.) y fecha de primera recepción (der.)
-# densidad de la primera adopción
-p1 <- dts %>%
-  ggplot() +
-  stat_bin(aes(dateFirstEmission, y = cumsum(..count..)), geom = "step")
-# densidad de la primera recepción
-dts[is.na(dateFirstReception), dateFirstReception := lubridate::ymd("2020-01-01")]
-p2 <- dts %>%
-  ggplot() +
-  stat_ecdf(aes(dateFirstReception), geom = "step") +
-  coord_cartesian(xlim = c(lubridate::ymd("2012-01-01"), lubridate::ymd("2016-12-31")))
-# stat_bin(aes(dateFirstReception, y = cumsum(..count..)), geom = "step")
-# combino en figura única (patchwork::)
-p1 | p2
-```
+::: {#fig-adoption}
+
+![](../../out/figures/takeup.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI.
+
+Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
+:::
