@@ -23,9 +23,9 @@ book:
     - results.qmd
     - closing_remarks.qmd
     - references.qmd
-  appendices:
-    - appendix_analysis.qmd
-    - appendix_data.qmd
+  # appendices:
+  #   - appendix_analysis.qmd
+  #   - appendix_data.qmd
 
 bibliography: references.bib
 
@@ -54,16 +54,17 @@ format:
     documentclass: scrreprt
     papersize: a4
     geometry:
-      - inner=3cm
-      - outer=4cm
-      - top=3cm
-      - bottom=4cm
+      - inner=2.5cm
+      - outer=2.5cm
+      - top=2.5cm
+      - bottom=3cm
       - headsep=22pt
       - headheight=11pt
       - footskip=33pt
       - ignorehead
       - ignorefoot
       - heightrounded
+    fig-cap-location: top
     template-partials:
       - before-body.tex
     include-in-header:
