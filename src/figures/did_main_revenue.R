@@ -17,6 +17,7 @@ source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
 est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
+att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
 
 tidy <- 
   readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.dynamic.RDS") |>
@@ -49,7 +50,10 @@ tidy[y.name == yvar] %>%
   scale_fill_startrek() +
   labs(
     x = "Años desde el tratamiento", y = "Ventas reportadas",
-    caption = paste0("p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3))
+    caption = paste0(
+      "p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3), "\n",
+      "Overall ATT: ", round(att[[yvar]]$overall.att, 3)
+    )
   ) +
   theme(legend.position = "none")
 

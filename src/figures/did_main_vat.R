@@ -49,7 +49,10 @@ tidy[y.name == yvar] %>%
   scale_fill_startrek() +
   labs(
     x = "Años desde el tratamiento", y = "Pagos de IVA",
-    caption = paste0("p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3))
+    caption = paste0(
+      "p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3), "\n",
+      "Overall ATT: ", round(att[[yvar]]$overall.att, 3), "***"
+    )
   ) +
   theme(legend.position = "none")
 
