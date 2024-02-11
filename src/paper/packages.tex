@@ -14,3 +14,7 @@
 \usepackage[T1]{fontenc}
 \let\oldstylenums\oldstyle
 \addtokomafont{disposition}{\rmfamily}
+% Continuous numbering across chapters
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\counterwithout{footnote}{chapter}
