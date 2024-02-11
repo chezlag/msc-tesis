@@ -4,20 +4,30 @@ Analizo el impacto de la recepción de facturas electrónicas sobre distintos de
 
 Avances recientes en la literatura de diferencias en diferencias sugieren que la estrategia tradicional de estimación con efectos fijos bidireccionales puede presentar sesgos si los efectos de tratamiento son heterogéneos en el tiempo y entre cohortes de tratamiento [@callawayDifferenceinDifferencesMultipleTime2021; @dechaisemartinTwoWayFixedEffects2020]. Se han desarrollado tests para medir la gravedad del problema [@goodman-baconDifferenceindifferencesVariationTreatment2021] y métodos alternativos de estimación que eluden el problema [@dechaisemartinTwoWayFixedEffects2020; @sunEstimatingDynamicTreatment2021; @callawayDifferenceinDifferencesMultipleTime2021; @borusyakRevisitingEventStudy2022]. En este trabajo, sigo la estrategia de @callawayDifferenceinDifferencesMultipleTime2021 . Este método tiene la ventaja de permitir heterogeneidad arbitraria en el efecto de tratamiento respecto al tiempo desde el inicio del tratamiento y entre cohortes; y admite el uso de covariables en la especificación.
 
-Siguiendo la notación de los autores, denoto por $G_{g}$ al grupo de firmas que comenzaron a recibir e-facturas en el período $g$; $t$ al tiempo y $e$ al tiempo-desde-el-evento. En otras palabras, $e = t-g$ señala el tiempo transcurrido desde el inicio del tratamiento. Mi parámetro de interés es
+Siguiendo la notación de los autores, denoto por $G_{g}$ al grupo de firmas que comenzaron a recibir e-facturas en el período $g$; $t$ al tiempo y $e$ al tiempo-desde-el-evento. En otras palabras, $e = t-g$ señala el tiempo transcurrido desde el inicio del tratamiento. Mi primer parámetro de interés es
 
-$$\theta(e) = \sum_{g\in\mathcal{G}}\ \mathbb{1}\{g+e \leq \mathcal{T}\} \cdot \mathbb{P}(G_{g}=1|g+e\leq \mathcal{T}) \cdot ATT(g, g+e)$$
+$$
+\theta_{es}(e) = \sum_{g\in\mathcal{G}}\ \mathbb{1}\{g+e \leq \mathcal{T}\} \cdot \mathbb{P}(G_{g}=1|g+e\leq \mathcal{T}) \cdot ATT(g, g+e)
+$$
 
 donde 
 
-$$ATT(g,t) = \mathbb{E}[Y_{t}(g)-Y_{t}(\infty)|G_{g}=1]$$
+$$
+ATT(g,t) = \mathbb{E}[Y_{t}(g)-Y_{t}(\infty)|G_{g}=1]
+$$
 
 y $\mathbb{P}(G_{g}=1|g+e\leq \mathcal{T})$ señala la probabilidad de comenzar a recibir e-facturas en el período $g$.
 
-Por lo tanto, $\theta(e)$ es el efecto promedio de recibir e-facturas $e$ períodos después de iniciado el tratamiento, para todas las firmas que recibieron e-facturas por al menos $e$ períodos. El supuesto de identificación central es que las firmas tratadas y el grupo de control habrían evolucionado en paralelo en ausencia de facturación electrónica. 
+Por lo tanto, $\theta_{es}(e)$ es el efecto promedio de recibir e-facturas $e$ períodos después de iniciado el tratamiento, para todas las firmas que recibieron e-facturas por al menos $e$ períodos. Este parámetro es equivalente al parámetro de estudio de eventos, evitando las limitaciones señaladas. El supuesto de identificación central es que las firmas tratadas y el grupo de control habrían evolucionado en paralelo en ausencia de facturación electrónica. 
 
-El método contempla dos potenciales grupos de control: las firmas que nunca reciben tratamiento y las firmas que aún no lo han recibido en el período para el que se estima el efecto de tratamiento. Si bien sería ideal realizar las estimaciones utilizando a las firmas que no reciben e-facturas en el período como control, se trata de un grupo muy reducido con características sustancialmente distintas a las del grupo que si recibe alguna e-factura. Por ejemplo, la @fig-dens-turnover-nevertreated muestra como las firmas que en 2016 no habían recibido e-facturas presentan una distribución de la facturación poco comparable con el resto de la muestra. Por estas razones –tamaño del grupo y comparabilidad–, realizo las estimaciones utilizando a las firmas aún no tratadas como grupo de control. Además, siguiendo la recomendación de los autores, excluyo al grupo de firmas nunca tratadas de la muestra al momento de estimar.[^method-1]
+Mi segundo parámetro de interés es un promedio de todos los $\theta_{es}$ y busca aproximar el efecto promedio conjunto de la política:
 
-Realizo las estimaciones principales en `R` usando el paquete `did` [@callawayDidDifferenceDifferences2021], una implementación del método por sus propios autores. Clusterizo los errores a nivel de firma y utilizo un conjunto de controles en todas las estimaciones.
+$$
+\theta_{es}^{O} = \frac{1}{\mathcal{T} - 1} \sum_{e}\theta_{es}(e)
+$$
 
-[^method-1]: En la sección de robustez, muestro que si incluyo a las firmas nunca tratadas los coeficientes pre-tratamiento son conjuntamente significativos para todas las variables de interés. En otras palabras, no son un grupo de control apropiado para comparar con las firmas que sí reciben e-facturas.
+En otras palabras, $\theta_{es}^{O}$ es el efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Es equivalente al parámetro estimado de una regresión con efectos fijos bidireccionales, sin los problemas mencionados de dicho método. Al ser una agregación de los $\theta_{es}(e)$, el parámetro agregado queda identificado y puede estimarse por el principio de analogía.
+
+El método contempla dos potenciales grupos de control: las firmas que nunca reciben tratamiento y las firmas que aún no lo han recibido en el período para el que se estima el efecto de tratamiento. Si bien sería ideal realizar las estimaciones utilizando a las firmas que no reciben e-facturas en el período como control, se trata de un grupo muy reducido con características sustancialmente distintas a las del grupo que si recibe alguna e-factura. Por ejemplo, la @fig-dens-turnover-nevertreated muestra como las firmas que en 2016 no habían recibido e-facturas presentan una distribución de la facturación poco comparable con el resto de la muestra. Por estas razones –tamaño del grupo y comparabilidad–, realizo las estimaciones utilizando a las firmas aún no tratadas como grupo de control. Además, siguiendo la recomendación de los autores, excluyo al grupo de firmas nunca tratadas de la muestra al momento de estimar.
+
+Realizo las estimaciones principales en `R` usando el paquete `did` [@callawayDidDifferenceDifferences2021], una implementación del método por sus propios autores. Clusterizo los errores a nivel de empresa y utilizo un conjunto de controles en todas las regresiones.
