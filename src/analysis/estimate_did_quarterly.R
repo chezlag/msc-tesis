@@ -7,7 +7,8 @@ pkgs <- c(
   "stringr",
   "did",
   "jsonlite",
-  "arsenal"
+  "arsenal",
+  "lubridate"
 )
 groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_om.R")
@@ -34,7 +35,8 @@ sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
-  read_fst("out/data/cohorts.fst", as.data.table = TRUE)
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
+  .[G3 < Inf]
 dtq <-
   read_fst("out/data/firms_quarterly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -56,7 +58,8 @@ stubnames <- c(
   "vatPaid"
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K")
+  paste0("Scaled1", stubnames, "K"),
+  paste0("Log", stubnames, "K")
 )
 
 # Numerize quarters for estimation
@@ -122,7 +125,9 @@ dynamic <- ddlist %>%
       type = "dynamic",
       clustervars = "fid",
       bstrap = TRUE,
-      na.rm = TRUE
+      na.rm = TRUE,
+      min_e = -20,
+      max_e = 12
     )
   }))
 

@@ -19,7 +19,7 @@ source("src/lib/theme_set.R")
 est <- readRDS("out/analysis/did_quarterly_S1.bal.ctrl.RDS")
 att <- readRDS("out/analysis/did_quarterly_S1.bal.ctrl_aggte.simple.RDS")
 
-tidy <- 
+tidy <-
   readRDS("out/analysis/did_quarterly_S1.bal.ctrl_aggte.dynamic.RDS") |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
