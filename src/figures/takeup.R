@@ -17,13 +17,21 @@ p1 <- dts %>%
   ggplot() +
   stat_ecdf(aes(dateFirstEmission), geom = "step") +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-11-30"))) +
-  labs(x = "Fecha de primera emisión", y = "Función de distribución acumulada")
+  labs(
+    x = "Fecha de primera emisión", y = "Función de distribución acumulada",
+    subtitle = "(a) Primera emisión"
+  ) +
+  theme(plot.subtitle = element_text(hjust = 0.5))
 
 p2 <- dts %>%
   ggplot() +
   stat_ecdf(aes(dateFirstReception), geom = "step") +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-11-30"))) +
-  labs(x = "Fecha de primera recepción", y = NULL)
+  labs(
+    x = "Fecha de primera recepción", y = NULL,
+    subtitle = "(b) Primera recepción"
+  ) +
+  theme(plot.subtitle = element_text(hjust = 0.5))
 
 p1 | p2
 
