@@ -1,30 +1,22 @@
-# Rules: tables
-#
-# Contributors: @lachlandeer, @julianlanger, @bergmul
+# --- Dictionaries --- #
+
+TABLES = glob_wildcards("src/tables/" + "{fname}.R").fname
+
+# --- Target rules --- #
+
+rule tabs:
+    input:
+        expand("out/tables/" + "{table}.tex", table = TABLES)
 
 # --- Build Rules --- #
 
-# make_tables: build all tables
-rule make_tables:
-    input:
-        expand(config["out_tables"] + "{iTable}.tex",
-                iTable = TABLES)
 
-# table: build one table
-# rule tables:
-#     input:
-#         script = config["src_tables"] + "regression_table.R",
-#         spec   = config["src_table_specs"] + "{iTable}.json",
-#         models = expand(config["out_analysis"] +
-#                         "{iModel}.{iSubset}.rds",
-#                         iModel = MODELS,
-#                         iSubset = DATA_SUBSET),
-#     output:
-#         table = config["out_tables"] + "{iTable}.tex"
-#     log:
-#         config["log"] + "tables/{iTable}.txt"
-#     shell:
-#         "{runR} {input.script} \
-#             --spec {input.spec} \
-#             --out {output.table} \
-#             > {log} {logAll}"        
+rule tables:
+    input:
+        script = "src/tables/" + "{table}.R"
+    output:
+        table = "out/tables/" + "{table}.tex"
+    log:
+        "logs/tables/" + "{table}.Rout"
+    shell:
+        "{runR} {input.script} -o {output.table} > {log} {logAll}"

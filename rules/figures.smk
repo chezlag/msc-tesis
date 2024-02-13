@@ -1,7 +1,3 @@
-# Rules: figures
-#
-# Contributors: @lachlandeer, @julianlanger, @bergmul
-
 # --- Dictionaries --- #
 
 PLOTS = glob_wildcards("src/figures/" + "{fname}.R").fname

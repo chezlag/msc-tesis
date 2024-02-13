@@ -34,6 +34,6 @@ rule help_main:
 include: config["rules"] + "data_mgmt.smk"
 include: config["rules"] + "analysis.smk"
 include: config["rules"] + "figures.smk"
-#include: config["rules"] + "tables.smk"
+include: config["rules"] + "tables.smk"
 include: config["rules"] + "paper.smk"
 # include: config["rules"] + "slides.smk"
