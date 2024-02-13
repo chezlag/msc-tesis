@@ -1,4 +1,4 @@
-# Contexto institucional
+# Contexto {#sec-context}
 
 ```{r data-context}
 library(groundhog)
@@ -17,33 +17,36 @@ dts <-
   .[samples[(activeBusinessAnyT)], on = "fid"]
 ```
 
-## Impuestos en Uruguay
+## Impuestos a las empresas en Uruguay y cumplimiento
 
-La Dirección General Impositiva (DGI) recauda por impuestos cerca de 19% del PIB (2019). El IVA representa cerca del 50% de la recaudación. La DGI (2013) estimaba que la tasa de evasión de IVA en 2012 era cercana al 13%. Es una tasa de evasión baja para la región [^vatGapLAC] y comparable a las estimadas para algunos países desarrollados[^vatGapEU].
+La Dirección General Impositiva (DGI) de Uruguay recauda por impuestos cerca de 19% del PIB (2019). El IVA es el impuesto más importante y representa cerca del 50% de la recaudación. Además del IVA, las empresas están sujetas a distintos impuestos. Los dos más generales son el Impuesto a la Renta de las Actividades Económicas (IRAE), que grava las ganancias empresariales a una tasa de 25%; y el Impuesto al Patrimonio (IPAT), que grava el patrimonio de las empresas a una tasa de 1,5%. Por otra parte, hay otra serie de impuestos específicos a ciertas características de la actividad de la empresa. El Impuesto de Control a las Sociedades Anónimas (ICOSA) es un impuesto de suma fija (\$14.000 al cierre del ejercicio en 2016) aplicado únicamente a las empresas constituídas como Sociedades Anónimas; el Impuesto a la Enajenación de Bienes Agropecuarios (IMEBA) grava por hasta 2,5% del valor de las ventas de negocios agropecuarios de pequeña escala; y el Impuesto Específico Interno (IMESI) grava únicamente ciertos productos a tasas variadas.[^context-1]
+ 
+[^context-1]: Las empresas extranjeras están sujetas al Impuesto a la Renta de No Residentes (IRNR) en lugar del IRAE. No están contempladas en este análisis. Por otro lado, las personas físicas están sujetas al Impuesto a la Renta de las Personas Físicas (IRPF), un impuesto dual que grava los ingresos de capital a tasas fijas (IRPF categoría I) y los ingresos laborales a partir de un esquema de tasas progresivas (IRPF cat. II).
 
-[^vatGapLAC]: @gomezsabainiTaxStructureTax2012, 34-36 estimaban que la brecha de cumplimiento del IVA en América Latina era en promedio 25,9% en 2006, variando desde 11,0% en Chile hasta 38,1% en Nicaragua. La brecha estimada para Uruguay en 2006 era de 26,3%, muy cercana a la media regional del momento. 
-
-[^vatGapEU]: La brecha de cumplimiento del IVA en la Unión Europea era de 11% en 2018 con amplia variación entre países. Las brechas más bajas se encontraron en Suecia (0,7%), Croacia (3,5%) y Finlandia (3,6%), y las más altas en Rumania (33,8%), Grecia (30,1%) y Lituania (25,9%) [@europeancommissiondgtaxudStudyReportsVAT2020].
-
-Además del IVA, las empresas están sujetas a distintos impuestos de acuerdo a sus características: al Impuesto a la Renta de las Actividades Económicas (IRAE), que grava las ganancias empresariales a una tasa de 25%; el Impuesto al Patrimonio (IP) que grava los activos a una tasa de 1,5%; el Impuesto de Control a las Sociedades Anónimas (ICOSA) de suma fija (560 USD en 2022); el Impuesto a la Enajenación de Bienes Agropecuarios (IMEBA) por hasta 2,5% del valor de las ventas de negocios agropecuarios de pequeña escala; y el Impuesto Específico Interno (IMESI) que grava ciertos productos.  Por otro lado, las personas físicas están sujetas al Impuesto a la Renta de las Personas Físicas (IRPF), un impuesto dual que grava los ingresos de capital (IRPF categoría I; incluye dividendos) y los ingresos laborales (IRPF cat. II).
+Las únicas estimaciones de evasión en empresas para Uruguay refieren al IVA. La DGI (2013) estimaba que la tasa de evasión de IVA en 2012 era cercana al 13%. Es una tasa de evasión baja para la región: @gomezsabainiTaxStructureTax2012 estimaban que la brecha de cumplimiento del IVA en América Latina era en promedio 25,9% en 2006, variando desde 11,0% en Chile hasta 38,1% en Nicaragua. A su vez, la evasión estimada en Uruguay es comparable a las estimaciones para algunos países desarrollados. Por ejemplo, la brecha de cumplimiento del IVA en la Unión Europea era de 11% en 2018 con amplia variación entre países. Las brechas más bajas se encontraron en Suecia (0,7%), Croacia (3,5%) y Finlandia (3,6%), y las más altas en Rumania (33,8%), Grecia (30,1%) y Lituania (25,9%) [@europeancommissiondgtaxudStudyReportsVAT2020].
 
 ## Facturación electrónica
 
-La facturación electrónica involucra la emisión de comprobantes digitales que documentan las operaciones comerciales de una empresa. Desde la perspectiva de la administración tributaria, la tecnología permite un acceso a información tributaria prácticamente en tiempo real, lo cual permite hacer mejores proyecciones de recaudación, comprender mejor la dinámica de la actividad de las empresas, y automatizar procesos de control y fiscalización. La política también tiene beneficios para los contribuyentes, en tanto reduce los costos de cumplimiento y puede mejorar la eficiencia a partir de la reducción de costos operativos y a las ganancias de potenciales procesos de automatización e integración entre empresas.
+La facturación electrónica involucra la emisión de comprobantes digitales que documentan las operaciones comerciales de una empresa. Desde la perspectiva de la administración tributaria, la tecnología permite un acceso a información tributaria prácticamente en tiempo real, lo cual permite hacer mejores proyecciones de recaudación, comprender mejor la dinámica de la actividad de las empresas, y automatizar procesos de control y fiscalización. La política también tiene beneficios para los contribuyentes, en tanto reduce los costos de cumplimiento y puede mejorar la eficiencia a partir de la reducción de costos operativos y a las ganancias de potenciales procesos de automatización e integración entre empresas [@barreixFacturaElectronicaAmerica2018].
 
-La facturación electrónica comienza a implementarse en Uruguay en el año 2012. Desde ese momento, las empresas que así lo elijan pueden convertirse voluntariamente en emisoras de comprobantes electrónicos. La política contempla la emisión de comprobantes documentando operaciones entre contribuyentes (e-facturas) y de operaciones con consumidores finales (e-tickets). En 2015 se establece un calendario de adopción preceptiva de la emisión de comprobantes electrónicos, con ocho fechas límite para la inclusión, delimitadas en base al volumen de facturación de las empresas en 2014.
+La facturación electrónica en Uruguay comienza a diseñarse en el año 2011. Tras una etapa previa de diseño del sistema en conjunto con empresas, la aprobación de normativa específica, y la ejecución de un plan piloto con 30 empresas, comienzan a operar los primeros emisores en 2012. Entre 2012 y 2014, se ofrecen reducciones fiscales importantes para incentivar a las empresas a incorporarse voluntariamente al sistema. En este período, también se obliga a ingresar a grandes contribuyentes, empresas sujetas a control especial por parte de la DGI[^cede], y empresas con giro free shop. Luego, en 2015 se establece un calendario de ingreso obligatorio vinculado al nivel de ventas reportado por las empresas [@canalesUruguayPerfilFactura2018].
 
-La información de la que dispongo para este trabajo cubre hasta fines de 2016. En dicho período, solamente las empresas con más de 30 millones de UI de facturación anual[^context-3] habían sido mandatadas a entrar al régimen de facturación electrónica. A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica. El lado derecho de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo.
+[^cede]: También conocidas como CEDE, Control Especial de Empresas.
 
-[^context-3]: Equivalente en ese momento a 3.3 millones de USD de facturación anual.
+La política contempla la emisión de varios tipos de comprobantes electrónicos, documentando operaciones entre contribuyentes (e-facturas) y con consumidores finales (e-tickets). A su vez, hay documentos específicos para el envío de mercadería (e-remito), la retención de impuestos (e-resguardo), y para operaciones de exportación (e-factura de exportación, e-remito de exportación). Los comprobantes contienen información exhaustiva de cada operación, dentro de la cual aparecen tributos (IVA, IMESI) y retenciones (IRAE, IRPF) correspondientes. La empresa emisora debe enviar el comprobante electrónico a la DGI y al receptor electrónico antes de concretar la operación. Además, debe crear y remitir un reporte diario con información consolidada de todos los comprobantes emitidos en el día, desagregado por tipo de comprobante y por sucursal [@direcciongeneralimpositivaFormatoReporteDiario2023; @direcciongeneralimpositivaFormatoCFE2023; @canalesUruguayPerfilFactura2018].
 
-A pesar de tratarse de un número reducido de empresas emisoras, quizás por sus altos volúmenes de facturación, la política resultó en que una proporción sustancial de las empresas uruguayas recibieran alguna factura electrónica en relativamente poco tiempo. El lado derecho de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las empresas en Uruguay había recibido algún tipo de comprobante electrónica.
+La información de la que dispongo para este trabajo cubre hasta noviembre de 2016. En dicho período, solamente las empresas con más de 30 millones de Unidades Indexadas (en adelante, UI) de facturación anual[^context-2] –y un grupo reducido de grandes contribuyentes– habían sido mandatados a emitir comprobantes electrónicos. El panel (a) de @fig-adoption muestra como se distribuyó dicha adopción en el tiempo, a partir de los microdatos de DGI (describo los datos en mayor detalle en la sección @sec-data). A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica, correspondientes a 3% de la muestra.
+
+[^context-2]: Equivalente en ese momento a 3.3 millones de USD de facturación anual.
+
+A pesar de tratarse de un número reducido de empresas emisoras, por una combinación de sus amplios volúmenes de facturación y su posicionamiento en la cadena productiva, una proporción sustancial de las empresas uruguayas recibió alguna factura electrónica en relativamente poco tiempo. El panel (b) de @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las empresas había recibido alguna e-factura.
 
 ::: {#fig-adoption}
 
 ![](../../out/figures/takeup.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI.
+> \scriptsize \textbf{Fuente:} Elaboración propia en base a microdatos del sistema de comprobantes electrónicos.
 
 Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
 :::
