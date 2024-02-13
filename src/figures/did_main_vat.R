@@ -16,11 +16,11 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
-att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
+est <- readRDS("out/analysis/did_yearly_S1.bal.base.RDS")
+att <- readRDS("out/analysis/did_yearly_S1.bal.base_aggte.simple.RDS")
 
 tidy <-
-  readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.dynamic.RDS") |>
+  readRDS("out/analysis/did_yearly_S1.bal.base_aggte.dynamic.RDS") |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
   setDT() %>%
@@ -52,7 +52,7 @@ tidy[y.name == yvar] %>%
     x = "Años desde el tratamiento", y = "Pagos de IVA",
     caption = paste0(
       "p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3), "\n",
-      "Overall ATT: ", round(att[[yvar]]$overall.att, 3), "***"
+      "Overall ATT: ", round(att[[yvar]]$overall.att, 3)
     )
   ) +
   theme(legend.position = "none")
