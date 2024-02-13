@@ -2,7 +2,7 @@
 
 ## Declaraciones juradas de las empresas
 
-Las firmas tienen que presentar un conjunto de declaraciones juradas periódicamente, informando a la autoridad tributaria sobre distintos aspectos de sus operaciones. En este trabajo utilizamos los siguientes formularios:
+Las empresas tienen que presentar un conjunto de declaraciones juradas periódicamente, informando a la autoridad tributaria sobre distintos aspectos de sus operaciones. En este trabajo utilizamos los siguientes formularios:
 
 > - *Formulario 2148.* Declaración de IRAE, ICOSA e Impuesto al Patrimonio para contribuyentes NO CEDE (para períodos mayores o iguales a 10/2020 deben utilizar el formulario 1050 incluido en PADI).
 > - *Formulario 2149.* Declaración de IRAE, ICOSA e Impuesto al Patrimonio para contribuyentes CEDE.
@@ -11,4 +11,4 @@ Las firmas tienen que presentar un conjunto de declaraciones juradas periódicam
 
 ## Contribuyentes CEDE y NO CEDE
 
-La DGI clasifica dos grandes tipos de contribuyentes, un grupo de firmas sujeto a un "Control Especial de Empresas" (CEDE) y un grupo no sujeto a ese control adicional (no CEDE). La integración de uno u otro grupo es una decisión administrativa de la DGI, con criterios privados. En general las firmas CEDE se caracterizan por tener niveles elevados de facturación, pertenecer a algún sector de actividad particular, entre otras. El control adicional al que están sujetas se traduce en una mayor frecuencia de presentación de información, a la vez que actúan como agentes de retención de impuestos de sus socios comerciales. Las firmas NO CEDE suelen ser empresas de menor porte y se les requiere presentar menos formularios, con menor frecuencia.
+La DGI clasifica dos grandes tipos de contribuyentes, un grupo de empresas sujeto a un "Control Especial de Empresas" (CEDE) y un grupo no sujeto a ese control adicional (no CEDE). La integración de uno u otro grupo es una decisión administrativa de la DGI, con criterios privados. En general las empresas CEDE se caracterizan por tener niveles elevados de facturación, pertenecer a algún sector de actividad particular, entre otras. El control adicional al que están sujetas se traduce en una mayor frecuencia de presentación de información, a la vez que actúan como agentes de retención de impuestos de sus socios comerciales. Las empresas NO CEDE suelen ser empresas de menor porte y se les requiere presentar menos formularios, con menor frecuencia.

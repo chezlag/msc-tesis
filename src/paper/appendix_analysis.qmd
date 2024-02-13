@@ -98,7 +98,7 @@ dty[turnoverMUI %between% c(0.01, 30)] |>
 ```
 
 ```{r tbl-static-characteristics-desgranamiento}
-#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 firma).
+#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 empresa).
 
 varlist <- c(
   "inSample1",
@@ -112,7 +112,7 @@ dts[(inSample3), ..varlist] %>%
 ```
 
 ```{r tbl-yearly-characteristics-desgranamiento}
-#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 año-firma).
+#| tbl-cap: Descriptivas de panel balanceado y no balanceado (1 obs. = 1 año-empresa).
 
 varlist <- c(
   "inSample1",
@@ -156,7 +156,7 @@ dty[inSample1 & turnoverMUI %between% c(0.01, 30)] |>
 ```
 
 ```{r tbl-yearly-characteristics-nevertreated}
-#| tbl-cap: Descriptivas de nunca tratados. Muestra principal. (1 obs. = 1 año-firma).
+#| tbl-cap: Descriptivas de nunca tratados. Muestra principal. (1 obs. = 1 año-empresa).
 
 varlist <- c(
   "neverTreated",
