@@ -65,6 +65,7 @@ format:
       - ignorefoot
       - heightrounded
     fig-cap-location: top
+    tbl-cap-location: top
     template-partials:
       - before-body.tex
     include-in-header:
