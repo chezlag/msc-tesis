@@ -1,4 +1,4 @@
-# Resultados
+# Resultados {#sec-results}
 
 ```{r lib-fcn}
 library(groundhog)

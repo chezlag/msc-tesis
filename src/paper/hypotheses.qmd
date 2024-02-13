@@ -1,4 +1,4 @@
-# Pregunta de investigación e hipótesis
+# Pregunta de investigación e hipótesis {#sec-hypotheses}
 
 A partir de la revisión de literatura y el contexto presentado en las secciones anteriores, en esta sección detallo las principales preguntas de investigación e hipótesis que estructuran el resto del trabajo.
 

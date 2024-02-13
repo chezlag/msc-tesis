@@ -1,4 +1,4 @@
-# Estrategia empírica
+# Estrategia empírica {#sec-method}
 
 Analizo el impacto de la recepción de facturas electrónicas sobre distintos desempeños de las empresas desde un enfoque de diferencias en diferencias. Sigo la propuesta de @callawayDifferenceinDifferencesMultipleTime2021 para estimar efectos de tratamiento en un contexto de implementación escalonada. Comparo la variación en los resultados de las empresas que reciben comprobantes electrónicos (tratadas) con la variación en los resultados de las empresas que aún no lo reciben (controles). Defino el inicio del tratamiento para cada empresa como el período en que comienzan a recibir e-facturas.
 

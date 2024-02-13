@@ -38,7 +38,7 @@ rule did:
         DID_YEARLY_BCKT,
         DID_YEARLY_REAL
 
---- Build rules --- #
+# --- Build rules --- #
 
 rule estimate_did_yearly:
     input:

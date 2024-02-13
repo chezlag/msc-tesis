@@ -1,4 +1,4 @@
-# Datos
+# Datos {#sec-data}
 
 ```{r data-data}
 library(groundhog)
