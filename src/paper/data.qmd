@@ -45,11 +45,11 @@ En primer lugar, utilizo información derivada de declaraciones juradas que las 
 
 [^data-1]: Hay aproximadamente 10.000 empresas sujetas al control especial de empresas (empresas CEDE, ver Apéndice B).
 
-Por otro lado, uso los formularios 2176 y 2178, vinculados al IVA, los cuales contienen información sobre compras y ventas gravadas. Análogamente a los formularios antes descritos, el 2178 es obligatorio para todas las empresas y de frecuencia anual; mientras que el 2176 tiene frecuencia semestral y solo lo completa un subconjunto de empresas.
+Por otro lado, uso los formularios 2176 y 2178, vinculados al IVA, los cuales contienen información sobre compras y ventas gravadas. Análogamente a los formularios antes descritos, el 2178 es obligatorio para todas las empresas y de frecuencia anual; mientras que el 2176 tiene frecuencia semestral y solo lo completa el mismo subconjunto de empresas que presenta el formulario 2149.
 
 En segundo lugar, uso información de DGI sobre el pago de impuestos de las empresas mes a mes. Por más que los impuestos sean de base anual las empresas muchas veces hacen adelantos periódicos de acuerdo a como va evolucionando su actividad. Cuento con información del pago de IVA, IRAE, y un conjunto de otros impuestos de menor recaudación agregados en una única categoría.
 
-En tercer lugar, cuento con información del sistema de facturación electrónica. Dispongo de un registro de transacciones que vincula duplas de empresas, una emisora y una receptora. La información está agregada a nivel mensual, y registra el número de transacciones de la dupla cada mes, y el valor agregado de las mismas. A partir de esta base, puedo identificar el mes exacto en que cada empresa comienza a estar expuesta a la facturación electrónica –ya como receptor o emisor–, así como la intensidad de su exposición.
+En tercer lugar, cuento con información del sistema de facturación electrónica. Dispongo de un registro de transacciones que vincula duplas de empresas, una emisora y una receptora. La información está agregada a nivel mensual, y registra el número de transacciones de la dupla cada mes, y el valor agregado de las mismas. A partir de esta base, puedo identificar el mes exacto en que cada empresa comienza a estar expuesta a la facturación electrónica –ya como receptor o emisor–. 
 
 Por último, cuento con un conjunto reducido de covariables provenientes de microdatos de BPS que indican el sector de actividad y la edad de las empresas.
 
@@ -74,7 +74,7 @@ Las variables de resultados principales surgen de las declaraciones juradas y de
 
 Hago una transformación de las variables dependientes para asegurar comparabilidad entre tratados y controles, siguiendo el análisis de @yaganCapitalTaxReform2015. Reescalo todas las variables dependientes por su propia facturación promedio entre 2009 y 2010, antes de que comenzara a implementarse la facturación electrónica.
 
-Por otro lado, utilizo un conjunto de covariables pre-tratamiento en las estimaciones para controlar tendencias previas diferenciales. Defino cuartiles de facturación pre-tratamiento, cuartiles de activos pre-tratamiento, cuartiles de edad de las empresas, y nueve sectores de actividad.
+Por otro lado, defino cuartiles de facturación pre-tratamiento, cuartiles de activos pre-tratamiento, cuartiles de edad de las empresas, y 58 sectores de actividad en base a código CIIU a dos dígitos. 
 
 ## Muestra principal
 
