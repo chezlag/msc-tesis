@@ -49,6 +49,8 @@ dt[, sector := fcase(
 
 dt[, ind_code_2d := fifelse(!is.na(ind_code_last), floor(ind_code_last /
                                                            1e3), 99)]
+dt[, ind_code_3d := fifelse(!is.na(ind_code_last), floor(ind_code_last /
+                                                           1e2), 99)]
 
 dt[, hasCovariates := !is.na(sector) & !is.na(birth_date)]
 
