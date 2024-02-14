@@ -8,7 +8,7 @@ Siguiendo la notación de los autores, denoto por $G_{g}$ al grupo de empresas q
 
 $$
 \theta_{es}(e) = \sum_{g\in\mathcal{G}}\ \mathbb{1}\{g+e \leq \mathcal{T}\} \cdot \mathbb{P}(G_{g}=1|g+e\leq \mathcal{T}) \cdot ATT(g, g+e)
-$$
+$$ {#eq-es}
 
 donde 
 
@@ -24,7 +24,7 @@ Mi segundo parámetro de interés es un promedio de todos los $\theta_{es}$ y bu
 
 $$
 \theta_{es}^{O} = \frac{1}{\mathcal{T} - 1} \sum_{e}\theta_{es}(e)
-$$
+$$ #{eq-overall}
 
 En otras palabras, $\theta_{es}^{O}$ es el efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Es equivalente al parámetro estimado de una regresión con efectos fijos bidireccionales, sin los problemas mencionados de dicho método. Al ser una agregación de los $\theta_{es}(e)$, el parámetro agregado queda identificado y puede estimarse por el principio de analogía.
 
