@@ -2,41 +2,41 @@
 
 # --- Dictionaries --- #
 
-SAMPLE_LIST = ["0", "1", "2", "3"]
+SAMPLE_LIST = ["0", "1", "2", "3", "B1", "B2"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 
 DID_YEARLY = expand(
     "out/analysis/did_yearly_{estimates}.RDS",
-    estimates = ["S1.bal.ctrl"]
+    estimates = ["S1.bal.ctrl", "SB1.bal.ctrl"]
 )
-DID_YEARLY_BYV = expand(
-    "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
-    byvar = ["size", "industry"],
-    estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"]
-)
+# DID_YEARLY_BYV = expand(
+#     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
+#     byvar = ["size", "industry"],
+#     estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"]
+# )
 DID_YEARLY_SURV = expand(
     "out/analysis/did_yearly_ext.survival_{estimates}.RDS",
-    estimates = ["S3.bal.base", "S3.bal.ctrl"]
+    estimates = ["S3.bal.base", "S3.bal.ctrl", "SB2.bal.base", "SB2.bal.ctrl"]
 )
-DID_YEARLY_BCKT = expand(
-    "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
-    estimates = ["S1.bal.ctrl", "S2.bal.ctrl"]
-)
-DID_YEARLY_REAL = expand(
-    "out/analysis/did_yearly_ext.real_{estimates}.RDS",
-    estimates = ["S2.bal.ctrl"]
-)
+# DID_YEARLY_BCKT = expand(
+#     "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
+#     estimates = ["S1.bal.ctrl", "S2.bal.ctrl"]
+# )
+# DID_YEARLY_REAL = expand(
+#     "out/analysis/did_yearly_ext.real_{estimates}.RDS",
+#     estimates = ["S2.bal.ctrl"]
+# )
 
 # --- Target rules --- #
 
 rule did:
     input:
         DID_YEARLY,
-        DID_YEARLY_BYV,
+        # DID_YEARLY_BYV,
         DID_YEARLY_SURV,
-        DID_YEARLY_BCKT,
-        DID_YEARLY_REAL
+        # DID_YEARLY_BCKT,
+        # DID_YEARLY_REAL
 
 # --- Build rules --- #
 
@@ -55,7 +55,7 @@ rule estimate_did_yearly:
         est3 = "out/analysis/" + "did_yearly_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints:
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
@@ -82,7 +82,7 @@ rule estimate_did_yearly_by_size:
         est3 = "out/analysis/" + "did_yearly_by.size_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_by.size_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
@@ -109,7 +109,7 @@ rule estimate_did_yearly_by_industry:
         est3 = "out/analysis/" + "did_yearly_by.industry_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_by.industry_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
@@ -136,7 +136,7 @@ rule estimate_did_yearly_ext_survival:
         est3 = "out/analysis/" + "did_yearly_ext.survival_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_ext.survival_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
@@ -164,7 +164,7 @@ rule estimate_did_yearly_ext_bracket:
         est3 = "out/analysis/" + "did_yearly_ext.bracket_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_ext.bracket_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
@@ -192,7 +192,7 @@ rule estimate_did_yearly_ext_real:
         est3 = "out/analysis/" + "did_yearly_ext.real_S{sample}.{panel}.{spec}_aggte.dynamic.RDS"
     log:
         "logs/analysis/" + "estimate_did_yearly_ext.real_S{sample}.{panel}.{spec}.Rout"
-    threads: 8
+    threads: 12
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
