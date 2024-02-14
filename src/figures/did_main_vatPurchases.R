@@ -19,16 +19,16 @@ source("src/lib/theme_set.R")
 # Input  ----------------------------------------------------------------------
 
 tidy <- 
-  readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.dynamic.RDS") |>
+  readRDS("out/analysis/did_yearly_SB1.bal.ctrl_aggte.dynamic.RDS") |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
 
-est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
-att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
+est <- readRDS("out/analysis/did_yearly_SB1.bal.ctrl.RDS")
+att <- readRDS("out/analysis/did_yearly_SB1.bal.ctrl_aggte.simple.RDS")
 
-yvar <- "Scaled1vatPurchasesK"
+yvar <- "Scaled2vatPurchasesK"
 
 # Figure ----------------------------------------------------------------------
 

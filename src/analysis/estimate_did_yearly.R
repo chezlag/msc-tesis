@@ -121,7 +121,8 @@ dynamic <- ddlist %>%
       type = "dynamic",
       clustervars = "fid",
       bstrap = TRUE,
-      na.rm = TRUE
+      na.rm = TRUE,
+      min_e = -4
     )
   }))
 

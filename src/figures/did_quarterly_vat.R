@@ -26,7 +26,7 @@ tidy <-
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
 
-yvar <- "Scaled1vatPaidK"
+yvar <- "Scaled2vatPaidK"
 
 tidy[y.name == yvar & inrange(event, -20, 12)] %>%
   .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
