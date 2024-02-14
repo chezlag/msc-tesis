@@ -29,7 +29,7 @@ attgt <- est$attgt[[yvar]]
 simple <- est$simple[[yvar]]
 
 sig <- ifelse(
-  inrange(0, tidy_did(simple)$conf.low, tidy_did(simple)$conf.high), 
+  inrange(0, tidy_did(simple)$conf.low, tidy_did(simple)$conf.high),
   "",
   "**"
 )
@@ -53,7 +53,7 @@ tidy[y.name == yvar & event >= -4] %>%
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_x_continuous(breaks = -4:2) +
-  scale_y_continuous(labels = scales::dollar_format()) + 
+  scale_y_continuous(labels = scales::dollar_format()) +
   scale_color_startrek() +
   scale_fill_startrek() +
   labs(

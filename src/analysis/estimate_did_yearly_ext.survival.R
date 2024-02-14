@@ -35,8 +35,7 @@ sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
-  read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < 2016]
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE)
 size <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[, .(fid, Scaler1)] %>%
@@ -84,12 +83,13 @@ ddlist <- varlist %>%
       tname = "year",
       xformla = as.formula(params$formula),
       data = dtycj,
-      control_group = "notyettreated",
+      control_group = "nevertreated",
       weightsname = params$wt,
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
       est_method = "dr",
-      cores = 8
+      cores = 12,
+      base_period = "universal"
     )
   }))
 names(ddlist) <- varlist

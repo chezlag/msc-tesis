@@ -16,17 +16,17 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-est <- readRDS("out/analysis/did_yearly_S1.bal.base.RDS")
-att <- readRDS("out/analysis/did_yearly_S1.bal.base_aggte.simple.RDS")
+est <- readRDS("out/analysis/did_yearly_SB1.bal.ctrl.RDS")
+att <- readRDS("out/analysis/did_yearly_SB1.bal.ctrl_aggte.simple.RDS")
 
 tidy <-
-  readRDS("out/analysis/did_yearly_S1.bal.base_aggte.dynamic.RDS") |>
+  readRDS("out/analysis/did_yearly_SB1.bal.ctrl_aggte.dynamic.RDS") |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
   setDT() %>%
   .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
 
-yvar <- "Scaled1vatPaidK"
+yvar <- "Scaled2vatPaidK"
 
 tidy[y.name == yvar] %>%
   .[, treat := fifelse(event < 0, "Pre", "Post")] %>%

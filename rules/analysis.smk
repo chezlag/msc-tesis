@@ -2,37 +2,41 @@
 
 # --- Dictionaries --- #
 
-SAMPLE_LIST = ["0", "1", "2", "3"]
+SAMPLE_LIST = ["0", "1", "2", "3", "B1", "B2"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 
 DID_YEARLY = expand(
     "out/analysis/did_yearly_{estimates}.RDS",
-    estimates = ["S1.bal.ctrl", "SB1.bal.ctrl"]
+    estimates = ["SB1.bal.ctrl"]
 )
-DID_YEARLY_BYV = expand(
-    "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
-    byvar = ["size", "industry"],
-    estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"]
-)
+# DID_YEARLY_BYV = expand(
+#     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
+#     byvar = ["size", "industry"],
+#     estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"]
+# )
 DID_YEARLY_SURV = expand(
     "out/analysis/did_yearly_ext.survival_{estimates}.RDS",
-    estimates = ["S3.bal.base", "S3.bal.ctrl"]
+    estimates = ["SB2.bal.base", "SB2.bal.ctrl"]
 )
-DID_YEARLY_BCKT = expand(
-    "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
-    estimates = ["S1.bal.ctrl", "S2.bal.ctrl"]
-)
-DID_YEARLY_REAL = expand(
-    "out/analysis/did_yearly_ext.real_{estimates}.RDS",
-    estimates = ["S2.bal.ctrl"]
-)
+# DID_YEARLY_BCKT = expand(
+#     "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
+#     estimates = ["S1.bal.ctrl", "S2.bal.ctrl"]
+# )
+# DID_YEARLY_REAL = expand(
+#     "out/analysis/did_yearly_ext.real_{estimates}.RDS",
+#     estimates = ["S2.bal.ctrl"]
+# )
 
 # --- Target rules --- #
 
 rule did:
     input:
-        DID_YEARLY
+        DID_YEARLY,
+        # DID_YEARLY_BYV,
+        DID_YEARLY_SURV,
+        # DID_YEARLY_BCKT,
+        # DID_YEARLY_REAL
 
 # --- Build rules --- #
 
