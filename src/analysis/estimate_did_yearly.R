@@ -101,7 +101,6 @@ ddlist <- varlist %>%
       base_period = "universal"
     )
   }))
-names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
@@ -124,7 +123,8 @@ dynamic <- ddlist %>%
       clustervars = "fid",
       bstrap = TRUE,
       na.rm = TRUE,
-      min_e = -4
+      min_e = -4,
+      max_e = 3
     )
   }))
 
