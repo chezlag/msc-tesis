@@ -8,7 +8,7 @@ PANEL_LIST = ["bal", "unbal"]
 
 DID_YEARLY = expand(
     "out/analysis/did_yearly_{estimates}.RDS",
-    estimates = ["S1.bal.ctrl", "SB1.bal.ctrl"]
+    estimates = ["SB1.bal.ctrl"]
 )
 # DID_YEARLY_BYV = expand(
 #     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
@@ -17,7 +17,7 @@ DID_YEARLY = expand(
 # )
 DID_YEARLY_SURV = expand(
     "out/analysis/did_yearly_ext.survival_{estimates}.RDS",
-    estimates = ["S3.bal.base", "S3.bal.ctrl", "SB2.bal.base", "SB2.bal.ctrl"]
+    estimates = ["SB2.bal.base", "SB2.bal.ctrl"]
 )
 # DID_YEARLY_BCKT = expand(
 #     "out/analysis/did_yearly_ext.bracket_{estimates}.RDS",
