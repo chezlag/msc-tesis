@@ -82,7 +82,7 @@ lut[, inSample3 := djFictAllTPre]
 lut[, inSample4 := inSample1 & maxTurnoverMUI < 3]
 # new samples
 lut[, inSampleB0 := in214AnyT & in217AnyT]
-lut[, inSampleB1 := in214AllT & in217AllT & maxPreTurnoverMUI < 4]
-lut[, inSampleB2 := inSampleB0 & maxPreTurnoverMUI < 4]
+lut[, inSampleB1 := in214AllT & maxPreTurnoverMUI < 4]
+lut[, inSampleB2 := in214AllTPre & inSampleB0 & maxPreTurnoverMUI < 4]
 
 write_fst(lut, opt$output)
