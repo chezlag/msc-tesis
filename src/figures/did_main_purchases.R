@@ -2,6 +2,7 @@ library(groundhog)
 pkgs <- c(
   "collapse",
   "data.table",
+  "did",
   "forcats",
   "ggplot2",
   "ggsci",
@@ -18,21 +19,24 @@ source("src/lib/theme_set.R")
 
 # Input  ----------------------------------------------------------------------
 
-tidy <- 
-  readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.dynamic.RDS") |>
-  map(possibly(tidy_did)) |>
-  reduce(rbind) %>%
-  setDT() %>%
-  .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
-
 est <- readRDS("out/analysis/did_yearly_S1.bal.ctrl.RDS")
-att <- readRDS("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS")
 
-yvar <- "Scaled1deductPurchasesK"
+yvar <- "Scaled1vatPurchasesK"
+
+tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
+
+attgt <- est$attgt[[yvar]]
+simple <- est$simple[[yvar]]
+
+sig <- ifelse(
+  inrange(0, tidy_did(simple)$conf.low, tidy_did(simple)$conf.high), 
+  "",
+  "**"
+)
 
 # Figure ----------------------------------------------------------------------
 
-tidy[y.name == yvar] %>%
+tidy[y.name == yvar & event >= -4] %>%
   .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
   ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
   geom_point(size = 2) +
@@ -55,10 +59,10 @@ tidy[y.name == yvar] %>%
   labs(
     x = "Años desde el tratamiento", y = "Compras reportadas",
     caption = paste0(
-      "p-valor de pre-trends: ", round(est[[yvar]]$Wpval, 3), "\n",
-      "Overall ATT: ", round(att[[yvar]]$overall.att, 3), "**"
+      "p-valor de pre-trends: ", round(attgt$Wpval, 3), "\n",
+      "Overall ATT: ", round(simple$overall.att, 3), sig
     )
   ) +
   theme(legend.position = "none")
 
-ggsave("out/figures/did_main_purchases.png", width = 170, height = 100, units = "mm")
+ggsave("out/figures/new.png", width = 170, height = 100, units = "mm")

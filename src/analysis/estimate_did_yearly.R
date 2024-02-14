@@ -35,7 +35,7 @@ sample <-
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < 2016]
+  .[G1 < Inf]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -62,7 +62,8 @@ stubnames <- c(
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
-  paste0("Scaled2", stubnames, "K")
+  paste0("Scaled2", stubnames, "K"),
+  paste0("IHS", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
@@ -96,7 +97,8 @@ ddlist <- varlist %>%
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
       est_method = "dr",
-      cores = 8
+      cores = 16,
+      base_period = "universal"
     )
   }))
 names(ddlist) <- varlist
@@ -121,13 +123,18 @@ dynamic <- ddlist %>%
       type = "dynamic",
       clustervars = "fid",
       bstrap = TRUE,
-      na.rm = TRUE
+      na.rm = TRUE,
+      min_e = -4
     )
   }))
 
 # Output ----------------------------------------------------------------------
 
+# Combine results for export
+ret <- list(ddlist, simple, dynamic)
+elnames <- c("attgt", "simple", "dynamic")
+names(ret) <- elnames
+for(el in elnames) names(ret[[el]]) <- varlist
+
 message("Saving results: ", opt$output)
-saveRDS(ddlist, opt$output)
-saveRDS(simple, str_replace(opt$output, ".RDS", "_aggte.simple.RDS"))
-saveRDS(dynamic, str_replace(opt$output, ".RDS", "_aggte.dynamic.RDS"))
+saveRDS(ret, opt$output)
