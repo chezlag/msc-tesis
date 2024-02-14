@@ -8,7 +8,7 @@ PANEL_LIST = ["bal", "unbal"]
 
 DID_YEARLY = expand(
     "out/analysis/did_yearly_{estimates}.RDS",
-    estimates = ["SB1.bal.ctrl"]
+    estimates = ["S1.bal.ctrl", "SB1.bal.ctrl"]
 )
 # DID_YEARLY_BYV = expand(
 #     "out/analysis/did_yearly_by.{byvar}_{estimates}.RDS",
@@ -34,7 +34,7 @@ rule did:
     input:
         DID_YEARLY,
         # DID_YEARLY_BYV,
-        DID_YEARLY_SURV,
+        # DID_YEARLY_SURV,
         # DID_YEARLY_BCKT,
         # DID_YEARLY_REAL
 
