@@ -77,6 +77,7 @@ rule estimate_did_yearly:
         group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -104,6 +105,7 @@ rule estimate_did_yearly_by_size:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -132,6 +134,7 @@ rule estimate_did_yearly_by_industry:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -160,6 +163,7 @@ rule estimate_did_yearly_ext_survival:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -189,6 +193,7 @@ rule estimate_did_yearly_ext_bracket:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -218,6 +223,7 @@ rule estimate_did_yearly_ext_real:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \
@@ -247,6 +253,7 @@ rule estimate_did_quarterly:
         spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
+            --threads {threads} \
             --sample {input.params_sample} \
             --panel {input.params_panel} \
             --spec {input.params_spec} \

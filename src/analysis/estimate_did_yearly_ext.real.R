@@ -83,7 +83,8 @@ ddlist <- varlist %>%
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
       est_method = "dr",
-      cores = 12
+      cores = opt$threads,
+      base_period = "universal"
     )
   }))
 

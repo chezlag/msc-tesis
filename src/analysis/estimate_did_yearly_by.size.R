@@ -21,7 +21,8 @@ message("Spec: ", opt$spec)
 params <- list(
   opt$sample,
   opt$panel,
-  opt$spec
+  opt$spec,
+  opt$group
 ) %>%
   map(fromJSON) %>%
   unlist(recursive = FALSE)
@@ -105,7 +106,8 @@ ddlist <-
            allow_unbalanced_panel = params$unbalanced,
            clustervars = "fid",
            est_method = "dr",
-           cores = 12
+           cores = opt$threads,
+           base_period = "universal"
          )
        }))
 
