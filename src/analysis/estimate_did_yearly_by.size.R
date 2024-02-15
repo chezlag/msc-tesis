@@ -141,10 +141,11 @@ names(ret) <- elnames
 # Name estimation output
 estnames <- map2(
   rep(varlist, each = length(quantlist)), 
-  rep(quantlist, length(varlist),
+  rep(quantlist, length(varlist)),
   \(x, y) paste0(x, ".Q", y)
 ) |>
   unlist()
+
 for(el in elnames) names(ret[[el]]) <- estnames
 
 message("Saving results: ", opt$output)

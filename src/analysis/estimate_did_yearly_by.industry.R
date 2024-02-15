@@ -141,7 +141,7 @@ names(ret) <- elnames
 # Name estimation output
 estnames <- map2(
   rep(varlist, each = length(industrylist)), 
-  rep(industrylist, length(varlist),
+  rep(industrylist, length(varlist)),
   \(x, y) paste0(x, ".", y)
 ) |>
   unlist()
