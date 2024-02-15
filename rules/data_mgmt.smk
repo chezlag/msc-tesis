@@ -9,7 +9,8 @@ rule data:
         "out/data/firms_yearly.fst",
         "out/data/samples.fst",
         "out/data/cohorts.fst",
-        "out/data/firms_yearly_filled.fst"
+        "out/data/firms_yearly_filled.fst",
+        "out/data/firms_quarterly.fst"
 
 # --- Build Rules --- #
 
@@ -101,6 +102,6 @@ rule clean_firms_quarterly:
         data = "out/data/" + "firms_quarterly.fst"
     log:
         "logs/data_mgmt/" + "clean_firms_quarterly.Rout"
-    threads: 16
+    threads: 32
     shell:
         "{runR} {input.script} -o {output.data} > {log} {logAll}"

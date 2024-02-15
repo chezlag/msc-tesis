@@ -91,8 +91,6 @@ dt[, emitted := !is.na(nTicketsEmitted)]
 
 # Negocio activo
 dt[, anyTaxPaid := totalTaxPaid > 0]
-dt[, activeBusiness := in214 & in217]
-dt[, activeTaxpayer := activeBusiness & anyTaxPaid]
 
 # Export ----------------------------------------------------------------------
 

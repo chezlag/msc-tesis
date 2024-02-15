@@ -1,6 +1,12 @@
-library(fastverse)
-library(fst)
-library(lubridate)
+library(groundhog)
+pkgs <- c(
+  "fastverse",
+  "fst",
+  "lubridate",
+  "purrr"
+)
+date <- "2024-01-15"
+groundhog.library(pkgs, date)
 
 cfe <- read_fst("src/data/dgi_firmas/out/data/eticket_transactions.fst", as.data.table = TRUE)
 
