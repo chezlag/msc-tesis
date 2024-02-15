@@ -36,7 +36,7 @@ sample <-
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G3 < Inf]
+  .[eval(parse(text = params$cohort_quarterly))]
 dtq <-
   read_fst("out/data/firms_quarterly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -54,11 +54,14 @@ dtq[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dtq[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # outcome variable list
+stubs <- c("vat", "corpTax", "otherTax", "totalTax") 
 stubnames <- c(
-  "vatPaid"
+  paste0(stubs, "Paid"),
+  paste0(stubs, "Retained")
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
+  paste0("Scaled2", stubnames, "K"),
   paste0("Log", stubnames, "K")
 )
 
@@ -70,7 +73,7 @@ dtq[, quarterFirstReceptionNum := round(quarterFirstReceptionV2) + (quarterFirst
 
 # remove incomplete quarters from each dataset
 patterns <- list(
-  "vatPaid|vatRetained"
+  "Paid|Retained"
 )
 yearlist <- list(
   seq(2010, 2016.75, by = .25)
@@ -95,15 +98,14 @@ ddlist <- varlist %>%
       tname = "quarterNum",
       xformla = as.formula(params$formula),
       data = dtq,
-      control_group = "notyettreated",
+      control_group = params$control_group,
       weightsname = params$wt,
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
       est_method = "dr",
-      cores = 16
+      cores = 32
     )
   }))
-names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
@@ -133,7 +135,11 @@ dynamic <- ddlist %>%
 
 # Output ----------------------------------------------------------------------
 
+# Combine results for export
+ret <- list(ddlist, simple, dynamic)
+elnames <- c("attgt", "simple", "dynamic")
+names(ret) <- elnames
+for(el in elnames) names(ret[[el]]) <- varlist
+
 message("Saving results: ", opt$output)
-saveRDS(ddlist, opt$output)
-saveRDS(simple, str_replace(opt$output, ".RDS", "_aggte.simple.RDS"))
-saveRDS(dynamic, str_replace(opt$output, ".RDS", "_aggte.dynamic.RDS"))
+saveRDS(ret, opt$output)

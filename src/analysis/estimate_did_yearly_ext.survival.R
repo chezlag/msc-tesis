@@ -22,7 +22,8 @@ message("Spec: ", opt$spec)
 params <- list(
   opt$sample,
   opt$panel,
-  opt$spec
+  opt$spec,
+  opt$group
 ) %>%
   map(fromJSON) %>%
   unlist(recursive = FALSE)
@@ -35,7 +36,8 @@ sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
-  read_fst("out/data/cohorts.fst", as.data.table = TRUE)
+  read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
+  .[eval(parse(text = params$cohorts_yearly))]
 size <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[, .(fid, Scaler1)] %>%
@@ -116,7 +118,11 @@ dynamic <- ddlist %>%
 
 # Output ----------------------------------------------------------------------
 
+# Combine results for export
+ret <- list(ddlist, simple, dynamic)
+elnames <- c("attgt", "simple", "dynamic")
+names(ret) <- elnames
+for(el in elnames) names(ret[[el]]) <- varlist
+
 message("Saving results: ", opt$output)
-saveRDS(ddlist, opt$output)
-saveRDS(simple, str_replace(opt$output, ".RDS", "_aggte.simple.RDS"))
-saveRDS(dynamic, str_replace(opt$output, ".RDS", "_aggte.dynamic.RDS"))
+saveRDS(ret, opt$output)

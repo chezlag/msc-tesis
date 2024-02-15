@@ -21,7 +21,8 @@ message("Spec: ", opt$spec)
 params <- list(
   opt$sample,
   opt$panel,
-  opt$spec
+  opt$spec,
+  opt$group
 ) %>%
   map(fromJSON) %>%
   unlist(recursive = FALSE)
@@ -35,7 +36,7 @@ sample <-
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < 2016]
+  .[eval(parse(text = params$cohorts_yearly))]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -82,7 +83,7 @@ industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "
 
 # replace sector with ind_code_2d if spec == ctrl
 if (grepl("ctrl", opt$spec)) {
-  params$formula <- "~ sizeQuartile + ageQuartile + assetsQuartile"
+  params$formula <- "~ ageQuartile + assetsQuartile"
 }
 
 # Estimate --------------------------------------------------------------------
@@ -99,12 +100,12 @@ ddlist <-
            tname = "year",
            xformla = as.formula(params$formula),
            data = dty[sector == y],
-           control_group = "notyettreated",
+           control_group = params$control_group,
            weightsname = params$wt,
            allow_unbalanced_panel = params$unbalanced,
            clustervars = "fid",
            est_method = "dr",
-           cores = 12
+           cores = 16
          )
        }))
 names(ddlist) <- varlist
@@ -131,7 +132,19 @@ dynamic <- ddlist %>%
 
 # Output ----------------------------------------------------------------------
 
+# Combine results for export
+ret <- list(ddlist, simple, dynamic)
+elnames <- c("attgt", "simple", "dynamic")
+names(ret) <- elnames
+
+# Name estimation output
+estnames <- map2(
+  rep(varlist, each = length(industrylist)), 
+  rep(industrylist, length(varlist),
+  \(x, y) paste0(x, ".", y)
+) |>
+  unlist()
+for(el in elnames) names(ret[[el]]) <- estnames
+
 message("Saving results: ", opt$output)
-saveRDS(ddlist, opt$output)
-saveRDS(simple, str_replace(opt$output, ".RDS", "_aggte.simple.RDS"))
-saveRDS(dynamic, str_replace(opt$output, ".RDS", "_aggte.dynamic.RDS"))
+saveRDS(ret, opt$output)

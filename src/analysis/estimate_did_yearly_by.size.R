@@ -35,7 +35,7 @@ sample <-
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < 2016]
+  .[eval(parse(text = params$cohorts_yearly))]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -55,13 +55,15 @@ dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 # outcome variable list
 stubnames <- c(
   "deductPurchases",
+  "taxableTurnover",
   "Revenue",
   "vatPurchases",
   "vatSales",
   "vatPaid"
 )  
 varlist <- c(
-  paste0("Scaled1", stubnames, "K")
+  paste0("Scaled1", stubnames, "K"),
+  paste0("IHS", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
@@ -81,7 +83,7 @@ quantlist <- 1:4
 
 # replace sector with ind_code_2d if spec == ctrl
 if (grepl("ctrl", opt$spec)) {
-  params$formula <- "~ ageQuartile + sector + assetsQuartile"
+  params$formula <- "~ ageQuartile + assetsQuartile"
 }
 
 # Estimate --------------------------------------------------------------------
@@ -98,7 +100,7 @@ ddlist <-
            tname = "year",
            xformla = as.formula(params$formula) ,
            data = dty[sizeQuartile == y],
-           control_group = "notyettreated",
+           control_group = params$control_group,
            weightsname = params$wt,
            allow_unbalanced_panel = params$unbalanced,
            clustervars = "fid",
@@ -106,7 +108,6 @@ ddlist <-
            cores = 12
          )
        }))
-names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
@@ -130,7 +131,19 @@ dynamic <- ddlist %>%
 
 # Output ----------------------------------------------------------------------
 
+# Combine results for export
+ret <- list(ddlist, simple, dynamic)
+elnames <- c("attgt", "simple", "dynamic")
+names(ret) <- elnames
+
+# Name estimation output
+estnames <- map2(
+  rep(varlist, each = length(quantlist)), 
+  rep(quantlist, length(varlist),
+  \(x, y) paste0(x, ".Q", y)
+) |>
+  unlist()
+for(el in elnames) names(ret[[el]]) <- estnames
+
 message("Saving results: ", opt$output)
-saveRDS(ddlist, opt$output)
-saveRDS(simple, str_replace(opt$output, ".RDS", "_aggte.simple.RDS"))
-saveRDS(dynamic, str_replace(opt$output, ".RDS", "_aggte.dynamic.RDS"))
+saveRDS(ret, opt$output)
