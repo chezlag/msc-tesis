@@ -37,7 +37,7 @@ sample <-
   .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[eval(parse(text = params$cohort_quarterly))]
+  .[eval(parse(text = params$cohorts_quarterly))]
 dtq <-
   read_fst("out/data/firms_quarterly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
