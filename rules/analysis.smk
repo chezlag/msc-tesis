@@ -233,7 +233,7 @@ rule estimate_did_yearly_ext_real:
 
 rule estimate_did_quarterly:
     input:
-        script = "src/analysis/" + "estimate_did_yearly.R",
+        script = "src/analysis/" + "estimate_did_quarterly.R",
         data = "out/data/" + "firms_quarterly.fst",
         samples = "out/data/" + "samples.fst",
         cohorts = "out/data/" + "cohorts.fst",
