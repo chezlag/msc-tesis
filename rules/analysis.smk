@@ -8,37 +8,37 @@ PANEL_LIST = ["bal", "unbal"]
 GROUP_LIST = ["nyt16"]
 
 DID_YEARLY = expand(
-    "out/analysis/did_yearly_{estimates}.{group}.RDS",
-    estimates = ["S1.bal.ctrl", "SB1.bal.ctrl"],
+    "out/analysis/did.y.all.{estimates}_{group}.RDS",
+    estimates = ["S1_bal_ctrl", "SB1_bal_ctrl"],
     group = GROUP_LIST
 
 )
 DID_YEARLY_BYV = expand(
-    "out/analysis/did_yearly_by.{byvar}_{estimates}.{group}.RDS",
+    "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S1.bal.base", "S1.bal.ctrl", "S2.bal.ctrl"],
+    estimates = ["S1_bal_base", "S1_bal_ctrl", "S2_bal_ctrl"],
     group = GROUP_LIST
 
 )
 DID_YEARLY_SURV = expand(
-    "out/analysis/did_yearly_ext.survival_{estimates}.{group}.RDS",
-    estimates = ["S3.bal.ctrl", "S3.bal.ctrl", "SB2.bal.base", "SB2.bal.ctrl"],
+    "out/analysis/did.y.ext_survival.{estimates}_{group}.RDS",
+    estimates = ["S3_bal_ctrl", "S3_bal_ctrl", "SB2_bal_base", "SB2_bal_ctrl"],
     group = GROUP_LIST
 
 )
 # DID_YEARLY_BCKT = expand(
-#     "out/analysis/did_yearly_ext.bracket_{estimates}.{group}.RDS",
-#     estimates = ["S1.bal.ctrl", "S2.bal.ctrl"],
+#     "out/analysis/did.y.ext_bracket.{estimates}_{group}.RDS",
+#     estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
 #     group = GROUP_LIST
 # )
 # DID_YEARLY_REAL = expand(
-#     "out/analysis/did_yearly_ext.real_{estimates}.{group}.RDS",
-#     estimates = ["S2.bal.ctrl"],
+#     "out/analysis/did.y.ext_real.{estimates}_{group}.RDS",
+#     estimates = ["S2_bal_ctrl"],
 #     group = GROUP_LIST
 # )
 DID_QUARTERLY = expand(
-    "out/analysis/did_quarterly_{estimates}.{group}.RDS",
-    estimates = ["S1.bal.ctrl", "S1.bal.base"],
+    "out/analysis/did.q.all.{estimates}_{group}.RDS",
+    estimates = ["S1_bal_ctrl", "S1_bal_base"],
     group = GROUP_LIST
 )
 
@@ -57,7 +57,7 @@ rule did:
 
 rule estimate_did_yearly:
     input:
-        script = "src/analysis/" + "estimate_did_yearly.R",
+        script = "src/analysis/" + "estimate_did.y.all.R",
         data = "out/data/" + "firms_yearly.fst",
         samples = "out/data/" + "samples.fst",
         cohorts = "out/data/" + "cohorts.fst",
@@ -66,9 +66,9 @@ rule estimate_did_yearly:
         params_spec = "src/model_specs/" + "spec_{spec}.json",
         params_group = "src/model_specs/" + "group_{group}.json"
     output:
-        est = "out/analysis/" + "did_yearly_S{sample}.{panel}.{spec}.{group}.RDS"
+        est = "out/analysis/" + "did.y.all.S{sample}_{panel}_{spec}_{group}.RDS"
     log:
-        "logs/analysis/" + "estimate_did_yearly_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.all.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints:
         sample = "|".join(SAMPLE_LIST),
@@ -87,7 +87,7 @@ rule estimate_did_yearly:
 
 rule estimate_did_yearly_by_size:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_by.size.R",
+        script = "src/analysis/" + "estimate_did.y.by_size.R",
         data = "out/data/" + "firms_yearly.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
@@ -95,9 +95,9 @@ rule estimate_did_yearly_by_size:
         params_spec = "src/model_specs/" + "spec_{spec}.json",
         params_group = "src/model_specs/" + "group_{group}.json"
     output:
-        est = "out/analysis/" + "did_yearly_by.size_S{sample}.{panel}.{spec}.{group}.RDS",
+        est = "out/analysis/" + "did.y.by_size.S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did_yearly_by.size_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.by_size.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
@@ -115,7 +115,7 @@ rule estimate_did_yearly_by_size:
 
 rule estimate_did_yearly_by_industry:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_by.industry.R",
+        script = "src/analysis/" + "estimate_did.y.by_industry.R",
         data = "out/data/" + "firms_yearly.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
@@ -124,9 +124,9 @@ rule estimate_did_yearly_by_industry:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did_yearly_by.industry_S{sample}.{panel}.{spec}.{group}.RDS",
+        est = "out/analysis/" + "did.y.by_industry.S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did_yearly_by.industry_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.by_industry.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
@@ -144,7 +144,7 @@ rule estimate_did_yearly_by_industry:
 
 rule estimate_did_yearly_ext_survival:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_ext.survival.R",
+        script = "src/analysis/" + "estimate_did.y.ext_survival.R",
         data = "out/data/" + "firms_yearly_filled.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
@@ -153,9 +153,9 @@ rule estimate_did_yearly_ext_survival:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did_yearly_ext.survival_S{sample}.{panel}.{spec}.{group}.RDS",
+        est = "out/analysis/" + "did.y.ext_survival_S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did_yearly_ext.survival_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.ext_survival_S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
@@ -174,7 +174,7 @@ rule estimate_did_yearly_ext_survival:
 
 rule estimate_did_yearly_ext_bracket:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_ext.bracket.R",
+        script = "src/analysis/" + "estimate_did.y.ext_bracket.R",
         data = "out/data/" + "firms_yearly_filled.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
@@ -183,9 +183,9 @@ rule estimate_did_yearly_ext_bracket:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did_yearly_ext.bracket_S{sample}.{panel}.{spec}.{group}.RDS",
+        est = "out/analysis/" + "did.y.ext_bracket.S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did_yearly_ext.bracket_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.ext_bracket.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
@@ -204,7 +204,7 @@ rule estimate_did_yearly_ext_bracket:
 
 rule estimate_did_yearly_ext_real:
     input:
-        script = "src/analysis/" + "estimate_did_yearly_ext.real.R",
+        script = "src/analysis/" + "estimate_did.y.ext_real.R",
         data = "out/data/" + "firms_yearly_filled.fst",
         samples = "out/data/" + "samples.fst",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
@@ -213,9 +213,9 @@ rule estimate_did_yearly_ext_real:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did_yearly_ext.real_S{sample}.{panel}.{spec}.{group}.RDS",
+        est = "out/analysis/" + "did.y.ext_real.S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did_yearly_ext.real_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did/y.ext_real.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
@@ -233,7 +233,7 @@ rule estimate_did_yearly_ext_real:
 
 rule estimate_did_quarterly:
     input:
-        script = "src/analysis/" + "estimate_did_quarterly.R",
+        script = "src/analysis/" + "estimate_did.q.all.R",
         data = "out/data/" + "firms_quarterly.fst",
         samples = "out/data/" + "samples.fst",
         cohorts = "out/data/" + "cohorts.fst",
@@ -243,9 +243,9 @@ rule estimate_did_quarterly:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did_quarterly_S{sample}.{panel}.{spec}.{group}.RDS"
+        est = "out/analysis/" + "did.q.all.S{sample}_{panel}_{spec}_{group}.RDS"
     log:
-        "logs/analysis/" + "estimate_did_quarterly_S{sample}.{panel}.{spec}.{group}.Rout"
+        "logs/analysis/" + "estimate_did.q.all.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints:
         sample = "|".join(SAMPLE_LIST),
