@@ -47,7 +47,7 @@ balvarlist <-
     "patrimonioContable")
 balformula <- arsenal::formulize(balvarlist, idvars)
 cbal <- collap(bal, balformula, fsum) |>
-  merge(bal[, .(djFict = fmax(djFict) |> as.logical()), by = idvars])
+  merge(bal[, .(djFict = fmax(djFict) |> as.logical()), idvars], by = idvars)
 rm(bal)
 
 # DJ de ventas por IVA ---------------------------------------------------------

@@ -1,5 +1,5 @@
 library(groundhog)
-pkgs <- c("data.table", "fst", "lubridate", "purrr")
+pkgs <- c("collapse", "data.table", "fst", "lubridate", "purrr")
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
@@ -22,9 +22,12 @@ fid_only <- filelist |>
 # read datasets with actual information
 bcs <- fread("src/data/bcs_covariates.csv")
 cfe <- read_fst("out/data/eticket_static.fst", as.data.table = TRUE)
+giro <- 
+  read_fst("src/data/dgi_firmas/out/data/balances_allF_allY.fst", as.data.table = TRUE) %>%
+  .[, .(giro = fmax(giro), natjur = fmax(nat_juridica)), fid]
 
 # merge all
-dt <- list(bcs, cfe, fid_only) |>
+dt <- list(bcs, cfe, giro, fid_only) |>
   reduce(merge, by = "fid", all = TRUE)
 
 # create new variables
@@ -51,6 +54,7 @@ dt[, ind_code_2d := fifelse(!is.na(ind_code_last), floor(ind_code_last /
                                                            1e3), 99)]
 dt[, ind_code_3d := fifelse(!is.na(ind_code_last), floor(ind_code_last /
                                                            1e2), 99)]
+dt[, giro_2d := fifelse(!is.na(giro), floor(giro / 1e3), 100)]
 
 dt[, hasCovariates := !is.na(sector) & !is.na(birth_date)]
 
