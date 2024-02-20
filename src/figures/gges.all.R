@@ -36,7 +36,7 @@ gges <- function(spec, yvar, ylab) {
     theme(legend.position = "none")
 
   ggsave(
-    paste0("out/figures/tmp/", yvar, "_", spec, ".png"),
+    paste0("out/figures/did.y.all.", yvar, ".", spec, ".png"),
     width = 170,
     height = 100,
     units = "mm"
