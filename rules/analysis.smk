@@ -102,7 +102,8 @@ rule estimate_did_yearly_by_size:
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
+        spec = "|".join(SPEC_LIST),
+        group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
@@ -131,7 +132,8 @@ rule estimate_did_yearly_by_industry:
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
+        spec = "|".join(SPEC_LIST),
+        group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
@@ -153,14 +155,15 @@ rule estimate_did_yearly_ext_survival:
         params_group = "src/model_specs/" + "group_{group}.json"
 
     output:
-        est = "out/analysis/" + "did.y.ext_survival_S{sample}_{panel}_{spec}_{group}.RDS",
+        est = "out/analysis/" + "did.y.ext_survival.S{sample}_{panel}_{spec}_{group}.RDS",
     log:
-        "logs/analysis/" + "estimate_did.y.ext_survival_S{sample}_{panel}_{spec}_{group}.Rout"
+        "logs/analysis/" + "estimate_did.y.ext_survival.S{sample}_{panel}_{spec}_{group}.Rout"
     threads: 16
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
+        spec = "|".join(SPEC_LIST),
+        group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
@@ -190,7 +193,8 @@ rule estimate_did_yearly_ext_bracket:
     wildcard_constraints: 
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
+        spec = "|".join(SPEC_LIST),
+        group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
@@ -250,7 +254,8 @@ rule estimate_did_quarterly:
     wildcard_constraints:
         sample = "|".join(SAMPLE_LIST),
         panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
+        spec = "|".join(SPEC_LIST),
+        group = "|".join(GROUP_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
