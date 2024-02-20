@@ -59,7 +59,8 @@ rule clean_firms_yearly:
 rule define_samples:
     input:
         script = "src/data_mgmt/" + "define_samples.R",
-        data = "out/data/" + "firms_yearly.fst"
+        data_y = "out/data/" + "firms_yearly.fst",
+        data_q = "out/data/" + "firms_quarterly.fst"
     output:
         data = "out/data/" + "samples.fst"
     log:
@@ -71,7 +72,8 @@ rule define_samples:
 rule define_cohorts:
     input:
         script = "src/data_mgmt/" + "define_cohorts.R",
-        data = "out/data/" + "firms_yearly.fst"
+        data_y = "out/data/" + "firms_yearly.fst",
+        data_q = "out/data/" + "firms_quarterly.fst"
     output:
         data = "out/data/" + "cohorts.fst"
     log:
