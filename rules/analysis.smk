@@ -5,7 +5,7 @@
 SAMPLE_LIST = ["0", "1", "2", "3", "B1", "B2"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
-GROUP_LIST = ["nyt16"]
+GROUP_LIST = ["nyt16", "nyt15", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
@@ -17,13 +17,13 @@ DID_YEARLY_BYV = expand(
     "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
     byvar = ["size", "industry"],
     estimates = ["S1_bal_base", "S1_bal_ctrl", "S2_bal_ctrl"],
-    group = GROUP_LIST
+    group = ["nyt16"]
 
 )
 DID_YEARLY_SURV = expand(
     "out/analysis/did.y.ext_survival.{estimates}_{group}.RDS",
     estimates = ["S3_bal_ctrl", "S3_bal_ctrl", "SB2_bal_base", "SB2_bal_ctrl"],
-    group = GROUP_LIST
+    group = ["nyt16"]
 
 )
 # DID_YEARLY_BCKT = expand(
@@ -39,7 +39,7 @@ DID_YEARLY_SURV = expand(
 DID_QUARTERLY = expand(
     "out/analysis/did.q.all.{estimates}_{group}.RDS",
     estimates = ["S1_bal_ctrl", "S1_bal_base"],
-    group = GROUP_LIST
+    group = ["nyt16"]
 )
 
 # --- Target rules --- #
