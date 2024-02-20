@@ -1,5 +1,5 @@
 gges <- function(spec, yvar, ylab) {
-  est <- readRDS(paste0("out/analysis/tmp/did_yearly_", spec, ".RDS"))
+  est <- readRDS(paste0("out/analysis/did.y.all.", spec, ".RDS"))
   tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
   attgt <- est$attgt[[yvar]]
   simple <- est$simple[[yvar]]
@@ -31,11 +31,7 @@ gges <- function(spec, yvar, ylab) {
     scale_color_startrek() +
     scale_fill_startrek() +
     labs(
-      x = "Años desde el tratamiento", y = ylab,
-      caption = paste0(
-        "p-valor de pre-trends: ", round(attgt$Wpval, 3), "\n",
-        "Overall ATT: ", round(simple$overall.att, 3), sig
-      )
+      x = "Años desde el tratamiento", y = ylab
     ) +
     theme(legend.position = "none")
 

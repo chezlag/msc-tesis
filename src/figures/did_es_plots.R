@@ -20,11 +20,10 @@ source("src/lib/theme_set.R")
 # Input  ----------------------------------------------------------------------
 
 speclist <- c(
-  "S1.bal.ctrl_nt",
-  "S1.bal.ctrl_nyt15.orig",
-  "S1.bal.ctrl_nyt15.univ",
-  "S1.bal.ctrl_nyt16",
-  "S1.bal.ctrl_nytInf"
+  "S1_bal_ctrl_nt",
+  "S1_bal_ctrl_nyt15",
+  "S1_bal_ctrl_nyt16",
+  "S1_bal_ctrl_nytInf"
 )
 yvarlist <- c(
   "Scaled1deductPurchasesK",
