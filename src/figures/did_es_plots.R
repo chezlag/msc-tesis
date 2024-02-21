@@ -44,4 +44,6 @@ ylablist <- c(
 
 source("src/figures/gges.R")
 
-walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges(x, y, z)))
+walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_all(x, y, z)))
+walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_by_industry(x, y, z)))
+walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_by_size(x, y, z)))
