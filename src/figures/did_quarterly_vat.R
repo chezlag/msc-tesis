@@ -16,19 +16,18 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-est <- readRDS("out/analysis/did_quarterly_S1.bal.ctrl.RDS")
-att <- readRDS("out/analysis/did_quarterly_S1.bal.ctrl_aggte.simple.RDS")
+yvar <- "Scaled1vatPaidK"
+spec <- "S1_bal_ctrl_nyt16"
+
+est <- readRDS(paste0("out/analysis/did.q.all.", spec, ".RDS"))
+att <- est$simple[[yvar]]
 
 tidy <-
-  readRDS("out/analysis/did_quarterly_S1.bal.ctrl_aggte.dynamic.RDS") |>
-  map(possibly(tidy_did)) |>
-  reduce(rbind) %>%
-  setDT() %>%
-  .[, variable := str_remove_all(y.name, "^Scaled[12]|K$") %>% as_factor()]
+  est$dynamic[[yvar]] |>
+  tidy_did() |>
+  setDT()
 
-yvar <- "Scaled2vatPaidK"
-
-tidy[y.name == yvar & inrange(event, -20, 12)] %>%
+tidy[inrange(event, -20, 12)] %>%
   .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
   ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
   geom_point(size = 2) +
@@ -44,13 +43,17 @@ tidy[y.name == yvar & inrange(event, -20, 12)] %>%
     inherit.aes = FALSE
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_x_continuous(breaks = seq(-20, 12, 4)) +
   scale_y_continuous(labels = scales::dollar_format()) + 
   scale_color_startrek() +
   scale_fill_startrek() +
   labs(
     x = "Trimestres desde el tratamiento", y = "Pagos de IVA",
-    caption = paste0("Overall ATT: ", round(att[[yvar]]$overall.att, 3))
+    caption = paste0("Overall ATT: ", round(att$overall.att, 3))
   ) +
   theme(legend.position = "none")
 
-ggsave("out/figures/did_quarterly_vat.png", width = 170, height = 100, units = "mm")
+ggsave(
+  paste0("out/figures/did.q.all.", yvar, ".", spec, ".png"),
+  width = 170, height = 100, units = "mm"
+)
