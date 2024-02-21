@@ -50,11 +50,11 @@ tab[, N := 1]
 
 # Label variables
 labelledlist <- list(
-  Scaler1 = "Ingreso promedio pre-tratamiento (millones de UYU)",
-  Scaled1deductPurchasesK = "Compras pre-tratamiento (% de ingreso)",
-  Scaled1vatSalesK = "IVA Ventas pre-tratamiento (% de ingreso)",
-  Scaled1vatPurchasesK = "IVA Compras pre-tratamiento (% de ingreso)",
-  Scaled1vatPaidK = "Pagos de IVA pre-tratamiento (% de ingreso)",
+  Scaler1 = "Ingreso reportado (millones de UYU)",
+  Scaled1deductPurchasesK = "Compras reportadas (% de ingreso)",
+  Scaled1vatSalesK = "IVA Ventas (% de ingreso)",
+  Scaled1vatPurchasesK = "IVA Compras (% de ingreso)",
+  Scaled1vatPaidK = "Pagos de IVA (% de ingreso)",
   receivedAnyT = "Recibió alguna e-factura",
   emittedAnyT = "Emitió alguna e-factura",
   neverTreated = "Nunca recibió e-factura",
@@ -64,6 +64,8 @@ var_label(tab) <- labelledlist
 
 # Build table -----------------------------------------------------------------
 
+theme_gtsummary_compact()
+theme_gtsummary_language(language = "es", decimal.mark = ",", big.mark = ".")
 tab %>%
   tbl_summary(
     statistic = list(
@@ -73,7 +75,16 @@ tab %>%
   ) %>%
   modify_header(
     label ~ "**Variable**",
-    stat_0 ~ "n(%); Mediana (p25, p75)"
+    stat_0 ~ ""
   ) %>%
-  as_gt() %>%
+  modify_footnote(stat_0 = NA) %>%
+  as_gt(locale = "es") %>%
+  tab_row_group(
+    gt::md("**Variables de tratamiento.** n (%)"),
+    1:3
+  ) %>%
+  tab_row_group(
+    gt::md("**Resultados pre-tratamiento.** Mediana (p25 – p75)"),
+    4:8
+  ) %>%
   gtsave("out/tables/sample_summary.tex")
