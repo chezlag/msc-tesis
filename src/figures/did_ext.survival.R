@@ -16,10 +16,11 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-est <- readRDS("out/analysis/did_yearly_ext.survival_S3.bal.ctrl.RDS")
+spec <- "S3_bal_base_nyt16"
+est <- readRDS(paste0("out/analysis/did.y.ext_survival.", spec, ".RDS"))
 
 tidy <-
-  readRDS("out/analysis/did_yearly_ext.survival_S3.bal.ctrl_aggte.dynamic.RDS") |>
+  est$dynamic |>
   map(possibly(tidy_did)) |>
   reduce(rbind) %>%
   setDT()
@@ -52,12 +53,7 @@ tidy[y.name %in% yvar] %>%
   scale_alpha_discrete(range = c(0.2, 0.55)) +
   labs(
     x = "Años desde el tratamiento", y = "Probabilidad de supervivencia",
-    color = NULL, fill = NULL, alpha = NULL,
-    caption = paste0(
-      "p-valor de pre-trends (Pago IVA): ", round(est[[yvar[1]]]$Wpval, 3), "\n",
-      "p-valor de pre-trends (DJ IRAE): ", round(est[[yvar[2]]]$Wpval, 3), "\n",
-      "p-valor de pre-trends (DJ IVA): ", round(est[[yvar[3]]]$Wpval, 3)
-      )
+    color = NULL, fill = NULL, alpha = NULL
   )
 
 ggsave("out/figures/did_ext.survival.png", width = 170, height = 100, units = "mm")
