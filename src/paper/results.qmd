@@ -1,68 +1,5 @@
 # Resultados {#sec-results}
 
-```{r lib-fcn}
-library(groundhog)
-pkgs <- c(
-  "arsenal",
-  "collapse",
-  "data.table",
-  "did",
-  "fixest",
-  "forcats",
-  "fst",
-  "ggplot2",
-  "ggsci",
-  "gtsummary",
-  "kableExtra",
-  "magrittr",
-  "modelsummary",
-  "purrr",
-  "rlist",
-  "stringr"
-)
-groundhog.library(pkgs, "2024-01-15")
-
-ROOT <- ""
-if (grepl("src/paper", getwd())) ROOT <- "../../"
-awd <- \(x) paste0(ROOT, x)
-
-source(paste0(ROOT, "src/lib/tidy_did.R"))
-source(paste0(ROOT, "src/lib/theme_set.R"))
-```
-
-```{r read-estimates}
-estname <- c("S1.bal.ctrl")
-main_est_list <-
-  awd(paste0("out/analysis/did_yearly_", estname, ".RDS")) |>
-  map(readRDS)
-names(main_est_list) <- estname
-# main overall att estimates
-main_est <- readRDS(awd("out/analysis/did_yearly_S1.bal.ctrl_aggte.simple.RDS"))
-main_est_tbl <- main_est %>%
-  map(possibly(tidy_did_list, NULL)) %>%
-  list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
-# mean pre 2011
-sample <-
-  read_fst(awd("out/data/samples.fst"), as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
-cohorts <-
-  read_fst(awd("out/data/cohorts.fst"), as.data.table = TRUE) %>%
-  .[G1 < 2016]
-dty <-
-  read_fst(awd("out/data/firms_yearly.fst"), as.data.table = TRUE) %>%
-  .[sample, on = "fid"] %>%
-  merge(cohorts, by = "fid") %>%
-  .[year %in% 2010:2016]
-var_regex <- "deductPurchases|Revenue|vatPurchases|vatSales|vatPaid"
-ar <- data.frame(
-  "Mean Y pre-2011",
-  map(
-    grep("Scaled1", names(main_est), value = TRUE),
-    \(x) dty[G1 < 2016 & year <= 2011, fmean(get(x), na.rm = TRUE)]
-))
-names(ar) <- NULL
-```
-
 ## Resultados principales
 
 ::: {#tbl-main-overall-att}
@@ -74,16 +11,11 @@ names(ar) <- NULL
 Efecto agregado de la recepción de e-facturas sobre cumplimiento tributario de las empresas.
 :::
 
-
 ### Recepción de e-facturas y compras reportadas
-
-En primer lugar, muestro evidencia en apoyo del supuesto de tendencias paralelas en las compras declaradas, un requerimiento para la identificación en el diseño de diferencias en diferencias. Primero, realizo un test de Wald de significación conjunta de los $ATT(g,t)$ previos al tratamiento y no rechazo que sean conjuntamente iguales a cero, con un p-valor de `r main_est_list$S1.bal.ctrl$Scaled1deductPurchasesK$Wpval`. Segundo, la @fig-cost-dynamic presenta la agregación de los $ATT(g,t)$ respecto al tiempo desde el tratamiento, un gráfico equivalente al estudio de eventos. Se observa que las bandas de confianza de los eventos pre-tratamiento incluyen al cero en todos los casos. Si bien ninguno de estos tests conempresa que el supuesto de tendencias paralelas se cumple, si dota de mayor credibilidad al diseño seleccionado: indica que, en los años antes de recibir e-facturas, los compras reportados por tratados y controles venían evolucionando en paralelo.
-
-Formalizo esta evidencia en la primera columna de la @tbl-main-overall-att, donde presento la agregación de los $ATT(g,t)$ que aproxima el efecto promedio de la política para todos los grupos, para todos los períodos post-tratamiento. En conjunto, la recepción de e-facturas genera un aumento promedio en las compras reportadas de \$`r main_est_tbl$Scaled1deductPurchasesK$tidy$estimate |> round(3)` por peso de facturación declarada en 2009–2010. En términos porcentuales respecto a la media pre-2011, representa un aumento de `r (main_est_tbl$Scaled1deductPurchasesK$tidy$estimate/ ar[[2]])  |> round(2) * 100`%.
 
 ::: {#fig-cost-dynamic}
 
-![](../../out/figures/did_main_purchases.png)
+![](../../out/figures/did.y.all.Scaled1deductPurchasesK.S1_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre las compras anuales reportadas por las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
 
@@ -92,15 +24,9 @@ Efecto de la recepción de e-facturas sobre compras anuales reportadas
 
 ### Recepción de e-facturas e ingresos reportados
 
-En segundo lugar, exploro los ingresos reportados. Al igual que en la sección anterior, comienzo por verificar la existencia de tendencias paralelas previas al tratamiento. Nuevamente, el test de significación conjunta no resulta estadísticamente significativo [^pv2] y la @fig-revenue-dynamic muestra que los coeficientes agregados al estilo de un estudio de eventos no resultan individualmente significativos antes del inicio del tratamiento.
-
-[^pv2]: El p-valor del test de Wald de significación conjunta es `r main_est_list$S1.bal.ctrl$Scaled1RevenueK$Wpval`.
-
-En la segunda columna de la @tbl-main-overall-att muestro la estimación del efecto agregado promedio sobre los tratados. La estimación puntual es de \$`r main_est_tbl$Scaled1RevenueK$tidy$estimate |> round(3)` por peso de facturación declarada en 2009–2010 –un `r (main_est_tbl$Scaled1RevenueK$tidy$estimate/ ar[[3]])  |> round(2) * 100`% de la media pre-2011–, pero no es significativa al 95%.
-
 ::: {#fig-revenue-dynamic}
 
-![](../../out/figures/did_main_revenue.png)
+![](../../out/figures/did.y.all.Scaled1RevenueK.S1_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre el ingreso anual reportado por las empresas, expresado en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
 
@@ -109,21 +35,13 @@ Efecto de la recepción de e-facturas sobre ingreso anual reportado
 
 ### Recepción de e-facturas y pago de IVA
 
-Por último analizo el pago anual de IVA, junto con IVA compras e IVA ventas declarados por las empresas. Cabe aclarar que aunque IVA compras e IVA ventas tienen un vínculo directo con costos y ventas reportados, respectivamente, dicho vínculo no es lineal. Hay productos y servicios que están sujetos a distintas tasas de IVA, lo cual crea no-linealidades en la relación entre IVA compras y costos (e IVA ventas e ingresos). Por otra parte, el IVA adeudado surge principalmente de la diferencia entre IVA ventas e IVA compras; pero la empresa toma decisiones respecto a como afrontar esa deuda.
-
-La @fig-vat-dynamic ilustra los efectos de tratamiento dinámicos sobre IVA compras (panel 1), IVA ventas (panel 2) y pago de IVA (panel 3). En ningún caso hay efectos significativos antes del tratamiento y rechazo el test de significación conjunta de los coeficientes pre-tratamiento[^pv3].  Hay efectos significativos en el segundo período luego del tratamiento, tanto en IVA compras e IVA ventas.
-
-[^pv3]: El p-valor del test es de `r main_est_list$S1.bal.ctrl$Scaled1vatPurchasesK$Wpval` para IVA Compras, `r main_est_list$S1.bal.ctrl$Scaled1vatSalesK$Wpval` para IVA Ventas, y `r main_est_list$S1.bal.ctrl$Scaled1vatPaidK$Wpval` para pago de IVA.
-
-Las últimas tres columnas de la @tbl-main-overall-att muestran el efecto agregado promedio sobre los tratados, para cada una de estas tres variables. La recepción de e-facturas tiene un impacto estadísticamente significativo sobre IVA compras, IVA ventas y sobre los pagos de IVA. La estimación puntual del efecto es de \$`r main_est_tbl$Scaled1vatPurchasesK$tidy$estimate |> round(3)`, \$`r main_est_tbl$Scaled1vatSalesK$tidy$estimate |> round(3)`, y \$`r main_est_tbl$Scaled1vatPaidK$tidy$estimate |> round(3)` por peso de facturación rezagada, respectivamente. Los efectos representan `r (main_est_tbl$Scaled1vatPurchasesK$tidy$estimate/ ar[[4]])  |> round(2) * 100`%, `r (main_est_tbl$Scaled1vatSalesK$tidy$estimate/ ar[[5]])  |> round(2) * 100`% y `r (main_est_tbl$Scaled1vatPaidK$tidy$estimate/ ar[[6]])  |> round(2) * 100`% de la media de cada una de las variables pre-2011.
-
 ::: {#fig-vat-dynamic layout="[[1,1], [1]]"}
 
-![IVA compras](../../out/figures/did_main_vatPurchases.png)
+![IVA compras](../../out/figures/did.y.all.Scaled1vatPurchasesK.S1_bal_ctrl_nyt16.png)
 
-![IVA Ventas](../../out/figures/did_main_vatSales.png)
+![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S1_bal_ctrl_nyt16.png)
 
-![Pagos de IVA](../../out/figures/did_main_vat.png)
+![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas y pagos de IVA, expresados en relación a la facturación anual promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ años después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ años. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
 
@@ -132,7 +50,7 @@ Efecto de la recepción de e-facturas sobre declaraciones de IVA y pagos anuales
 
 ::: {#fig-vat-dynamic-quarterly}
 
-![](../../out/figures/did_quarterly_vat.png)
+![](../../out/figures/did.q.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre los pagos trimestrales de IVA, expresados en relación a la facturación anual promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ trimestres después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ trimestres. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
 
@@ -141,23 +59,8 @@ Efecto de la recepción de e-facturas sobre pagos trimestrales de IVA
 
 ## Margen extensivo
 
-En esta sección presento evidencia sobre los efectos de la recepción de e-facturas en el margen extensivo. Estudio salidas de la muestra, cambios en la franja de renta ficta de IRAE, y cambios de declaraciones fictas a declaraciones reales de la actividad de la empresa. Aplico el diseño de @callawayDifferenceinDifferencesMultipleTime2021 utilizando variables dependientes binarias para aproximarnos a las probabilidades de los eventos mencionados. Utilizo distintas muestras en cada subsección, detallando las diferencias en cada caso.
 
 ### Salidas
-
-```{r read-est-ext.survival}
-est_survival <- readRDS(awd("out/analysis/did_yearly_ext.survival_S3.bal.ctrl.RDS"))
-colnames <- est_survival |> lapply(\(x) x$DIDparams$yname) |> unlist()
-names(est_survival) <- colnames
-```
-
-En primer lugar, estudio el impacto de la recepción de e-facturas sobre las salidas de las empresas de los registros tributarios. Para ello cambio la muestra: utilizo un panel de empresas balanceado en el período antes del primer tratamiento, pero permito salidas luego del inicio del tratamiento. Balanceo el panel artificialmente, de forma que las empresas aparezcan en todos los períodos a pesar de su salida. Luego cuantifico el impacto de la recepción de e-facturas sobre la probabilidad de que la empresa registre distintos tipos de actividad con la autoridad tributaria. Considero como variables dependientes la probabilidad de que la empresa presente el formulario 2148 (asociado al pago de IRAE e IPAT), el formulario 2178 (asociado al pago de IVA), y la probabilidad de que la empresa registre un pago de IVA en el período.
-
-La @fig-ext.survival-dynamic muestra los efectos de tratamiento dinámicos para cada una de las variables mencionadas. Ninguno de los coeficientes pre-tratamiento resulta significativo, y en ningún caso encuentro que los coeficientes pre-tratamiento sean conjuntamente significativos. [^wald-survival]
-
-[^wald-survival]: Los p-valores del test de Wald para la probabilidad de presentar el formulario 2148, el formulario 2178 y de realizar algún pago de IVA son `r est_survival$in214$Wpval`, `r est_survival$in217$Wpval`, y `r est_survival$anyVatPaid$Wpval`, respectivamente.
-
-La @tbl-ext.survival-overall-att formaliza la evidencia gráfica y presenta los efectos agregados de tratamiento sobre cada una de las probabilidades mencionadas. Se observa que la recepción de e-facturas tiene una asociación negativa con la supervivencia (formal) de las empresas, aunque su magnitud es limitada y los efectos son significativos solamente al 10% de confianza. La recepción de e-facturas reduce, en promedio, 0.8 puntos porcentuales la probabilidad de presentar el formulario 2148 y 0.9 puntos porcentuales la probabilidad de presentar el formulario 2178. Por otra parte, no aparecen efectos significativos sobre la probabilidad de que las empresas realicen pagos de IVA.
 
 ::: {#fig-ext.survival-dynamic}
 

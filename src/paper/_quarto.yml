@@ -14,14 +14,14 @@ book:
   date: "2024-01"
   chapters:
     - index.qmd
-    - intro.qmd
+    # - intro.qmd
     - context.qmd
     - lit_review.qmd
-    - hypotheses.qmd
-    - data.qmd
+    # - hypotheses.qmd
+    # - data.qmd
     - method.qmd
     - results.qmd
-    - closing_remarks.qmd
+    # - closing_remarks.qmd
     - references.qmd
   # appendices:
   #   - appendix_analysis.qmd
