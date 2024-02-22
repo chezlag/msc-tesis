@@ -47,7 +47,7 @@ dtycj <-
   .[sample, on = "fid"] %>%
   merge(cohorts, by = "fid") %>%
   merge(size, by = "fid", all.x = TRUE) %>%
-  .[eval(parse(text = params$sample_yearly))] %>% 
+  .[eval(parse(text = params$sample_yearly))] %>%
   .[year %in% 2010:2016]
 
 # size and age quartiles – sample specific
@@ -63,7 +63,7 @@ dtycj[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # outcome variable list
 varlist <- c(
-  "anyVatPaid", 
+  "anyVatPaid",
   "anyCorpTaxPaid",
   "anyOtherTaxPaid",
   "anyTaxPaid",
@@ -85,7 +85,7 @@ ddlist <- varlist %>%
       tname = "year",
       xformla = as.formula(params$formula),
       data = dtycj,
-      control_group = "nevertreated",
+      control_group = params$control_group,
       weightsname = params$wt,
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
@@ -94,26 +94,27 @@ ddlist <- varlist %>%
       base_period = "universal"
     )
   }))
-names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "simple",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
+      type = "simple",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
   }))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "dynamic",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
+      type = "dynamic",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
   }))
 
 # Output ----------------------------------------------------------------------
@@ -122,7 +123,7 @@ dynamic <- ddlist %>%
 ret <- list(ddlist, simple, dynamic)
 elnames <- c("attgt", "simple", "dynamic")
 names(ret) <- elnames
-for(el in elnames) names(ret[[el]]) <- varlist
+for (el in elnames) names(ret[[el]]) <- varlist
 
 message("Saving results: ", opt$output)
 saveRDS(ret, opt$output)
