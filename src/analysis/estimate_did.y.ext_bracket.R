@@ -38,7 +38,7 @@ sample <-
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
   .[eval(parse(text = params$cohorts_yearly))]
-  .[G1 < 2016]
+.[G1 < 2016]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -88,7 +88,7 @@ ddlist <- varlist %>%
       tname = "year",
       xformla = as.formula(params$formula),
       data = dty,
-      control_group = "notyettreated",
+      control_group = params$control_group,
       weightsname = params$wt,
       allow_unbalanced_panel = params$unbalanced,
       clustervars = "fid",
@@ -102,18 +102,24 @@ message("Estimating overall ATT.")
 simple <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "simple",
-          clustervars = "fid",
-          bstrap = TRUE)
+      type = "simple",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
   }))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "dynamic",
-          clustervars = "fid",
-          bstrap = TRUE)
+      type = "dynamic",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE,
+      min_e = -4,
+      max_e = 3
+    )
   }))
 
 # Output ----------------------------------------------------------------------
@@ -122,7 +128,7 @@ dynamic <- ddlist %>%
 ret <- list(ddlist, simple, dynamic)
 elnames <- c("attgt", "simple", "dynamic")
 names(ret) <- elnames
-for(el in elnames) names(ret[[el]]) <- varlist
+for (el in elnames) names(ret[[el]]) <- varlist
 
 message("Saving results: ", opt$output)
 saveRDS(ret, opt$output)
