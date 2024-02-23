@@ -16,7 +16,7 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-spec <- "S3_bal_base_nyt16"
+spec <- "S3_bal_ctrl_nyt16"
 est <- readRDS(paste0("out/analysis/did.y.ext_survival.", spec, ".RDS"))
 
 tidy <-
@@ -42,12 +42,11 @@ tidy[y.name %in% yvar] %>%
       fill = variable,
       alpha = fct_rev(treat)
     ),
-    # alpha = 0.4,
     inherit.aes = FALSE,
     position = position_dodge(width = .3)
   ) +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  scale_x_continuous(breaks = -3:2) +
+  scale_x_continuous(breaks = -4:2) +
   scale_color_d3() +
   scale_fill_d3() +
   scale_alpha_discrete(range = c(0.2, 0.55)) +
