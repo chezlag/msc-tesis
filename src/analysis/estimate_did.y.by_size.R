@@ -60,8 +60,10 @@ stubnames <- c(
   "Revenue",
   "vatPurchases",
   "vatSales",
-  "vatPaid"
-)  
+  "vatPaid",
+  "corpTaxPaid",
+  "totalTaxPaid"
+)
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
   paste0("IHS", stubnames, "K")
@@ -91,44 +93,48 @@ if (grepl("ctrl", opt$spec)) {
 
 message("Estimating group-time ATT.")
 ddlist <-
-  map2(rep(varlist, each = length(quantlist)),
-       rep(quantlist, length(varlist)),
-       possibly(\(x, y) {
-         att_gt(
-           yname = x,
-           gname = "G1",
-           idname = "fid",
-           tname = "year",
-           xformla = as.formula(params$formula) ,
-           data = dty[sizeQuartile == y],
-           control_group = params$control_group,
-           weightsname = params$wt,
-           allow_unbalanced_panel = params$unbalanced,
-           clustervars = "fid",
-           est_method = "dr",
-           cores = opt$threads,
-           base_period = "universal"
-         )
-       }))
+  map2(
+    rep(varlist, each = length(quantlist)),
+    rep(quantlist, length(varlist)),
+    possibly(\(x, y) {
+      att_gt(
+        yname = x,
+        gname = "G1",
+        idname = "fid",
+        tname = "year",
+        xformla = as.formula(params$formula),
+        data = dty[sizeQuartile == y],
+        control_group = params$control_group,
+        weightsname = params$wt,
+        allow_unbalanced_panel = params$unbalanced,
+        clustervars = "fid",
+        est_method = "dr",
+        cores = opt$threads,
+        base_period = "universal"
+      )
+    })
+  )
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "simple",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
+      type = "simple",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
   }))
 
 message("Estimating dynamic ATT.")
 dynamic <- ddlist %>%
   map(possibly(\(x) {
     aggte(x,
-          type = "dynamic",
-          clustervars = "fid",
-          bstrap = TRUE,
-          na.rm = TRUE)
+      type = "dynamic",
+      clustervars = "fid",
+      bstrap = TRUE,
+      na.rm = TRUE
+    )
   }))
 
 # Output ----------------------------------------------------------------------
@@ -140,13 +146,13 @@ names(ret) <- elnames
 
 # Name estimation output
 estnames <- map2(
-  rep(varlist, each = length(quantlist)), 
+  rep(varlist, each = length(quantlist)),
   rep(quantlist, length(varlist)),
   \(x, y) paste0(x, ".Q", y)
 ) |>
   unlist()
 
-for(el in elnames) names(ret[[el]]) <- estnames
+for (el in elnames) names(ret[[el]]) <- estnames
 
 message("Saving results: ", opt$output)
 saveRDS(ret, opt$output)

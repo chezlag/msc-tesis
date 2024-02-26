@@ -55,7 +55,7 @@ dtq[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dtq[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # outcome variable list
-stubs <- c("vat", "corpTax", "otherTax", "totalTax") 
+stubs <- c("vat", "corpTax", "otherTax", "totalTax")
 stubnames <- c(
   paste0(stubs, "Paid"),
   paste0(stubs, "Retained")
@@ -141,7 +141,7 @@ dynamic <- ddlist %>%
 ret <- list(ddlist, simple, dynamic)
 elnames <- c("attgt", "simple", "dynamic")
 names(ret) <- elnames
-for(el in elnames) names(ret[[el]]) <- varlist
+for (el in elnames) names(ret[[el]]) <- varlist
 
 message("Saving results: ", opt$output)
 saveRDS(ret, opt$output)

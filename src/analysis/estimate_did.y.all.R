@@ -59,7 +59,9 @@ stubnames <- c(
   "Revenue",
   "vatPurchases",
   "vatSales",
-  "vatPaid"
+  "vatPaid",
+  "corpTaxPaid",
+  "totalTaxPaid"
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
@@ -135,7 +137,7 @@ dynamic <- ddlist %>%
 ret <- list(ddlist, simple, dynamic)
 elnames <- c("attgt", "simple", "dynamic")
 names(ret) <- elnames
-for(el in elnames) names(ret[[el]]) <- varlist
+for (el in elnames) names(ret[[el]]) <- varlist
 
 message("Saving results: ", opt$output)
 saveRDS(ret, opt$output)
