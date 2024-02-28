@@ -51,9 +51,9 @@ ylablist <- c(
   "IVA adeudado = 0"
 )
 
-walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_all(x, y, z)))
-walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_by_industry(x, y, z)))
-walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_by_size(x, y, z)))
+walk(speclist, possibly(\(x) walk2(yvarlist, ylablist, possibly(\(y, z) gges_all(x, y, z)))))
+walk(speclist, possibly(\(x) walk2(yvarlist, ylablist, possibly(\(y, z) gges_by_industry(x, y, z)))))
+walk(speclist, possibly(\(x) walk2(yvarlist, ylablist, possibly(\(y, z) gges_by_size(x, y, z)))))
 
 # Quarterly plots -------------------------------------------------------------
 
