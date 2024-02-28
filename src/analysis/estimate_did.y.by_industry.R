@@ -86,6 +86,11 @@ yearlist <- list(
 map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
   walk2(yearlist, ~ dty[year %nin% .y, (.x) := NA])
 
+# remove industry control in estimations
+if (grepl(opt$spec, "ctrl")) {
+  params$formula <- "~ ageQuartile + assetsQuartile"
+}
+
 # define industries
 industrylist <- c(
   "Agricultura",
