@@ -60,7 +60,6 @@ quartiles <- dtycj[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dtycj[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dtycj[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
-
 # outcome variable list
 varlist <- c(
   "anyVatPaid",
