@@ -30,7 +30,8 @@ rule build_paper:
         text_files = QMD_FILES,
         yaml_files = YAML_FILES,
         biblo      = BIB_FILES,
-        tex_style  = TEX_FILES
+        tex_style  = TEX_FILES,
+        tables     = expand("out/tables/" + "{table}.tex", table = TABLES)
     output:
         "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     log:
