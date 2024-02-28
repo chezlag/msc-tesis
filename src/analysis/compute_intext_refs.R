@@ -27,4 +27,4 @@ outlist <-
 tab <- data.table(cmd = cmdlist, out = outlist)
 
 # export table
-fwrite(tab, "out/tables/intext_refs.csv")
+fwrite(tab, "out/analysis/intext_refs.csv")
