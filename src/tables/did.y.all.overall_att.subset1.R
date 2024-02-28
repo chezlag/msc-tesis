@@ -32,7 +32,7 @@ yvarlist <- c(
   "Scaled1RevenueK",
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
-  "IVA adeudado"
+  "Scaled1vatDueK"
 )
 ylablist <- c(
   "Compras reportadas",
