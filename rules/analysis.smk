@@ -23,16 +23,6 @@ DID_YEARLY_SURV = expand(
     estimates = ["S3_bal_base", "S3_bal_ctrl"],
     group = GROUP_LIST
 )
-# DID_YEARLY_BCKT = expand(
-#     "out/analysis/did.y.ext_bracket.{estimates}_{group}.RDS",
-#     estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
-#     group = GROUP_LIST
-# )
-# DID_YEARLY_REAL = expand(
-#     "out/analysis/did.y.ext_real.{estimates}_{group}.RDS",
-#     estimates = ["S2_bal_ctrl"],
-#     group = GROUP_LIST
-# )
 DID_QUARTERLY = expand(
     "out/analysis/did.q.all.{estimates}_{group}.RDS",
     estimates = ["S1_bal_ctrl", "S1_bal_base"],
@@ -46,8 +36,6 @@ rule did:
         DID_YEARLY,
         DID_YEARLY_BYV,
         DID_YEARLY_SURV,
-        # DID_YEARLY_BCKT,
-        # DID_YEARLY_REAL,
         DID_QUARTERLY
 
 # --- Build rules --- #
