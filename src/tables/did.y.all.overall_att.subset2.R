@@ -20,7 +20,7 @@ sample <-
   .[(inSample1), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < 2016]
+  .[G1 < Inf]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
@@ -50,7 +50,7 @@ ar <- data.frame(
   )
 )
 
-main_est_tbl %>%
+tidy %>%
   msummary(
     statistic = "conf.int",
     gof_map = c("nobs"),
