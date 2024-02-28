@@ -31,18 +31,24 @@ yvarlist <- c(
   "Scaled1RevenueK",
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
+  "Scaled1vatDueK",
   "Scaled1vatPaidK",
   "Scaled1corpTaxPaidK",
-  "Scaled1totalTaxPaidK"
+  "Scaled1totalTaxPaidK",
+  "vatCredit",
+  "noVatDue"
 )
 ylablist <- c(
   "Compras reportadas",
   "Ingreso reportado",
   "IVA Compras",
   "IVA Ventas",
+  "IVA adeudado",
   "Pagos de IVA",
   "Pagos de IRAE",
-  "Pago total de impuestos"
+  "Pago total de impuestos",
+  "IVA adeudado < 0",
+  "IVA adeudado = 0"
 )
 
 walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_all(x, y, z)))
