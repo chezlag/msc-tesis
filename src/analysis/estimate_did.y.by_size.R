@@ -44,8 +44,8 @@ dty <-
   .[eval(parse(text = params$sample_yearly))]
 
 # size and age quartiles – sample specific
-quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
-dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
+terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
+dty[, sizeQuartile := cut(Scaler1, breaks = terciles, labels = 1:3)]
 quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
 dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
@@ -87,7 +87,7 @@ map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
   walk2(yearlist, ~ dty[year %nin% .y, (.x) := NA])
 
 # size quantiles
-quantlist <- 1:4
+quantlist <- 1:3
 
 # Estimate --------------------------------------------------------------------
 
@@ -148,7 +148,7 @@ names(ret) <- elnames
 estnames <- map2(
   rep(varlist, each = length(quantlist)),
   rep(quantlist, length(varlist)),
-  \(x, y) paste0(x, ".Q", y)
+  \(x, y) paste0(x, ".T", y)
 ) |>
   unlist()
 
