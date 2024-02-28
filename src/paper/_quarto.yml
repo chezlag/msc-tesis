@@ -14,11 +14,11 @@ book:
   date: "2024-01"
   chapters:
     - index.qmd
-    # - intro.qmd
-    - context.qmd
+    - intro.qmd
     - lit_review.qmd
-    # - hypotheses.qmd
-    # - data.qmd
+    - context.qmd
+    - hypotheses.qmd
+    - data.qmd
     - method.qmd
     - results.qmd
     # - closing_remarks.qmd
