@@ -79,14 +79,16 @@ yearlist <- list(
 map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
   walk2(yearlist, ~ dty[year %nin% .y, (.x) := NA])
 
-# sector list
-dty[sector == "Agriculture, forestry, fishing, mining and quarrying", sector := "Primary activities"]
-industrylist <- c("Construction", "Services", "Retail trade", "Manufacturing", "Wholesale", "Primary activities")
-
-# replace sector with ind_code_2d if spec == ctrl
-if (grepl("ctrl", opt$spec)) {
-  params$formula <- "~ ageQuartile + assetsQuartile"
-}
+# define industries
+industrylist <- c(
+  "Agricultura",
+  "Manufactura",
+  "Construcción",
+  "Comercio mayorista",
+  "Comercio minorista",
+  "Otros servicios de mercado",
+  "Servicios no de mercado"
+)
 
 # Estimate --------------------------------------------------------------------
 
@@ -102,7 +104,7 @@ ddlist <-
         idname = "fid",
         tname = "year",
         xformla = as.formula(params$formula),
-        data = dty[sector == y],
+        data = dty[giro8 == y],
         control_group = params$control_group,
         weightsname = params$wt,
         allow_unbalanced_panel = params$unbalanced,
