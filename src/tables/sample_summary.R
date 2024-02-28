@@ -14,13 +14,15 @@ pkgs <- c(
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
+source("src/lib/cli_parsing_o.R")
+
 # Input -----------------------------------------------------------------------
 
 sample <- read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
   .[(inSample1), .(fid)]
 dts <- read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
-dty <-read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
+dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 
 # Compute pre-treatment means of main variables
@@ -29,11 +31,11 @@ varlist <- c(
   "Scaled1deductPurchasesK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
-  "Scaled1vatPaidK", 
+  "Scaled1vatPaidK",
   "fid"
 )
-pretreat <- 
-  collap(dty[year < 2011, ..varlist], ~ fid)
+pretreat <-
+  collap(dty[year < 2011, ..varlist], ~fid)
 
 # Create analysis data
 varlist <- c(
@@ -87,4 +89,4 @@ tab %>%
     gt::md("**Resultados pre-tratamiento.** Mediana (p25 – p75)"),
     4:8
   ) %>%
-  gtsave("out/tables/sample_summary.tex")
+  gtsave(opt$output)
