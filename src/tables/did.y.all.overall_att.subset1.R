@@ -61,3 +61,8 @@ tidy %>%
     add_rows = ar,
     output = opt$output
   )
+
+# delete table environment lines
+tex <- readLines(opt$output)
+grep("\\{table\\}", tex, value = TRUE, invert = TRUE) |>
+  writeLines(opt$output)
