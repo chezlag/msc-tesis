@@ -14,7 +14,7 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-gges_all <- function(spec, yvar, ylab, freq = "y") {
+gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
   est <- readRDS(paste0("out/analysis/did.", freq, ".all.", spec, ".RDS"))
   tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
   attgt <- est$attgt[[yvar]]
@@ -58,8 +58,8 @@ gges_all <- function(spec, yvar, ylab, freq = "y") {
 
   ggsave(
     paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png"),
-    width = 170,
-    height = 100,
+    width = width,
+    height = height,
     units = "mm"
   )
 }
