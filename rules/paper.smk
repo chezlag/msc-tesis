@@ -36,5 +36,6 @@ rule build_paper:
         "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     log:
         "logs/paper/" + "build_paper.Rout"
+    threads: 24
     shell:
         "quarto render src/paper > {log} {logAll}"
