@@ -26,8 +26,14 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
     "**"
   )
 
-  xmin <- -4; xmax <- 3; xbreaks <- xmin:xmax
-  if (freq == "q") xmin <- -20; xmax <- 12; xbreaks <- seq(xmin, xmax, 4)
+  xmin <- -4
+  xmax <- 3
+  xbreaks <- xmin:xmax
+  if (freq == "q") {
+    xmin <- -20
+    xmax <- 12
+    xbreaks <- seq(xmin, xmax, 4)
+  }
   xlab <- "Años desde el tratamiento"
   if (freq == "q") xlab <- "Trimestres desde el tratamiento"
 
