@@ -1,5 +1,5 @@
 library(groundhog)
-pkgs <- c("fastverse", "fst")
+pkgs <- c("fastverse", "fst", "purrr")
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
