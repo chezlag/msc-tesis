@@ -26,8 +26,8 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
     "**"
   )
 
-  xmin <- -4; xmax <- 3
-  if (freq == "q") xmin <- -20; xmax <- 12
+  xmin <- -4; xmax <- 3; xbreaks <- xmin:xmax
+  if (freq == "q") xmin <- -20; xmax <- 12; xbreaks <- seq(xmin, xmax, 4)
   xlab <- "Años desde el tratamiento"
   if (freq == "q") xlab <- "Trimestres desde el tratamiento"
 
@@ -47,7 +47,7 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
         inherit.aes = FALSE
       ) +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      scale_x_continuous(breaks = xmin:xmax) +
+      scale_x_continuous(breaks = xbreaks) +
       scale_y_continuous(labels = scales::dollar_format()) +
       scale_color_startrek() +
       scale_fill_startrek() +
