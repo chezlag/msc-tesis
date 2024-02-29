@@ -10,7 +10,7 @@ ROOT <- ""
 if (grepl("src/paper", getwd())) ROOT <- "../../"
 awd <- \(x) paste0(ROOT, x)
 
-intext <- fread(awd("out/tables/intext.csv"))
+intext <- fread(awd("out/analysis/intext_refs.csv"))
 ```
 
 ## Fuentes de datos y variables de análisis
