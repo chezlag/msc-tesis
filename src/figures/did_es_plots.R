@@ -71,4 +71,4 @@ ylablist <- c(
   "Pagos de IRAE",
   "Pago total de impuestos"
 )
-walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_quarterly(x, y, z)))
+walk(speclist, \(x) walk2(yvarlist, ylablist, \(y, z) gges_all(x, y, z, "q")))

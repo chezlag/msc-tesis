@@ -14,8 +14,8 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-gges_all <- function(spec, yvar, ylab) {
-  est <- readRDS(paste0("out/analysis/did.y.all.", spec, ".RDS"))
+gges_all <- function(spec, yvar, ylab, freq = "y") {
+  est <- readRDS(paste0("out/analysis/did.", freq, ".all.", spec, ".RDS"))
   tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
   attgt <- est$attgt[[yvar]]
   simple <- est$simple[[yvar]]
@@ -26,7 +26,12 @@ gges_all <- function(spec, yvar, ylab) {
     "**"
   )
 
-  tidy[y.name == yvar & inrange(event, -4, 4)] %>%
+  xmin <- -4; xmax <- 3
+  if (freq == "q") xmin <- -20; xmax <- 12
+  xlab <- "Años desde el tratamiento"
+  if (freq == "q") xlab <- "Trimestres desde el tratamiento"
+
+  tidy[y.name == yvar & inrange(event, xmin, xmax)] %>%
     .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
     ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
       geom_point(size = 2) +
@@ -42,17 +47,17 @@ gges_all <- function(spec, yvar, ylab) {
         inherit.aes = FALSE
       ) +
       geom_hline(yintercept = 0, linetype = "dashed") +
-      scale_x_continuous(breaks = -4:3) +
+      scale_x_continuous(breaks = xmin:xmax) +
       scale_y_continuous(labels = scales::dollar_format()) +
       scale_color_startrek() +
       scale_fill_startrek() +
       labs(
-        x = "Años desde el tratamiento", y = ylab
+        x = xlab, y = ylab
       ) +
       theme(legend.position = "none")
 
   ggsave(
-    paste0("out/figures/did.y.all.", yvar, ".", spec, ".png"),
+    paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png"),
     width = 170,
     height = 100,
     units = "mm"
@@ -141,58 +146,12 @@ gges_by_size <- function(spec, yvar, ylab) {
       labs(
         x = "Años desde el tratamiento", y = ylab,
         alpha = NULL,
-        color = "Cuartil de facturación pre-tratamiento", 
+        color = "Cuartil de facturación pre-tratamiento",
         fill = "Cuartil de facturación pre-tratamiento"
       )
 
   ggsave(
     paste0("out/figures/did.y.by_size.", yvar, ".", spec, ".png"),
-    width = 170,
-    height = 100,
-    units = "mm"
-  )
-}
-
-gges_quarterly <- function(spec, yvar, ylab) {
-  est <- readRDS(paste0("out/analysis/did.q.all.", spec, ".RDS"))
-  tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
-  attgt <- est$attgt[[yvar]]
-  simple <- est$simple[[yvar]]
-
-  sig <- ifelse(
-    inrange(0, tidy_did(simple)$conf.low, tidy_did(simple)$conf.high),
-    "",
-    "**"
-  )
-
-  tidy[y.name == yvar & inrange(event, -20, 12)] %>%
-    .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
-    ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
-    geom_point(size = 2) +
-    geom_rect(
-      aes(
-        ymin = conf.low,
-        ymax = conf.high,
-        xmin = event - 0.1,
-        xmax = event + 0.1,
-        fill = treat
-      ),
-      alpha = 0.4,
-      inherit.aes = FALSE
-    ) +
-    geom_hline(yintercept = 0, linetype = "dashed") +
-    scale_x_continuous(breaks = seq(-20, 12, 4)) +
-    scale_y_continuous(labels = scales::dollar_format()) +
-    scale_color_startrek() +
-    scale_fill_startrek() +
-    labs(
-      x = "Trimestres desde el tratamiento", y = ylab,
-      caption = paste0("Overall ATT: ", round(simple$overall.att, 3), sig)
-    ) +
-    theme(legend.position = "none")
-
-  ggsave(
-    paste0("out/figures/did.q.all.", yvar, ".", spec, ".png"),
     width = 170,
     height = 100,
     units = "mm"
