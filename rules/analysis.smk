@@ -5,7 +5,7 @@
 SAMPLE_LIST = ["0", "1", "2", "3", "B1", "B2"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
-GROUP_LIST = ["nyt16", "nyt15", "nytInf", "nt"]
+GROUP_LIST = ["nyt16", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
@@ -26,7 +26,7 @@ DID_YEARLY_SURV = expand(
 DID_QUARTERLY = expand(
     "out/analysis/did.q.all.{estimates}_{group}.RDS",
     estimates = ["S1_bal_ctrl", "S1_bal_base"],
-    group = ["nyt16"]
+    group = GROUP_LIST
 )
 
 # --- Target rules --- #
@@ -149,67 +149,6 @@ rule estimate_did_yearly_ext_survival:
         panel = "|".join(PANEL_LIST),
         spec = "|".join(SPEC_LIST),
         group = "|".join(GROUP_LIST)
-    shell:
-        "{runR} {input.script} \
-            --threads {threads} \
-            --sample {input.params_sample} \
-            --panel {input.params_panel} \
-            --spec {input.params_spec} \
-            --group {input.params_group} \
-            --output {output.est} \
-            > {log} {logAll}"
-
-
-rule estimate_did_yearly_ext_bracket:
-    input:
-        script = "src/analysis/" + "estimate_did.y.ext_bracket.R",
-        data = "out/data/" + "firms_yearly_filled.fst",
-        samples = "out/data/" + "samples.fst",
-        params_sample = "src/model_specs/" + "sample_{sample}.json",
-        params_panel = "src/model_specs/" + "panel_{panel}.json",
-        params_spec = "src/model_specs/" + "spec_{spec}.json",
-        params_group = "src/model_specs/" + "group_{group}.json"
-
-    output:
-        est = "out/analysis/" + "did.y.ext_bracket.S{sample}_{panel}_{spec}_{group}.RDS",
-    log:
-        "logs/analysis/" + "estimate_did.y.ext_bracket.S{sample}_{panel}_{spec}_{group}.Rout"
-    threads: 16
-    wildcard_constraints: 
-        sample = "|".join(SAMPLE_LIST),
-        panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST),
-        group = "|".join(GROUP_LIST)
-    shell:
-        "{runR} {input.script} \
-            --threads {threads} \
-            --sample {input.params_sample} \
-            --panel {input.params_panel} \
-            --spec {input.params_spec} \
-            --group {input.params_group} \
-            --output {output.est} \
-            > {log} {logAll}"
-
-
-rule estimate_did_yearly_ext_real:
-    input:
-        script = "src/analysis/" + "estimate_did.y.ext_real.R",
-        data = "out/data/" + "firms_yearly_filled.fst",
-        samples = "out/data/" + "samples.fst",
-        params_sample = "src/model_specs/" + "sample_{sample}.json",
-        params_panel = "src/model_specs/" + "panel_{panel}.json",
-        params_spec = "src/model_specs/" + "spec_{spec}.json",
-        params_group = "src/model_specs/" + "group_{group}.json"
-
-    output:
-        est = "out/analysis/" + "did.y.ext_real.S{sample}_{panel}_{spec}_{group}.RDS",
-    log:
-        "logs/analysis/" + "estimate_did/y.ext_real.S{sample}_{panel}_{spec}_{group}.Rout"
-    threads: 16
-    wildcard_constraints: 
-        sample = "|".join(SAMPLE_LIST),
-        panel = "|".join(PANEL_LIST),
-        spec = "|".join(SPEC_LIST)
     shell:
         "{runR} {input.script} \
             --threads {threads} \
