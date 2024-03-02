@@ -1,4 +1,4 @@
 {
-    "formula": "~ ageQuartile + assetsQuartile + giro8",
+    "formula": "~ ageQuartile + assetsQuartile + giro3",
     "wt": null
 }
