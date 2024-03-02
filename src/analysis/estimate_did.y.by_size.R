@@ -53,30 +53,22 @@ quartiles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
-# dichotomous variables
-dty[, vatCredit := vatDue < 0]
-dty[, noVatDue := vatDue == 0]
-
-# outcome variable list
+# outcome varlist
 stubnames <- c(
-  "deductPurchases",
-  "Revenue",
   "vatPurchases",
   "vatSales",
   "vatDue",
-  "vatPaid",
-  "corpTaxPaid",
-  "totalTaxPaid"
+  "vatPaid"
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
-  "vatCredit",
-  "noVatDue"
+  paste0("Scaled2", stubnames, "K"),
+  paste0("IHS", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatDue",
+  "vatPurchases|vatSales|vatDue",
   "vatPaid"
 )
 yearlist <- list(

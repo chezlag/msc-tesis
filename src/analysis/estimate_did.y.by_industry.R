@@ -59,24 +59,20 @@ dty[, noVatDue := vatDue == 0]
 
 # outcome variable list
 stubnames <- c(
-  "deductPurchases",
-  "Revenue",
   "vatPurchases",
   "vatSales",
   "vatDue",
-  "vatPaid",
-  "corpTaxPaid",
-  "totalTaxPaid"
+  "vatPaid"
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
-  "vatCredit",
-  "noVatDue"
+  paste0("Scaled2", stubnames, "K"),
+  paste0("IHS", stubnames, "K")
 )
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "deductPurchases|taxableTurnover|vatPurchases|vatSales",
+  "vatPurchases|vatSales|vatDue",
   "vatPaid"
 )
 yearlist <- list(

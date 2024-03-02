@@ -61,9 +61,7 @@ stubnames <- c(
   paste0(stubs, "Retained")
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0("Scaled2", stubnames, "K"),
-  paste0("Log", stubnames, "K")
+  paste0("Scaled1", stubnames, "K")
 )
 
 # Numerize quarters for estimation
