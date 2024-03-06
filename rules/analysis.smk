@@ -2,31 +2,31 @@
 
 # --- Dictionaries --- #
 
-SAMPLE_LIST = ["0", "1", "2", "3", "B1", "B2"]
+SAMPLE_LIST = ["1", "2", "1f", "2f"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 GROUP_LIST = ["nyt16", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
-    estimates = ["S1_bal_ctrl", "S5_bal_ctrl"],
-    group = GROUP_LIST
+    estimates = ["S2_bal_ctrl"],
+    group = ["nyt16"]
 )
 DID_YEARLY_BYV = expand(
     "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S1_bal_ctrl", "S5_bal_ctrl"],
-    group = GROUP_LIST
+    estimates = ["S2_bal_ctrl"],
+    group = ["nyt16"]
 )
 DID_YEARLY_SURV = expand(
     "out/analysis/did.y.ext_survival.{estimates}_{group}.RDS",
-    estimates = ["S3_bal_ctrl"],
-    group = GROUP_LIST
+    estimates = ["S2f_bal_ctrl"],
+    group = ["nyt16"]
 )
 DID_QUARTERLY = expand(
     "out/analysis/did.q.all.{estimates}_{group}.RDS",
-    estimates = ["S1_bal_ctrl", "S5_bal_ctrl"],
-    group = GROUP_LIST
+    estimates = ["S2_bal_ctrl"],
+    group = ["nyt16"]
 )
 
 # --- Target rules --- #

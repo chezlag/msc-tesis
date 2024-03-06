@@ -38,6 +38,7 @@ lookup_list[[3]] <- dty[, .N, .(fid, hasCovariates)][, .(fid, hasCovariates)]
 lookup_list[[4]] <- dty[, .(maxTurnoverMUI = fmax(turnoverMUI)), fid]
 lookup_list[[5]] <- dty[year <= 2011, .(maxPreTurnoverMUI = fmax(turnoverMUI)), fid]
 lookup_list[[6]] <- dty[, .(minTurnoverMUI = fmin(turnoverMUI)), fid]
+lookup_list[[7]] <- dty[year <= 2011, .(minPreTurnoverMUI = fmin(turnoverMUI)), fid]
 
 # En todos los años / en algún año / todos los años pre (múltiples variables)
 cols <- c("in214", "in217", "djFict", "activeBusiness")
@@ -78,12 +79,8 @@ lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)),
 
 lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))]
-lut[, inSample2 := djFictAnyT & in214AllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))] # nolint
-lut[, inSample3 := djFictAllTPre]
-lut[, inSample4 := inSample1 & minTurnoverMUI > .305 & maxTurnoverMUI < 4]
-# new samples
-lut[, inSampleB0 := in214AnyT & in217AnyT]
-lut[, inSampleB1 := in214AllT & maxPreTurnoverMUI < 4]
-lut[, inSampleB2 := in214AllTPre & inSampleB0 & maxPreTurnoverMUI < 4]
+lut[, inSample2 := inSample1 & minTurnoverMUI > .305 & maxTurnoverMUI < 4]
+lut[, inSample1f := djFictAllTPre]
+lut[, inSample2f := inSample1f & minPreTurnoverMUI > .305 & maxPreTurnoverMUI < 4]
 
 write_fst(lut, opt$output)
