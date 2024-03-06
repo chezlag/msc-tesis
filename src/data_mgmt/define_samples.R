@@ -72,7 +72,7 @@ lut <- list(lookup_list, lookup_AllT, lookup_AnyT, lookup_AllTPre) %>%
   unlist(recursive = FALSE) %>%
   reduce(merge, by = "fid", all = TRUE)
 
-cols <- grep("^fid$|^max", names(lut), value = TRUE, invert = TRUE)
+cols <- grep("^fid$|^max|^min", names(lut), value = TRUE, invert = TRUE)
 lut[, (cols) := lapply(.SD, \(x) fifelse(is.na(x), FALSE, x)),
   .SDcols = cols
 ]
