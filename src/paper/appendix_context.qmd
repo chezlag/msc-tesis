@@ -1,4 +1,4 @@
-# Apéndice A. Contexto.
+# Contexto
 
 ::: {#fig-small-players}
 
