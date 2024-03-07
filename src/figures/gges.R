@@ -14,7 +14,7 @@ groundhog.library(pkgs, date)
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 
-gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
+gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100, y_dollar = TRUE) {
   est <- readRDS(paste0("out/analysis/did.", freq, ".all.", spec, ".RDS"))
   tidy <- est$dynamic[[yvar]] |> tidy_did() |> setDT()
   attgt <- est$attgt[[yvar]]
@@ -37,7 +37,7 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
   xlab <- "Años desde el tratamiento"
   if (freq == "q") xlab <- "Trimestres desde el tratamiento"
 
-  tidy[y.name == yvar & inrange(event, xmin, xmax)] %>%
+  p <- tidy[y.name == yvar & inrange(event, xmin, xmax)] %>%
     .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
     ggplot(aes(x = event, y = estimate, color = treat, fill = treat)) +
       geom_point(size = 2) +
@@ -54,13 +54,18 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100) {
       ) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_x_continuous(breaks = xbreaks) +
-      scale_y_continuous(labels = scales::dollar_format()) +
       scale_color_startrek() +
       scale_fill_startrek() +
       labs(
         x = xlab, y = ylab
       ) +
       theme(legend.position = "none")
+
+  if (y_dollar) {
+    p + scale_y_continuous(labels = scales::dollar_format())
+  } else {
+    p
+  }
 
   ggsave(
     paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png"),

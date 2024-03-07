@@ -22,44 +22,47 @@ source("src/figures/gges.R")
 
 spec <- "S1_bal_ctrl_nyt16"
 yvarlist <- c(
-  "Scaled1deductPurchasesK",
-  "Scaled1RevenueK",
-  "Scaled1vatDueK",
-  "Scaled1totalTaxPaidK"
-)
-ylablist <- c(
-  "Compras reportadas",
-  "Ingreso reportado",
-  "IVA adeudado",
-  "Pago total de impuestos"
-)
-walk2(yvarlist, ylablist, \(x, y) gges_all(spec, x, y))
-
-yvarlist <- c(
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
+  "Scaled1vatDueK",
   "Scaled1vatPaidK",
-  "Scaled1corpTaxPaidK"
+  "vatPurchases0",
+  "vatSales0",
+  "vatDue0",
+  "vatPaid0"
 )
 ylablist <- c(
   "IVA Compras",
   "IVA Ventas",
-  "Pagos de IVA",
-  "Pagos de IRAE"
+  "IVA adeudado",
+  "Pago de IVA",
+  "P(IVA Compras > 0)",
+  "P(IVA Ventas > 0)",
+  "P(IVA adeudado > 0)",
+  "P(Pago de IVA > 0)"
 )
-walk2(yvarlist, ylablist, \(x, y) gges_all(spec, x, y, "y", 85, 100))
+y_dollar <- c(rep(TRUE, 4), rep(FALSE, 4))
+params <- list(yvarlist, ylablist, y_dollar)
+pwalk(params, \(x, y, z) gges_all(spec, x, y, "y", 85, 50, y_dollar = z))
 
 # Quarterly plots -------------------------------------------------------------
 
 yvarlist <- c(
   "Scaled1vatPaidK",
   "Scaled1corpTaxPaidK",
-  "Scaled1totalTaxPaidK"
+  "Scaled1totalTaxPaidK",
+  "vatPaid0",
+  "corpTaxPaid0",
+  "totalTaxPaid0"
 )
 ylablist <- c(
   "Pagos de IVA",
   "Pagos de IRAE",
-  "Pago total de impuestos"
+  "Pago total de impuestos",
+  "P(Pagos de IVA > 0)",
+  "P(Pagos de IRAE > 0)",
+  "P(Pago total de impuestos > 0)"
 )
-walk2(yvarlist[1:2], ylablist[1:2], \(x, y) gges_all(spec, x, y, "q", 85, 100))
-gges_all(spec, yvarlist[3], ylablist[3], "q")
+y_dollar <- c(rep(TRUE, 3), rep(FALSE, 3))
+params <- list(yvarlist, ylablist, y_dollar)
+pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "q", 85, 50, y_dollar = z)))
