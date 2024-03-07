@@ -1,6 +1,5 @@
 # Apéndice A. Contexto.
 
-
 ::: {#fig-small-players}
 
 ![](../../out/figures/small_players.png)
@@ -8,4 +7,13 @@
 > \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El eje x está en logaritmos.
 
 Participación de las empresas de la muestra en las ventas de sus provedores.
+:::
+
+::: {#fig-share-zero}
+
+![](../../out/figures/share_zeros.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra 
+
+Proporción de cero en distintas variables de resultados.
 :::

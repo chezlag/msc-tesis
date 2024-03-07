@@ -23,15 +23,6 @@ Por último, también cuento con un registro mensual de pagos de impuestos de la
 
 Siguiendo el análisis de @yaganCapitalTaxReform2015, deflacto todas las variables de resultado a pesos de 2016 y las reescalo por el ingreso deflactado anual promedio de la empresa entre 2009 y 2010, antes de que comenzara a implementarse la e-facturación. Además, incorporo un conjunto de controles en todas mis estimaciones: cuartiles de facturación pre-tratamiento, cuartiles de activos pre-tratamiento, cuartiles de edad de las empresas y 58 sectores de actividad en base a código CIIU a dos dígitos.
 
-| Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
-|-----------------------|----------------------------------------------------------------------------------------|-------------------------|--------------------|
-| Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
-| Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
-| Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
-| Transacciones con CFE | Resumen mensual de transacciones con CFE entre pares de empresas.                      | Mensual                 | Ene/2010--Nov/2016 |
-
-: Fuentes de datos y período de disponibilidad {#tbl-data}
-
 ### Definición del tratamiento
 
 Tomo el **año donde la empresa recibe su primera factura electrónica** como el inicio del tratamiento. Exploto la variación en el año del tratamiento para estimar el efecto de la recepción de e-facturas. Defino el tratamiento de forma binaria y absorbente. El tratamiento es binario en tanto no considero distintas intensidades de recepción de e-facturas. El tratamiento es absorbente en tanto –en la mayoría de los casos– una vez que la empresa recibe su primer e-factura, las sigue recibiendo todos los años hasta el final del período.
@@ -48,23 +39,4 @@ Impongo dos restricciones adicionales a la muestra. Primero, excluyo a las empre
 
 Hay `r intext[cmd == "dts[(inSample1), .N]", out]` empresas en la muestra final. La @tbl-sample-summary presenta sus principales características. Se trata de empresas relativamente pequeñas, que en 2009–2010 presentaban facturación anual promedio de \$`r intext[cmd == "(dty[(inSample1), fmean(Scaler1)] / 1e6) |> round(digits = 1)", out]` millones. Se observa que `r intext[cmd == "dty[(inSample1), fmean(neverTreated)] |> round(digits = 1)", out]`% de las empresas en la muestra recibe alguna e-factura entre 2012 y 2016. En contraste, solo `r intext[cmd == "dty[(inSample1), fmean(emittedAnyT)] |> round(digits = 1)", out]`% empresas emiten e-facturas. La empresa mediana en la muestra reportaba \$0,61 de compras deducibles por peso de ingreso rezagado, \$0,30 de IVA ventas, \$0.14 de IVA compras y \$0.03 en pagos de IVA.
 
-::: {#tbl-sample-summary}
-
-\small \input{../../out/tables/sample_summary.tex}
-
-> \scriptsize \textbf{Notas:} El ingreso pre-tratamiento está expresado en millones de $ UYU. Los demás resultados están expresados como proporción del ingreso reportado pre-tratamiento. Por ejemplo, la empresa mediana reportaba $0,61 de compras por cada peso de ingreso pre-tratamiento. Para el análisis principal descarto a las 1222 empresas que no reciben e-facturas en el período, pero incluyo a las 19 empresas que emiten e-facturas.
-
-Estadísticas descriptivas de la muestra.
-:::
-
 En la muestra final solo `r intext[cmd == "round(100 * dts[(inSample1), fmean(neverTreated)], digits = 1)", out]`% de las empresas llega a 2016 sin haber recibido algún comprobante electrónico. La @fig-adoption-inSample presenta la función de distribución acumulada de la primera recepción para el universo de empresas y para la muestra seleccionada. La adopción se extiende más rápido en la muestra que en el universo de empresas: a principios de 2015 el 80% de la empresas de la muestra había recibido alguna e-factura.
-
-::: {#fig-adoption-inSample}
-
-![](../../out/figures/takeup_sample.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas. Se distingue entre el universo de empresas en los microdatos de DGI (línea roja) y en la muestra principal de análisis (línea azul). La muestra principal consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016. En los análisis que siguen se excluye al 10% de empresas que no reciben ninguna e-factura en el período de análisis, dado que no constituyen un grupo de control comparable al resto de las empresas en la muestra.
-
-Función de distribución acumulada de la fecha de primera recepción de e-facturas.
-:::
-

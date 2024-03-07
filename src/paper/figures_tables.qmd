@@ -1,0 +1,73 @@
+# Figuras y tablas
+
+::: {#fig-adoption}
+
+![](../../out/figures/takeup.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI. La línea a rayas indica el inicio de la obligatoriedad de emisión para las empresas con ingresos mayores a 30 millones de UI. Las empresas con menos ingresos anuales fueron mandatadas a emitir e-facturas de acuerdo al cronograma en la tabla (+++) del anexo.
+>
+> \scriptsize \textbf{Fuente:} Elaboración propia en base a microdatos del sistema de comprobantes electrónicos.
+
+Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
+:::
+
+
+| Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
+|-----------------------|----------------------------------------------------------------------------------------|-------------------------|--------------------|
+| Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
+| Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
+| Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
+| Transacciones con CFE | Resumen mensual de transacciones con CFE entre pares de empresas.                      | Mensual                 | Ene/2010--Nov/2016 |
+
+: Fuentes de datos y período de disponibilidad {#tbl-data}
+
+::: {#tbl-sample-summary}
+
+\small \input{../../out/tables/sample_summary.tex}
+
+> \scriptsize \textbf{Notas:} El ingreso pre-tratamiento está expresado en millones de $ UYU. Los demás resultados están expresados como proporción del ingreso reportado pre-tratamiento. Por ejemplo, la empresa mediana reportaba $0,61 de compras por cada peso de ingreso pre-tratamiento. Para el análisis principal descarto a las 1222 empresas que no reciben e-facturas en el período, pero incluyo a las 19 empresas que emiten e-facturas.
+
+Estadísticas descriptivas de la muestra.
+:::
+
+::: {#fig-adoption-inSample}
+
+![](../../out/figures/takeup_sample.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas. Se distingue entre el universo de empresas en los microdatos de DGI (línea roja) y en la muestra principal de análisis (línea azul). La muestra principal consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016. En los análisis que siguen se excluye al 10% de empresas que no reciben ninguna e-factura en el período de análisis, dado que no constituyen un grupo de control comparable al resto de las empresas en la muestra.
+
+Función de distribución acumulada de la fecha de primera recepción de e-facturas.
+:::
+
+::: {#tbl-overall-att-subset1}
+
+\small \input{../../out/tables/did.y.all.overall_att.subset1.tex}
+
+> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre variables relacionadas con el cumplimiento tributario de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
+
+Efecto agregado de la recepción de e-facturas sobre compras y ventas reportadas por las empresas a DGI.
+:::
+
+::: {#fig-did-y-all-es1 layout-ncol=2}
+
+![IVA Compras](../../out/figures/did.y.all.Scaled1vatPurchasesK.S1_bal_ctrl_nyt16.png)
+![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.Scaled1vatDueK.S1_bal_ctrl_nyt16.png)
+![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio de eventos.
+:::
+
+::: {#fig-did-y-all-es2 layout-ncol=2}
+
+![IVA Compras](../../out/figures/did.y.all.vatPurchases0.S1_bal_ctrl_nyt16.png)
+![IVA Ventas](../../out/figures/did.y.all.vatSales0.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.vatDue0.S1_bal_ctrl_nyt16.png)
+![Pagos de IVA](../../out/figures/did.y.all.vatPaid0.S1_bal_ctrl_nyt16.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre la probabilidad de que la empresa reporte IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el margen extensivo. Estudio de eventos.
+:::
