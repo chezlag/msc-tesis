@@ -54,14 +54,18 @@ quartiles <- dtq[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dtq[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dtq[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
+# Extensive margin responses
+varlist <- c("vatPaid", "corpTaxPaid", "otherTaxPaid", "totalTaxPaid")
+for (v in varlist) dtq[, (paste0(v, "0")) := get(v) == 0]
+
 # outcome variable list
 stubs <- c("vat", "corpTax", "otherTax", "totalTax")
 stubnames <- c(
-  paste0(stubs, "Paid"),
-  paste0(stubs, "Retained")
+  paste0(stubs, "Paid")
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K")
+  paste0("Scaled1", stubnames, "K"),
+  paste0(stubnames, "0")
 )
 
 # Numerize quarters for estimation

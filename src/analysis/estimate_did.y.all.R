@@ -53,6 +53,10 @@ quartiles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
+# Extensive margin responses
+varlist <- c("vatPurchases", "vatSales", "vatDue", "vatPaid")
+for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
+
 # outcome variable list
 stubnames <- c(
   "vatPurchases",
@@ -62,8 +66,7 @@ stubnames <- c(
 )
 varlist <- c(
   paste0("Scaled1", stubnames, "K"),
-  paste0("Scaled2", stubnames, "K"),
-  paste0("IHS", stubnames, "K")
+  paste0(stubnames, "0")
 )
 
 # remove incomplete years from each dataset
