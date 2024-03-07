@@ -1,82 +1,11 @@
 # Resultados {#sec-results}
 
-## Resultados principales
+## Recepción de e-facturas  
 
-::: {#tbl-overall-att-subset1}
+En primer lugar, cuantifico la importancia de la recepción de e-facturas en la declaración de IVA de las empresas. ¿Cuánta nueva información de las empresas aporta la recepción de e-facturas a la DGI? Las empresas 
 
-\small \input{../../out/tables/did.y.all.overall_att.subset1.tex}
+## Cumplimiento tributario
 
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre variables relacionadas con el cumplimiento tributario de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
+Estudio los efectos de la recepción de e-facturas sobre el cumplimiento tributario siguiendo la estrategia de diferencias en diferencias delineada en la @sec-method. Exploto la variación en las fechas de recepción de la primera e-factura y comparo las declaraciones de IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas receptoras y no receptoras. Excluyo a las empresas que no habían recibido e-facturas hasta 2016, por tratarse de un grupo pequeño y con características distintas al resto de las empresas en la muestra.
 
-Efecto agregado de la recepción de e-facturas sobre compras y ventas reportadas por las empresas a DGI.
-:::
-
-### Recepción de e-facturas y reportes a DGI
-
-::: {#fig-cost-dynamic}
-
-![](../../out/figures/did.y.all.Scaled1deductPurchasesK.S1_bal_ctrl_nyt16.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre las compras anuales reportadas por las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto de la recepción de e-facturas sobre compras anuales reportadas
-:::
-
-::: {#fig-revenue-dynamic}
-
-![](../../out/figures/did.y.all.Scaled1RevenueK.S1_bal_ctrl_nyt16.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre el ingreso anual reportado por las empresas, expresado en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto de la recepción de e-facturas sobre ingreso anual reportado
-:::
-
-::: {#fig-vat-components-dynamic layout="[[1,1], [1]]"}
-
-![IVA compras](../../out/figures/did.y.all.Scaled1vatPurchasesK.S1_bal_ctrl_nyt16.png)
-
-![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S1_bal_ctrl_nyt16.png)
-
-![IVA adeudado](../../out/figures/did.y.all.Scaled1vatDueK.S1_bal_ctrl_nyt16.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA Compras e IVA Ventas reportados por las empresas, expresado en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto de la recepción de e-facturas sobre IVA Compras, IVA Ventas e IVA adeuddado
-:::
-
-### Recepción de e-facturas y pago de impuestos
-
-::: {#tbl-overall-att-subset2}
-
-\small \input{../../out/tables/did.y.all.overall_att.subset2.tex}
-
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre los pagos de impuestos de las empresas, expresados en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto agregado de la recepción de e-facturas sobre pagos de impuestos de las empresas.
-:::
-
-::: {#fig-tax-paid-dynamic layout="[[1,1], [1]]"}
-
-![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
-
-![Pagos de IRAE](../../out/figures/did.y.all.Scaled1corpTaxPaidK.S1_bal_ctrl_nyt16.png)
-
-![Pago total de impuestos](../../out/figures/did.y.all.Scaled1totalTaxPaidK.S1_bal_ctrl_nyt16.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas y pagos de IVA, expresados en relación a la facturación anual promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ años después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ años. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto de la recepción de e-facturas sobre pagos anuales de impuestos
-:::
-
-::: {#fig-vat-dynamic-quarterly layout="[[1,1], [1]]"}
-
-![Pagos de IVA](../../out/figures/did.q.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
-
-![Pagos de IRAE](../../out/figures/did.q.all.Scaled1corpTaxPaidK.S1_bal_ctrl_nyt16.png)
-
-![Pago total de impuestos](../../out/figures/did.q.all.Scaled1totalTaxPaidK.S1_bal_ctrl_nyt16.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre los pagos trimestrales de IVA, expresados en relación a la facturación anual promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ trimestres después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ trimestres. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. El estadístico bajo el gráfico presenta el p-valor de un test de Wald de significación conjunta de las tendencias previas. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por tamaño, edad y sector de actividad.
-
-Efecto de la recepción de e-facturas sobre pagos trimestrales de impuestos
-:::
+La @fig-did-y-all-es1 muestra la estimación de estudio de eventos para las variables principales de análisis, estimada siguiendo la @eq-es con el método de @callawayDifferenceinDifferencesMultipleTime2021. Los grupos de tratamiento y control no presentan tendencias previas divergentes, lo cual apoya el supuesto de tendencias paralelas en que se basa el método de estimación seleccionado. La @tbl-overall-att-subset1 sintetiza la evidencia gráfica y presenta los resultados de estimar la @eq-overall. 

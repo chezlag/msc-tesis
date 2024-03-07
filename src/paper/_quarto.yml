@@ -21,11 +21,12 @@ book:
     - data.qmd
     - method.qmd
     - results.qmd
-    # - closing_remarks.qmd
+    - closing_remarks.qmd
     - references.qmd
-  # appendices:
-  #   - appendix_analysis.qmd
-  #   - appendix_data.qmd
+    - figures_tables.qmd
+  appendices:
+    # - appendix_analysis.qmd
+    - appendix_context.qmd
 
 bibliography: references.bib
 
