@@ -9,23 +9,23 @@ GROUP_LIST = ["nyt16", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
-    estimates = ["S2_bal_ctrl"],
+    estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
     group = ["nyt16"]
 )
 DID_YEARLY_BYV = expand(
     "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S2_bal_ctrl"],
+    estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
     group = ["nyt16"]
 )
 DID_YEARLY_SURV = expand(
     "out/analysis/did.y.ext_survival.{estimates}_{group}.RDS",
-    estimates = ["S2f_bal_ctrl"],
+    estimates = ["S1f_bal_ctrl", "S2f_bal_ctrl"],
     group = ["nyt16"]
 )
 DID_QUARTERLY = expand(
     "out/analysis/did.q.all.{estimates}_{group}.RDS",
-    estimates = ["S2_bal_ctrl"],
+    estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
     group = ["nyt16"]
 )
 
