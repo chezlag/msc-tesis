@@ -25,17 +25,22 @@ dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
   merge(cohorts, by = "fid") %>%
-  .[year %in% 2010:2016]
+  .[year %in% 2009:2016]
+
+varlist <- c("vatPurchases", "vatSales", "vatDue", "vatPaid")
+for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
 
 yvarlist <- c(
-  "Scaled1vatPaidK",
-  "Scaled1corpTaxPaidK",
-  "Scaled1totalTaxPaidK"
+  "vatPurchases0",
+  "vatSales0",
+  "vatDue0",
+  "vatPaid0"
 )
 ylablist <- c(
-  "Pagos de IVA",
-  "Pagos de IRAE",
-  "Pago total de impuestos"
+  "P(IVA Compras > 0)",
+  "P(IVA Ventas > 0)",
+  "P(IVA adeudado > 0)",
+  "P(Pago de IVA > 0)"
 )
 
 est <- readRDS("out/analysis/did.y.all.S1_bal_ctrl_nyt16.RDS")

@@ -28,18 +28,16 @@ dty <-
   .[year %in% 2010:2016]
 
 yvarlist <- c(
-  "Scaled1deductPurchasesK",
-  "Scaled1RevenueK",
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
-  "Scaled1vatDueK"
+  "Scaled1vatDueK",
+  "Scaled1vatPaidK"
 )
 ylablist <- c(
-  "Compras reportadas",
-  "Ingreso reportado",
   "IVA Compras",
   "IVA Ventas",
-  "IVA adeudado"
+  "IVA adeudado",
+  "Pago de IVA"
 )
 
 est <- readRDS("out/analysis/did.y.all.S1_bal_ctrl_nyt16.RDS")
