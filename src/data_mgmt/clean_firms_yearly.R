@@ -15,7 +15,8 @@ message("Processing corporate income tax affidavits and balance sheets.")
 
 bal <-
   read_fst("src/data/dgi_firmas/out/data/balances_allF_allY.fst",
-           as.data.table = TRUE)
+    as.data.table = TRUE
+  )
 
 bal[, turnover := ventas]
 
@@ -37,14 +38,16 @@ bal[irae > CorpTaxDue, CorpTaxDue := CorpTaxDue + 1]
 
 idvars <- c("fid", "year")
 balvarlist <-
-  c("turnover",
+  c(
+    "turnover",
     "Revenue",
     "Cost",
     "Profit",
     "CorpTaxDue",
     "deduccFict",
     "activoContable",
-    "patrimonioContable")
+    "patrimonioContable"
+  )
 balformula <- arsenal::formulize(balvarlist, idvars)
 cbal <- collap(bal, balformula, fsum) |>
   merge(bal[, .(djFict = fmax(djFict) |> as.logical()), idvars], by = idvars)
@@ -56,7 +59,8 @@ message("Processing VAT affidavits and taxable sales/purchases.")
 
 sls <-
   read_fst("src/data/dgi_firmas/out/data/sales_allF_allY.fst",
-           as.data.table = TRUE)
+    as.data.table = TRUE
+  )
 
 slsvarlist <- c(
   "vatSales",
@@ -72,7 +76,8 @@ slsvarlist <- c(
 slsformula <- arsenal::formulize(slsvarlist, idvars)
 
 for (v in slsvarlist) sls[, (v) := get(v) / 1e03] # avoid int overflow in collap
-csls <- collap(sls, slsformula, fsum)
+csls <- collap(sls, slsformula, fsum) |>
+  merge(sls[, .(CEDE = fmax(CEDE) |> as.logical()), idvars], by = idvars)
 for (v in slsvarlist) csls[, (v) := get(v) * 1e03]
 rm(sls)
 
@@ -82,7 +87,8 @@ message("Processing tax paid and tax retained by third parties.")
 
 tax <-
   read_fst("src/data/dgi_firmas/out/data/tax_paid_retained.fst",
-           as.data.table = TRUE)
+    as.data.table = TRUE
+  )
 tax[, year := lubridate::year(date)]
 
 taxvarlist <- grep("Paid$|Retained$", names(tax), value = TRUE)
@@ -192,6 +198,14 @@ dt[, emitted := !is.na(nTicketsEmitted)]
 dt[, anyTaxPaid := totalTaxPaid > 0]
 dt[, activeBusiness := in214 & in217]
 dt[, activeTaxpayer := activeBusiness & anyTaxPaid]
+
+# Tipo de declaración de impuestos
+dt[, taxType := fcase(
+  (CEDE), "CEDE",
+  RevenueMUI < .305, "Exempt",
+  RevenueMUI < 4 & djFict, "Simple",
+  RevenueMUI > 4 | !djFict, "Regular"
+)]
 
 # Export ----------------------------------------------------------------------
 
