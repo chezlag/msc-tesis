@@ -67,7 +67,7 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100, y_
     p
   }
 
-  ret <- paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png")
+  ret <- paste0("out/figures/es.did.", freq, ".all.", yvar, ".", spec, ".png")
   message("Saving figure: ", ret)
 
   ggsave(
@@ -117,7 +117,7 @@ gges_by_industry <- function(spec, yvar, ylab) {
       )
 
   ggsave(
-    paste0("out/figures/did.y.by_industry.", yvar, ".", spec, ".png"),
+    paste0("out/figures/es.did.y.by_industry.", yvar, ".", spec, ".png"),
     width = 170,
     height = 100,
     units = "mm"
@@ -165,7 +165,7 @@ gges_by_size <- function(spec, yvar, ylab) {
       )
 
   ggsave(
-    paste0("out/figures/did.y.by_size.", yvar, ".", spec, ".png"),
+    paste0("out/figures/es.did.y.by_size.", yvar, ".", spec, ".png"),
     width = 170,
     height = 100,
     units = "mm"
