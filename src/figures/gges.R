@@ -67,8 +67,11 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100, y_
     p
   }
 
+  ret <- paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png")
+  message("Saving figure: ", ret)
+
   ggsave(
-    paste0("out/figures/did.", freq, ".all.", yvar, ".", spec, ".png"),
+    ret,
     width = width,
     height = height,
     units = "mm"
