@@ -5,45 +5,59 @@ pkgs <- c(
   "magrittr",
   "forcats",
   "fst",
+  "jsonlite",
   "purrr",
   "stringr",
   "rlist"
 )
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
-source("src/lib/cli_parsing_o.R")
-
+source("src/lib/cli_parsing_oim.R")
 source("src/lib/tidy_did.R")
+
+message("Parsing model parameters.")
+message("Sample: ", opt$sample)
+message("Panel: ", opt$panel)
+message("Spec: ", opt$spec)
+params <- list(
+  opt$sample,
+  opt$panel,
+  opt$spec,
+  opt$group
+) %>%
+  map(fromJSON) %>%
+  unlist(recursive = FALSE)
+
+# Input -----------------------------------------------------------------------
 
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
+  .[eval(parse(text = params$sample_fid)), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
-  .[G1 < Inf]
+  .[eval(parse(text = params$cohorts_yearly))]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
   merge(cohorts, by = "fid") %>%
-  .[year %in% 2009:2016]
+  .[eval(parse(text = params$sample_yearly))]
 
-varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
-for (v in varlist) dty[, (paste0(v, "0")) := get(v) > 0]
+# Table -----------------------------------------------------------------------
 
 yvarlist <- c(
-  "vatPurchases0",
-  "vatSales0",
-  "netVatLiability0",
-  "vatPaid0"
+  "Scaled1vatPurchasesK",
+  "Scaled1vatSalesK",
+  "Scaled1netVatLiabilityK",
+  "Scaled1vatPaidK"
 )
 ylablist <- c(
-  "P(IVA Compras > 0)",
-  "P(IVA Ventas > 0)",
-  "P(IVA adeudado > 0)",
-  "P(Pago de IVA > 0)"
+  "IVA Compras",
+  "IVA Ventas",
+  "IVA adeudado",
+  "Pago de IVA"
 )
 
-est <- readRDS("out/analysis/did.y.all.S1_bal_ctrl_nyt16.RDS")
+est <- readRDS(opt$input)
 tidy <- est$simple[yvarlist] |> map(tidy_did_list)
 names(tidy) <- ylablist
 
