@@ -27,15 +27,14 @@ dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
 
 # Compute pre-treatment means of main variables
 varlist <- c(
-  "Scaler1",
+  "RevenueM",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
   "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "fid"
 )
-pretreat <-
-  collap(dty[year < 2011, ..varlist], ~fid)
+pretreat <- dty[year == 2010, ..varlist]
 
 # Create analysis data
 varlist <- c(
@@ -47,12 +46,11 @@ varlist <- c(
 tab <- dts[, ..varlist] %>%
   merge(pretreat, by = "fid")
 tab[, fid := NULL]
-tab[, Scaler1 := Scaler1 / 1e06]
 tab[, N := 1]
 
 # Label variables
 labelledlist <- list(
-  Scaler1 = "Ingreso reportado (millones de UYU)",
+  RevenueM = "Ingreso reportado (millones de UYU)",
   Scaled1vatSalesK = "IVA Ventas (% de ingreso)",
   Scaled1vatPurchasesK = "IVA Compras (% de ingreso)",
   Scaled1netVatLiabilityK = "IVA adeudado (% de ingreso)",
