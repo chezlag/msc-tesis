@@ -9,7 +9,7 @@ source("src/lib/theme_set.R")
 
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
+  .[(inSample3), .(fid)]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]

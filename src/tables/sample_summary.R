@@ -19,7 +19,7 @@ source("src/lib/cli_parsing_o.R")
 # Input -----------------------------------------------------------------------
 
 sample <- read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
+  .[(inSample3), .(fid)]
 dts <- read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
@@ -28,9 +28,9 @@ dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
 # Compute pre-treatment means of main variables
 varlist <- c(
   "Scaler1",
-  "Scaled1imputedPurchasesK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "fid"
 )
@@ -53,9 +53,9 @@ tab[, N := 1]
 # Label variables
 labelledlist <- list(
   Scaler1 = "Ingreso reportado (millones de UYU)",
-  Scaled1imputedPurchasesK = "Compras reportadas (% de ingreso)",
   Scaled1vatSalesK = "IVA Ventas (% de ingreso)",
   Scaled1vatPurchasesK = "IVA Compras (% de ingreso)",
+  Scaled1netVatLiabilityK = "IVA adeudado (% de ingreso)",
   Scaled1vatPaidK = "Pagos de IVA (% de ingreso)",
   receivedAnyT = "Recibió alguna e-factura",
   emittedAnyT = "Emitió alguna e-factura",

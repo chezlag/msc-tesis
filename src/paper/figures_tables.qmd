@@ -41,7 +41,7 @@ Función de distribución acumulada de la fecha de primera recepción de e-factu
 
 ::: {#tbl-overall-att-subset1}
 
-\small \input{../../out/tables/did.y.all.overall_att.subset1.tex}
+\small \input{../../out/tables/did.y.all.overall_att_1.S3_bal_ctrl_nyt16.tex}
 
 > \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre variables relacionadas con el cumplimiento tributario de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
@@ -50,7 +50,7 @@ Efecto agregado de la recepción de e-facturas sobre compras y ventas reportadas
 
 ::: {#tbl-overall-att-subset2}
 
-\small \input{../../out/tables/did.y.all.overall_att.subset2.tex}
+\small \input{../../out/tables/did.y.all.overall_att_2.S3_bal_ctrl_nyt16.tex}
 
 > \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
@@ -59,13 +59,13 @@ Efecto agregado de la recepción de e-facturas sobre compras y ventas reportadas
 
 ::: {#fig-did-y-all-es1 layout="[[1,1], [1,1], [1]]"}
 
-![IVA Compras](../../out/figures/did.y.all.Scaled1vatPurchasesK.S1_bal_ctrl_nyt16.png)
+![IVA Compras](../../out/figures/did.y.all.Scaled1vatPurchasesK.S3_bal_ctrl_nyt16.png)
 
-![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S1_bal_ctrl_nyt16.png)
+![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S3_bal_ctrl_nyt16.png)
 
-![IVA Adeudado](../../out/figures/did.y.all.Scaled1netVatLiabilityK.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.Scaled1netVatLiabilityK.S3_bal_ctrl_nyt16.png)
 
-![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
+![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S3_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
@@ -74,13 +74,13 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 
 ::: {#fig-did-y-all-es2 layout="[[1,1], [1,1], [1]]"}
 
-![IVA Compras](../../out/figures/did.y.all.vatPurchases0.S1_bal_ctrl_nyt16.png)
+![IVA Compras](../../out/figures/did.y.all.vatPurchases0.S3_bal_ctrl_nyt16.png)
 
-![IVA Ventas](../../out/figures/did.y.all.vatSales0.S1_bal_ctrl_nyt16.png)
+![IVA Ventas](../../out/figures/did.y.all.vatSales0.S3_bal_ctrl_nyt16.png)
 
-![IVA Adeudado](../../out/figures/did.y.all.netVatLiability0.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.netVatLiability0.S3_bal_ctrl_nyt16.png)
 
-![Pagos de IVA](../../out/figures/did.y.all.vatPaid0.S1_bal_ctrl_nyt16.png)
+![Pagos de IVA](../../out/figures/did.y.all.vatPaid0.S3_bal_ctrl_nyt16.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre la probabilidad de que la empresa reporte IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponde al efecto de tratamiento promedio $e$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $e$ períodos. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Las barras representan intervalos de confianza simultáneos. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 

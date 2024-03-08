@@ -20,7 +20,7 @@ source("src/figures/gges.R")
 
 # Yearly plots  ---------------------------------------------------------------
 
-spec <- "S2_bal_ctrl_nyt16"
+spec <- "S3_bal_ctrl_nyt16"
 yvarlist <- c(
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",

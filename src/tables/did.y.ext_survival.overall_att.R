@@ -17,7 +17,7 @@ source("src/lib/tidy_did.R")
 
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
+  .[(inSample3), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE) %>%
   .[G1 < Inf]

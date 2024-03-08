@@ -14,8 +14,8 @@ dts <-
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
 dalt <- dts %>%
-  .[, .(fid, inSample1, dateFirstReception)]
-dfig <- rbind(dalt[, color := "Todas las firmas"], dalt[(inSample1), color := "Firmas en muestra"])
+  .[, .(fid, inSample3, dateFirstReception)]
+dfig <- rbind(dalt[, color := "Todas las firmas"], dalt[(inSample3), color := "Firmas en muestra"])
 dfig %>%
   ggplot(aes(color = color)) +
   stat_ecdf(aes(dateFirstReception), geom = "step") +
