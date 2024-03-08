@@ -43,7 +43,7 @@ ylablist <- c(
 )
 y_dollar <- c(rep(TRUE, 4), rep(FALSE, 4))
 params <- list(yvarlist, ylablist, y_dollar)
-pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "y", 85, 50, y_dollar = z)))
+pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "y", 134, 80, y_dollar = z)))
 
 # Quarterly plots -------------------------------------------------------------
 
@@ -65,4 +65,4 @@ ylablist <- c(
 )
 y_dollar <- c(rep(TRUE, 3), rep(FALSE, 3))
 params <- list(yvarlist, ylablist, y_dollar)
-pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "q", 85, 50, y_dollar = z)))
+pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "q", 134, 80, y_dollar = z)))
