@@ -84,6 +84,11 @@ map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
 # size quantiles
 quantlist <- 1:3
 
+# replace sector with ind_code_2d if spec == ctrl
+if (grepl("ctrl", opt$spec)) {
+  params$formula <- "~ ageQuartile + assetsQuartile"
+}
+
 # Estimate --------------------------------------------------------------------
 
 message("Estimating group-time ATT.")
