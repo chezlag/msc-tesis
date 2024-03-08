@@ -63,13 +63,13 @@ dtycj[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 # outcome variable list
 varlist <- c(
   "anyVatPaid",
-  "anyCorpTaxPaid",
-  "anyOtherTaxPaid",
-  "anyTaxPaid",
   "anyRecordedActivity",
   "exit",
   "in214",
-  "in217"
+  "in217",
+  "taxTypeSimple",
+  "taxTypeRegular",
+  "taxTypeExempt"
 )
 
 # Estimate --------------------------------------------------------------------

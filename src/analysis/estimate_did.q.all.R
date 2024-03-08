@@ -56,7 +56,7 @@ dtq[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # Extensive margin responses
 varlist <- c("vatPaid", "corpTaxPaid", "otherTaxPaid", "totalTaxPaid")
-for (v in varlist) dtq[, (paste0(v, "0")) := get(v) == 0]
+for (v in varlist) dtq[, (paste0(v, "0")) := get(v) > 0]
 
 # outcome variable list
 stubs <- c("vat", "corpTax", "otherTax", "totalTax")

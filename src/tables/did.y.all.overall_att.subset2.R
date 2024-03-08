@@ -28,7 +28,7 @@ dty <-
   .[year %in% 2009:2016]
 
 varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
-for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
+for (v in varlist) dty[, (paste0(v, "0")) := get(v) > 0]
 
 yvarlist <- c(
   "vatPurchases0",

@@ -40,7 +40,8 @@ ylablist <- c(
   "Pago de IVA"
 )
 
-est <- readRDS("out/analysis/did.y.all.S1_bal_ctrl_nyt16.RDS")
+spec <- "S1_bal_ctrl_nyt16"
+est <- readRDS(paste0("out/analysis/did.y.all.", spec, ".RDS"))
 tidy <- est$simple[yvarlist] |> map(tidy_did_list)
 names(tidy) <- ylablist
 

@@ -55,7 +55,7 @@ dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # Extensive margin responses
 varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
-for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
+for (v in varlist) dty[, (paste0(v, "0")) := get(v) > 0]
 
 # outcome variable list
 stubnames <- c(
