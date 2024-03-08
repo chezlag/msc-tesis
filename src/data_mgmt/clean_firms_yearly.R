@@ -63,21 +63,30 @@ sls <-
   )
 
 slsvarlist <- c(
-  "vatSales",
-  "vatPurchases",
-  "vatDue",
-  "vatDueV2",
-  "vatLiability",
-  "turnoverNetOfTax",
   "taxableTurnover",
-  "deductPurchases",
-  "vatDeductions"
+  "vatSales",
+  "turnoverNetOfTax",
+  "vatPurchases",
+  "imputedPurchases",
+  "carriedOverVatCredit",
+  "excessVatCredit",
+  "netVatLiability",
+  "vatDue"
 )
 slsformula <- arsenal::formulize(slsvarlist, idvars)
 
 for (v in slsvarlist) sls[, (v) := get(v) / 1e03] # avoid int overflow in collap
 csls <- collap(sls, slsformula, fsum) |>
-  merge(sls[, .(CEDE = fmax(CEDE) |> as.logical()), idvars], by = idvars)
+  merge(
+    sls[
+      , .(
+        CEDE = fmax(CEDE) |> as.logical(),
+        exported = fmax(exported) |> as.logical()
+      ),
+      idvars
+    ],
+    by = idvars
+  )
 for (v in slsvarlist) csls[, (v) := get(v) * 1e03]
 rm(sls)
 
