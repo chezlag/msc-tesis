@@ -20,7 +20,8 @@ rule build_paper:
         yaml_files = YAML_FILES,
         biblo      = BIB_FILES,
         tex_style  = TEX_FILES,
-        tables     = TAB_OVERALL_ATT
+        tables     = TABLIST,
+        plots      = PLOTLIST
     output:
         "out/paper/" + "Nuevas-tecnologías-y-evasión-de-impuestos.pdf"
     log:

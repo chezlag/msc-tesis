@@ -1,18 +1,36 @@
 # --- Dictionaries --- #
 
-TAB_OVERALL_ATT = expand(
+SIMPLE_TABLES = [
+    "sample_summary"
+]
+TL0 = expand("out/tables/{table}.png", table = SIMPLE_TABLES)
+TL1 = expand(
     "out/tables/did.y.all.overall_att_{subset}.{estimates}.tex",
     estimates = ["S1_bal_ctrl_nyt16", "S2_bal_ctrl_nyt16", "S3_bal_ctrl_nyt16"],
     subset = ["1", "2"]
 )
 
+TABLIST = TL0 + TL1
+
 # --- Target rules --- #
 
 rule tabs:
     input:
-        TAB_OVERALL_ATT
+        TABLIST
 
 # --- Build Rules --- #
+
+rule tables:
+    input:
+        script = "src/tables/" + "{table}.R"
+    output:
+        table = "out/tables/" + "{table}.tex"
+    log:
+        "logs/tables/" + "{table}.Rout"
+    wildcard_constraints:
+        table = "|".join(TL0)
+    shell:
+        "{runR} {input.script} -o {output.table} > {log} {logAll}"
 
 rule tab_overall_att:
     input:
@@ -31,7 +49,7 @@ rule tab_overall_att:
         panel = "|".join(PANEL_LIST),
         spec = "|".join(SPEC_LIST),
         group = "|".join(GROUP_LIST),
-        subset = "|".join(["1", "2"])
+        subset = "1|2"
     shell:
         "{runR} {input.script} \
             --input {input.est} \
