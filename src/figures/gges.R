@@ -78,7 +78,7 @@ gges_all <- function(spec, yvar, ylab, freq = "y", width = 170, height = 100, y_
   )
 }
 
-gges_by_industry <- function(spec, yvar, ylab) {
+gges_by_industry <- function(spec, yvar, ylab, width = 170, height = 100, y_dollar = TRUE) {
   est <- readRDS(paste0("out/analysis/did.y.by_industry.", spec, ".RDS"))
   items <- grep(yvar, names(est$dynamic))
   indlist <- str_remove(names(est$dynamic)[items], paste0(yvar, "."))
@@ -89,7 +89,8 @@ gges_by_industry <- function(spec, yvar, ylab) {
       \(x, y) tidy_did(x) %>% setDT() %>% .[, sector := y]
     ) |>
     reduce(rbind)
-  tidy[inrange(event, -4, 2)] %>%
+
+  p <- tidy[inrange(event, -4, 2)] %>%
     .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
     ggplot(aes(x = event, y = estimate, color = sector)) +
       geom_point(position = position_dodge(width = .3)) +
@@ -116,15 +117,24 @@ gges_by_industry <- function(spec, yvar, ylab) {
         color = NULL, fill = NULL, alpha = NULL
       )
 
+  if (y_dollar) {
+    p + scale_y_continuous(labels = scales::dollar_format())
+  } else {
+    p
+  }
+
+  ret <- paste0("out/figures/es.did.y.by_industry.", yvar, ".", spec, ".png")
+  message("Saving figure: ", ret)
+
   ggsave(
-    paste0("out/figures/es.did.y.by_industry.", yvar, ".", spec, ".png"),
-    width = 170,
-    height = 100,
+    ret,
+    width = width,
+    height = height,
     units = "mm"
   )
 }
 
-gges_by_size <- function(spec, yvar, ylab) {
+gges_by_size <- function(spec, yvar, ylab, width = 170, height = 100, y_dollar = TRUE) {
   est <- readRDS(paste0("out/analysis/did.y.by_size.", spec, ".RDS"))
   items <- grep(yvar, names(est$dynamic))
   sizelist <- str_remove(names(est$dynamic)[items], paste0(yvar, "."))
@@ -135,7 +145,8 @@ gges_by_size <- function(spec, yvar, ylab) {
       \(x, y) tidy_did(x) %>% setDT() %>% .[, sizeQuartile := y]
     ) |>
     reduce(rbind)
-  tidy[inrange(event, -4, 2)] %>%
+
+  p <- tidy[inrange(event, -4, 2)] %>%
     .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
     ggplot(aes(x = event, y = estimate, color = sizeQuartile)) +
       geom_point(position = position_dodge(width = .3)) +
@@ -160,14 +171,23 @@ gges_by_size <- function(spec, yvar, ylab) {
       labs(
         x = "Años desde el tratamiento", y = ylab,
         alpha = NULL,
-        color = "Cuartil de facturación pre-tratamiento",
-        fill = "Cuartil de facturación pre-tratamiento"
+        color = "Tercil de facturación pre-tratamiento",
+        fill = "Tercil de facturación pre-tratamiento"
       )
 
+  if (y_dollar) {
+    p + scale_y_continuous(labels = scales::dollar_format())
+  } else {
+    p
+  }
+
+  ret <- paste0("out/figures/es.did.y.by_size.", yvar, ".", spec, ".png")
+  message("Saving figure: ", ret)
+
   ggsave(
-    paste0("out/figures/es.did.y.by_size.", yvar, ".", spec, ".png"),
-    width = 170,
-    height = 100,
+    ret,
+    width = width,
+    height = height,
     units = "mm"
   )
 }
