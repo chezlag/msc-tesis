@@ -27,13 +27,13 @@ dty <-
   merge(cohorts, by = "fid") %>%
   .[year %in% 2009:2016]
 
-varlist <- c("vatPurchases", "vatSales", "vatDue", "vatPaid")
+varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
 for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
 
 yvarlist <- c(
   "vatPurchases0",
   "vatSales0",
-  "vatDue0",
+  "netVatLiability0",
   "vatPaid0"
 )
 ylablist <- c(

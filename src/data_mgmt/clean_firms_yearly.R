@@ -179,10 +179,10 @@ for (v in paste0(varlist, "K")) dt[, (paste0("Scaled3", v)) := get(v) / Scaler3]
 for (v in paste0(varlist, "K")) dt[, (paste0("Scaled4", v)) := get(v) / Scaler4]
 
 # Compras reportadas al inicio del período y en los dos años anteriores
-create_lag_by_group(dt, "year == 2009", "deductPurchasesK", "Purch2009", "fid")
-create_lag_by_group(dt, "year == 2010", "deductPurchasesK", "Purch2010", "fid")
+create_lag_by_group(dt, "year == 2009", "imputedPurchasesK", "Purch2009", "fid")
+create_lag_by_group(dt, "year == 2010", "imputedPurchasesK", "Purch2010", "fid")
 dt[, Purch1 := (Purch2009 + Purch2010) / 2]
-dt[, Purch2 := (shift(deductPurchasesK, 1L) + shift(deductPurchasesK, 2L)) / 2, fid]
+dt[, Purch2 := (shift(imputedPurchasesK, 1L) + shift(imputedPurchasesK, 2L)) / 2, fid]
 
 # Franjas de facturación en MUI
 dt[(djFict), djFictInBracket1 := RevenueMUI < 2]

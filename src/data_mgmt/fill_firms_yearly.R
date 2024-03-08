@@ -42,7 +42,7 @@ dt[, anyOtherTaxPaid := fifelse(!is.na(otherTaxPaid), otherTaxPaid > 0, FALSE)]
 dt[, anyTaxPaid := fifelse(!is.na(totalTaxPaid), totalTaxPaid > 0, FALSE)]
 dt[, anyRecordedActivity := !is.na(in214) | !is.na(in217) | !is.na(inPay)]
 
-dt[, anyRecordedPurchases := fifelse(!is.na(deductPurchases), deductPurchases > 0, FALSE)]
+dt[, anyRecordedPurchases := fifelse(!is.na(imputedPurchases), imputedPurchases > 0, FALSE)]
 dt[, anyRecordedSales := fifelse(!is.na(taxableTurnover), taxableTurnover > 0, FALSE)]
 dt[, anyRecordedRevenue := fifelse(!is.na(Revenue), Revenue > 0, FALSE)]
 

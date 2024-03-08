@@ -54,14 +54,14 @@ dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
 # Extensive margin responses
-varlist <- c("vatPurchases", "vatSales", "vatDue", "vatPaid")
+varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
 for (v in varlist) dty[, (paste0(v, "0")) := get(v) == 0]
 
 # outcome varlist
 stubnames <- c(
   "vatPurchases",
   "vatSales",
-  "vatDue",
+  "netVatLiability",
   "vatPaid"
 )
 varlist <- c(
@@ -71,7 +71,7 @@ varlist <- c(
 
 # remove incomplete years from each dataset
 patterns <- list(
-  "vatPurchases|vatSales|vatDue",
+  "vatPurchases|vatSales|netVatLiability",
   "vatPaid"
 )
 yearlist <- list(

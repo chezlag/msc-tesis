@@ -28,7 +28,7 @@ dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
 # Compute pre-treatment means of main variables
 varlist <- c(
   "Scaler1",
-  "Scaled1deductPurchasesK",
+  "Scaled1imputedPurchasesK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
   "Scaled1vatPaidK",
@@ -53,7 +53,7 @@ tab[, N := 1]
 # Label variables
 labelledlist <- list(
   Scaler1 = "Ingreso reportado (millones de UYU)",
-  Scaled1deductPurchasesK = "Compras reportadas (% de ingreso)",
+  Scaled1imputedPurchasesK = "Compras reportadas (% de ingreso)",
   Scaled1vatSalesK = "IVA Ventas (% de ingreso)",
   Scaled1vatPurchasesK = "IVA Compras (% de ingreso)",
   Scaled1vatPaidK = "Pagos de IVA (% de ingreso)",

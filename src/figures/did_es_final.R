@@ -20,15 +20,15 @@ source("src/figures/gges.R")
 
 # Yearly plots  ---------------------------------------------------------------
 
-spec <- "S1_bal_ctrl_nyt16"
+spec <- "S2_bal_ctrl_nyt16"
 yvarlist <- c(
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
-  "Scaled1vatDueK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "vatPurchases0",
   "vatSales0",
-  "vatDue0",
+  "netVatLiability0",
   "vatPaid0"
 )
 ylablist <- c(
@@ -43,7 +43,7 @@ ylablist <- c(
 )
 y_dollar <- c(rep(TRUE, 4), rep(FALSE, 4))
 params <- list(yvarlist, ylablist, y_dollar)
-pwalk(params, \(x, y, z) gges_all(spec, x, y, "y", 85, 50, y_dollar = z))
+pwalk(params, \(x, y, z) possibly(gges_all(spec, x, y, "y", 85, 50, y_dollar = z)))
 
 # Quarterly plots -------------------------------------------------------------
 

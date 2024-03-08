@@ -30,7 +30,7 @@ dty <-
 yvarlist <- c(
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
-  "Scaled1vatDueK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK"
 )
 ylablist <- c(

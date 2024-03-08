@@ -258,7 +258,7 @@ p3 <- simple$S1.base[str_detect(y.name, "^Scaled1")] %>%
 p3 +
   theme(axis.text.y = element_text(
     face = ifelse(
-      simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
+      simple$S1.base$variable %in% c("imputedPurchases", "vatPurchases"),
       "bold", "plain"
     ) %>%
       rev()
@@ -339,7 +339,7 @@ tidy_size %>%
   labs(y = NULL, color = "Size quartile") +
   theme(axis.text.y = element_text(
     face = ifelse(
-      simple$S1.base$variable %in% c("deductPurchases", "vatPurchases"),
+      simple$S1.base$variable %in% c("imputedPurchases", "vatPurchases"),
       "bold", "plain"
     ) %>%
       rev()

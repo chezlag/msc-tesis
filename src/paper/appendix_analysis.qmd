@@ -117,12 +117,12 @@ dts[(inSample3), ..varlist] %>%
 varlist <- c(
   "inSample1",
   "Scaler1",
-  "Scaled1deductPurchasesK",
+  "Scaled1imputedPurchasesK",
   "Scaled1RevenueK",
   "Scaled1taxableTurnoverK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
-  "Scaled1vatDueK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "Scaled1corpTaxPaidK",
   "Scaled1otherTaxPaidK",
@@ -161,12 +161,12 @@ dty[inSample1 & turnoverMUI %between% c(0.01, 30)] |>
 varlist <- c(
   "neverTreated",
   "Scaler1",
-  "Scaled1deductPurchasesK",
+  "Scaled1imputedPurchasesK",
   "Scaled1RevenueK",
   "Scaled1taxableTurnoverK",
   "Scaled1vatSalesK",
   "Scaled1vatPurchasesK",
-  "Scaled1vatDueK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "Scaled1corpTaxPaidK",
   "Scaled1otherTaxPaidK",
@@ -218,7 +218,7 @@ tidy_size[, sizeQuartile := fcase(
   sizeQuartile == 4, "Quartile 4"
 )]
 
-varlist <- c("deductPurchases", "vatSales", "vatPaid")
+varlist <- c("imputedPurchases", "vatSales", "vatPaid")
 tidy_size[variable %in% varlist & term != "ATT (l = 3)"] %>%
   ggplot(aes(x = event, y = estimate, color = variable)) +
   geom_point(position = position_dodge(width = .5)) +
@@ -247,7 +247,7 @@ tbl <- estlist %>%
   list.filter(str_detect(tidy$y.name[[1]], "^Scaled1"))
 colnames <- list.cases(tbl, tidy$y.name, sorted = FALSE)
 names(tbl) <- str_remove_all(colnames, "^Scaled1|K$")
-var_regex <- "deductPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid"
+var_regex <- "imputedPurchases|taxableTurnover|vatPurchases|vatSales|vatPaid"
 ar <- data.frame(
   "Mean Y pre-2011",
   lapply(

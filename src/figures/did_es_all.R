@@ -27,16 +27,16 @@ speclist <- c(
   "S1_bal_ctrl_nytInf"
 )
 yvarlist <- c(
-  "Scaled1deductPurchasesK",
+  "Scaled1imputedPurchasesK",
   "Scaled1RevenueK",
   "Scaled1vatPurchasesK",
   "Scaled1vatSalesK",
-  "Scaled1vatDueK",
+  "Scaled1netVatLiabilityK",
   "Scaled1vatPaidK",
   "Scaled1corpTaxPaidK",
   "Scaled1totalTaxPaidK",
   "vatCredit",
-  "noVatDue"
+  "nonetVatLiability"
 )
 ylablist <- c(
   "Compras reportadas",

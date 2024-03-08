@@ -63,7 +63,7 @@ Efecto agregado de la recepción de e-facturas sobre compras y ventas reportadas
 
 ![IVA Ventas](../../out/figures/did.y.all.Scaled1vatSalesK.S1_bal_ctrl_nyt16.png)
 
-![IVA Adeudado](../../out/figures/did.y.all.Scaled1vatDueK.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.Scaled1netVatLiabilityK.S1_bal_ctrl_nyt16.png)
 
 ![Pagos de IVA](../../out/figures/did.y.all.Scaled1vatPaidK.S1_bal_ctrl_nyt16.png)
 
@@ -78,7 +78,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 
 ![IVA Ventas](../../out/figures/did.y.all.vatSales0.S1_bal_ctrl_nyt16.png)
 
-![IVA Adeudado](../../out/figures/did.y.all.vatDue0.S1_bal_ctrl_nyt16.png)
+![IVA Adeudado](../../out/figures/did.y.all.netVatLiability0.S1_bal_ctrl_nyt16.png)
 
 ![Pagos de IVA](../../out/figures/did.y.all.vatPaid0.S1_bal_ctrl_nyt16.png)
 

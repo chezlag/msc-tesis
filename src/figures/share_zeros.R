@@ -14,7 +14,7 @@ dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 
-varlist <- c("vatPurchases", "vatSales", "vatDue", "vatPaid")
+varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
 for (v in varlist) dty[, (paste0(v, "0")) := get(v) <= 0]
 
 tab <- melt(dty, id.vars = c("fid", "year"), measure.vars = paste0(varlist, "0")) %>%
@@ -22,7 +22,7 @@ tab <- melt(dty, id.vars = c("fid", "year"), measure.vars = paste0(varlist, "0")
 tab[, variable := fcase(
   variable == "vatPurchases0", "IVA Compras",
   variable == "vatSales0", "IVA Ventas",
-  variable == "vatDue0", "IVA adeudado",
+  variable == "netVatLiability0", "IVA adeudado",
   variable == "vatPaid0", "Pagos de IVA"
 )]
 
