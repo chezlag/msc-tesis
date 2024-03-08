@@ -2,20 +2,20 @@
 
 # --- Dictionaries --- #
 
-SAMPLE_LIST = ["1", "2", "1f", "2f"]
+SAMPLE_LIST = ["1", "2", "3", "1f", "2f"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 GROUP_LIST = ["nyt16", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
-    estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
+    estimates = ["S1_bal_ctrl", "S2_bal_ctrl", "S3_bal_ctrl"],
     group = ["nyt16"]
 )
 DID_YEARLY_BYV = expand(
     "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
     byvar = ["size", "industry"],
-    estimates = ["S1_bal_ctrl", "S2_bal_ctrl"],
+    estimates = ["S1_bal_ctrl", "S2_bal_ctrl", "S3_bal_ctrl"],
     group = ["nyt16"]
 )
 DID_YEARLY_SURV = expand(
