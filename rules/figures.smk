@@ -7,7 +7,9 @@ SIMPLE_PLOTS = [
     "aggte.did.y.by_size.ext",
     "share_zeros",
     "small_players",
+    "takeup_industry",
     "takeup_sample",
+    "takeup_size",
     "takeup"
 ]
 OUTCOME_VARIABLES = [
