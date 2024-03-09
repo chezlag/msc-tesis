@@ -22,7 +22,7 @@ dts[giro8 %nin% c("Construcción", "Minería; EGA", "No clasificados")] %>%
   labs(
     x = "Fecha primera recepción",
     y = "Función de distribución acumulada",
-    color = NULL
+    color = "Terciles de facturación"
   )
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")
