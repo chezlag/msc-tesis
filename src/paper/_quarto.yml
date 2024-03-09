@@ -25,8 +25,8 @@ book:
     - references.qmd
     - figures_tables.qmd
   appendices:
-    # - appendix_analysis.qmd
     - appendix_context.qmd
+    - appendix_results.qmd
 
 bibliography: references.bib
 
