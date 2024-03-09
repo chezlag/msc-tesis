@@ -43,12 +43,13 @@ dty <-
   merge(cohorts, by = "fid") %>%
   .[eval(parse(text = params$sample_yearly))]
 
-# size and age quartiles – sample specific
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, sizeQuartile := cut(Scaler1, breaks = quartiles, labels = 1:4)]
+
 quartiles <- dty[, quantile(as.numeric(birth_date), probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, ageQuartile := cut(as.numeric(birth_date), breaks = quartiles, labels = 1:4)]
 dty[is.na(ageQuartile), ageQuartile := 4] # missing as young
+
 quartiles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
@@ -81,11 +82,6 @@ yearlist <- list(
 map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
   walk2(yearlist, ~ dty[year %nin% .y, (.x) := NA])
 
-# remove industry control in estimations
-if (grepl(opt$spec, "ctrl")) {
-  params$formula <- "~ ageQuartile + assetsQuartile"
-}
-
 # define industries
 industrylist <- c(
   "Agricultura",
@@ -97,6 +93,11 @@ industrylist <- c(
   "Servicios no de mercado"
 )
 
+# Delete sector
+if (grepl("ctrl", opt$spec)) {
+  params$formula <- "~ ageQuartile + assetsQuartile"
+}
+
 # Estimate --------------------------------------------------------------------
 
 message("Estimating group-time ATT.")
@@ -104,7 +105,7 @@ ddlist <-
   map2(
     rep(varlist, each = length(industrylist)),
     rep(industrylist, length(varlist)),
-    possibly(\(x, y) {
+    \(x, y) {
       att_gt(
         yname = x,
         gname = "G1",
@@ -121,8 +122,6 @@ ddlist <-
         base_period = "universal"
       )
     })
-  )
-names(ddlist) <- varlist
 
 message("Estimating overall ATT.")
 simple <- ddlist %>%
