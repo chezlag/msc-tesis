@@ -27,7 +27,7 @@ tab[!is.na(size)] %>%
   ggplot(aes(color = as.factor(size))) +
   stat_ecdf(aes(dateFirstReception), geom = "line", size = 1) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
-  ggsci::scale_color_frontiers() +
+  ggsci::scale_color_d3() +
   labs(
     x = "Fecha primera recepción",
     y = "Función de distribución acumulada",

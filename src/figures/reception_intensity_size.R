@@ -45,7 +45,7 @@ dty[!is.na(size) & year < 2016 & eticketTaxShare < 1] %>%
   ggplot(aes(year, value, fill = size)) +
   geom_col(position = "dodge") +
   facet_grid(~variable) +
-  scale_fill_frontiers() +
+  scale_fill_d3() +
   labs(x = "Año", y = "Cobertura de IVA compras en e-facturas", fill = "Terciles de facturación")
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")

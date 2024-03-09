@@ -55,6 +55,7 @@ rule figures_base:
 rule plot_es_did_y_all:
     input:
         script = "src/figures/" + "es.did.y.all.R",
+        fcn = "src/figures/" + "gges.R",
         est = "out/analysis/" + "did.y.all.{estimate}.RDS"
     output:
         fig = expand(
@@ -63,13 +64,14 @@ rule plot_es_did_y_all:
             est = "{estimate}"
         )
     log:
-        "logs/figures/" + "plot_es.did.y.all.{estimate}.Rout"
+        "logs/figures/" + "es.did.y.all.{estimate}.Rout"
     shell:
         "{runR} {input.script} --spec {wildcards.estimate} > {log} {logAll}"
 
 rule plot_es_did_y_by_size:
     input:
         script = "src/figures/" + "es.did.y.by_size.R",
+        fcn = "src/figures/" + "gges.R",
         est = "out/analysis/" + "did.y.by_size.{estimate}.RDS"
     output:
         fig = expand(
@@ -78,13 +80,14 @@ rule plot_es_did_y_by_size:
             est = "{estimate}"
         )
     log:
-        "logs/figures/" + "plot_es.did.y.by_size.{estimate}.Rout"
+        "logs/figures/" + "es.did.y.by_size.{estimate}.Rout"
     shell:
         "{runR} {input.script} --spec {wildcards.estimate} > {log} {logAll}"
 
 rule plot_es_did_y_by_industry:
     input:
         script = "src/figures/" + "es.did.y.by_industry.R",
+        fcn = "src/figures/" + "gges.R",
         est = "out/analysis/" + "did.y.by_industry.{estimate}.RDS"
     output:
         fig = expand(
@@ -93,6 +96,6 @@ rule plot_es_did_y_by_industry:
             est = "{estimate}"
         )
     log:
-        "logs/figures/" + "plot_es.did.y.by_industry.{estimate}.Rout"
+        "logs/figures/" + "es.did.y.by_industry.{estimate}.Rout"
     shell:
         "{runR} {input.script} --spec {wildcards.estimate} > {log} {logAll}"
