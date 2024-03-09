@@ -1,6 +1,7 @@
 # --- Dictionaries --- #
 
 SIMPLE_PLOTS = [
+    "aggte.did.y.by_industry",
     "share_zeros",
     "small_players",
     "takeup_sample",
@@ -50,7 +51,7 @@ rule figures_base:
     log:
         "logs/figures/" + "{fig}.Rout"
     wildcard_constraints:
-        fig = "|".join(PL0)
+        fig = "|".join(SIMPLE_PLOTS)
     shell:
         "{runR} {input.script} -o {output.fig} > {log} {logAll}"
 
