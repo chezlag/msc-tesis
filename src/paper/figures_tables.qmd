@@ -89,9 +89,9 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el mar
 
 ::: {#fig-aggte-size layout="[[1,1], [1]]"}
 
-![Estimación completa](../../out/figures/es.did.y.all.vatPurchases0.S3_bal_ctrl_nyt16.png)
+![Estimación completa](../../out/figures/aggte.did.y.by_size.png)
 
-![Margen extensivo](../../out/figures/es.did.y.all.vatSales0.S3_bal_ctrl_nyt16.png)
+![Margen extensivo](../../out/figures/aggte.did.y.by_size.ext.png)
 
 > \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. El panel (a) muestra los efectos sobre las variables expresadas en relación a la facturación promedio de la empresa en 2009–2010.  El panel (b) muestra los efectos en el margen extensivo para cada variable. Realizo tres estimaciones para cada variable, tomando un único tercil de facturación pre-tratamiento en cada estimación. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
@@ -100,9 +100,9 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 ::: {#fig-aggte-industry layout="[[1,1], [1]]"}
 
-![Estimación completa](../../out/figures/es.did.y.all.vatPurchases0.S3_bal_ctrl_nyt16.png)
+![Estimación completa](../../out/figures/aggte.did.y.by_industry.png)
 
-![Margen extensivo](../../out/figures/es.did.y.all.vatSales0.S3_bal_ctrl_nyt16.png)
+![Margen extensivo](../../out/figures/aggte.did.y.by_industry.ext.png)
 
 > \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. El panel (a) muestra los efectos sobre las variables expresadas en relación a la facturación promedio de la empresa en 2009–2010.  El panel (b) muestra los efectos en el margen extensivo para cada variable. Realizo seis estimaciones para cada variable, tomando un único sector en cada estimación. Los cuadros a la derecha indican el número de observaciones utilizadas en cada estimación. Los efectos se estiman siguiendo a @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
