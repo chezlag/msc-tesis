@@ -11,23 +11,14 @@ samples <-
 dts <-
   read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
   .[samples[(inSample3)], on = "fid"]
-dty <-
-  read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
 
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
-terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
-dty[, size := cut(Scaler1, breaks = terciles, labels = 1:3)]
-
-tab <-
-  merge(dts, dty[year == 2011, .(fid, size)], by = "fid", all.x = TRUE)
-
-tab[!is.na(size)] %>%
-  ggplot(aes(color = as.factor(size))) +
+dts[giro8 %nin% c("Construcción", "Minería; EGA", "No clasificados")] %>%
+  ggplot(aes(color = giro8)) +
   stat_ecdf(aes(dateFirstReception), geom = "line", size = 1) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
-  ggsci::scale_color_d3() +
+  ggsci::scale_color_frontiers() +
   labs(
     x = "Fecha primera recepción",
     y = "Función de distribución acumulada",

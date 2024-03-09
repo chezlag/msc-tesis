@@ -24,10 +24,13 @@ tab <- merge(
 
 # Plot ------------------------------------------------------------------------
 
+xbreaks <- c(1e-6, 1e-4, 1e-2, 1)
+xlabels <- c("0.0001%", "0.01%", "1%", "100%")
+
 tab %>%
   ggplot(aes(buyerShare)) +
   geom_density() +
-  scale_x_log10() +
+  scale_x_log10(limits = c(1e-8, 1), breaks = xbreaks, labels = xlabels) +
   labs(
     x = "Peso de comprador en ventas de proveedor emisor de e-facturas",
     y = "Densidad"

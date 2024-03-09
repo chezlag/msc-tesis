@@ -5,14 +5,16 @@ SIMPLE_PLOTS = [
     "aggte.did.y.by_industry",
     "aggte.did.y.by_size.ext",
     "aggte.did.y.by_size",
-    "reception_intensity_industry",
-    "reception_intensity_size",
+    "reception_intensity.by_industry",
+    "reception_intensity.by_size",
     "share_zeros",
-    "small_players",
-    "takeup_industry",
-    "takeup_sample",
-    "takeup_size",
-    "takeup"
+    "small_players.all",
+    "small_players.by_industry",
+    "small_players.by_size",
+    "takeup.by_industry",
+    "takeup.in_sample",
+    "takeup.by_size",
+    "takeup.full"
 ]
 PL0 = expand("out/figures/{fig}.png", fig = SIMPLE_PLOTS)
 PL1 = expand(
