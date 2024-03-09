@@ -15,7 +15,7 @@ cfe <-
   read_fst("src/data/dgi_firmas/out/data/eticket_transactions.fst", as.data.table = TRUE)
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[sample, on = "fid"]
 
 terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
 dty[, size := cut(Scaler1, breaks = terciles, labels = 1:3)]

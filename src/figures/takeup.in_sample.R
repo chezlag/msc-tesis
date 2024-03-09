@@ -3,9 +3,10 @@ pkgs <- c("data.table", "magrittr", "ggplot2", "ggsci", "patchwork", "fst", "lub
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
+source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
 
-samples <- 
+samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dts <-
   read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
@@ -27,5 +28,4 @@ dfig %>%
     color = NULL
   )
 
-ggsave("out/figures/takeup_sample.png", width = 170, height = 100, units = "mm")
-
+ggsave(opt$output, width = 170, height = 100, units = "mm")

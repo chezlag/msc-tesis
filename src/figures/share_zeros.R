@@ -3,6 +3,7 @@ pkgs <- c("data.table", "collapse", "magrittr", "ggplot2", "patchwork", "fst", "
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
+source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
 
 # Input -----------------------------------------------------------------------
@@ -35,4 +36,4 @@ tab[year < 2016] %>%
   ylim(0, NA) +
   labs(x = "Años", y = "Proporción de empresas con Y=0", color = NULL)
 
-ggsave("out/figures/share_zeros.png", width = 170, height = 100, units = "mm")
+ggsave(opt$output, width = 170, height = 100, units = "mm")

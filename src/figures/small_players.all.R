@@ -3,6 +3,7 @@ pkgs <- c("data.table", "collapse", "magrittr", "ggplot2", "patchwork", "fst", "
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
+source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
 
 # Input -----------------------------------------------------------------------
@@ -36,8 +37,4 @@ tab %>%
     y = "Densidad"
   )
 
-ggsave("out/figures/small_players.png", width = 170, height = 100, units = "mm")
-
-tab[, buyerShare] |> summary()
-tab[buyerShare > .10, .N, year]
-tab[, .N, year]
+ggsave(opt$output, width = 170, height = 100, units = "mm")

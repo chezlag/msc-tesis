@@ -3,6 +3,7 @@ pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "lubridate")
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
+source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
 
 samples <- read_fst("out/data/samples.fst", as.data.table = TRUE)
@@ -23,7 +24,8 @@ p1 <- dts %>%
   ggplot() +
   stat_ecdf(aes(dateFirstEmission), geom = "step") +
   geom_vline(
-    xintercept = ymd("2016-06-01"),color = "maroon", linetype = "dashed") +
+    xintercept = ymd("2016-06-01"), color = "maroon", linetype = "dashed"
+  ) +
   scale_x_date(expand = c(0, 0.1)) +
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01)) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-11-30"))) +
@@ -50,4 +52,4 @@ p2 <- dts %>%
 
 p1 | p2
 
-ggsave("out/figures/takeup.png", width = 170, height = 100, units = "mm")
+ggsave(opt$output, width = 170, height = 100, units = "mm")
