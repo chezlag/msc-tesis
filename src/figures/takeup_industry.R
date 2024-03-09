@@ -14,7 +14,7 @@ dts <-
 
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
-dts[giro8 %nin% c("Servicios no de mercado", "Minería; EGA", "No clasificados")] %>%
+dts[giro8 %nin% c("Construcción", "Minería; EGA", "No clasificados")] %>%
   ggplot(aes(color = giro8)) +
   stat_ecdf(aes(dateFirstReception), geom = "line", size = 1) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +

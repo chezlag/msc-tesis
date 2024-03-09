@@ -1,10 +1,11 @@
 # --- Dictionaries --- #
 
 SIMPLE_PLOTS = [
-    "aggte.did.y.by_industry",
     "aggte.did.y.by_industry.ext",
-    "aggte.did.y.by_size",
+    "aggte.did.y.by_industry",
     "aggte.did.y.by_size.ext",
+    "aggte.did.y.by_size",
+    "reception_intensity_industry",
     "share_zeros",
     "small_players",
     "takeup_industry",
