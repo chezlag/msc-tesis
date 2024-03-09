@@ -9,7 +9,7 @@
 Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores.
 :::
 
-::: {#fig-small-players-by layout="[[1,1], 1]"}
+::: {#fig-small-players-by layout="[[1,1], [1]]"}
 
 ![Terciles de facturación](../../out/figures/small_players.by_size.png)
 
@@ -80,7 +80,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario por secto
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el margen extensivo por sector de actividad. Estudio de eventos.
 :::
 
-::: {#fig-reception-intensity-by layout="[[1,1], 1]"}
+::: {#fig-reception-intensity-by layout="[[1,1], [1]]"}
 
 ![Terciles de facturación](../../out/figures/reception_intensity.by_size.png)
 

@@ -87,7 +87,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el margen extensivo. Estudio de eventos.
 :::
 
-::: {#fig-aggte-size}
+::: {#fig-aggte-size layout="[[1,1], [1]]"}
 
 ![Estimación completa](../../out/figures/did.y.all.vatPurchases0.S3_bal_ctrl_nyt16.png)
 
@@ -98,7 +98,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el mar
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas, por cuartiles de facturación pre-tratamiento.
 :::
 
-::: {#fig-aggte-industry}
+::: {#fig-aggte-industry layout="[[1,1], [1]]"}
 
 ![Estimación completa](../../out/figures/did.y.all.vatPurchases0.S3_bal_ctrl_nyt16.png)
 

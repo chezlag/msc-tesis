@@ -1,6 +1,6 @@
 # Contexto
 
-::: {#fig-takeup-by layout="[[1,1], 1]"}
+::: {#fig-takeup-by layout="[[1,1], [1]]"}
 
 ![](../../out/figures/share_zeros.png)
 
