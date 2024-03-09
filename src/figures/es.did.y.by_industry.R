@@ -44,4 +44,4 @@ ylablist <- c(
 y_dollar <- c(rep(TRUE, 4), rep(FALSE, 4))
 params <- list(yvarlist, ylablist, y_dollar)
 
-pwalk(params, \(x, y, z) gges_by_industry(opt$spec, x, y, 136, 80, y_dollar = z))
+pwalk(params, \(x, y, z) gges_by_industry(opt$spec, x, y, 170, 100, y_dollar = z))

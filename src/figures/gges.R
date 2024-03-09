@@ -90,7 +90,7 @@ gges_by_industry <- function(spec, yvar, ylab, width = 170, height = 100, y_doll
     ) |>
     reduce(rbind)
 
-  p <- tidy[inrange(event, -4, 2)] %>%
+  p <- tidy[inrange(event, -4, 2) & sector != "Construcción"] %>%
     .[, treat := fifelse(event < 0, "Pre", "Post")] %>%
     ggplot(aes(x = event, y = estimate, color = sector)) +
       geom_point(position = position_dodge(width = .3)) +
@@ -106,7 +106,7 @@ gges_by_industry <- function(spec, yvar, ylab, width = 170, height = 100, y_doll
         inherit.aes = FALSE,
         position = position_dodge(width = .3)
       ) +
-      facet_wrap(~sector, scale = "free_y") +
+      facet_wrap(~sector) +
       geom_hline(yintercept = 0, linetype = "dashed") +
       scale_x_continuous(breaks = -4:3) +
       scale_color_d3() +
@@ -115,7 +115,8 @@ gges_by_industry <- function(spec, yvar, ylab, width = 170, height = 100, y_doll
       labs(
         x = "Años desde el tratamiento", y = ylab,
         color = NULL, fill = NULL, alpha = NULL
-      )
+      ) +
+      theme(legend.position = "none")
 
   if (y_dollar) {
     p + scale_y_continuous(labels = scales::dollar_format())
@@ -173,7 +174,8 @@ gges_by_size <- function(spec, yvar, ylab, width = 170, height = 100, y_dollar =
         alpha = NULL,
         color = "Tercil de facturación pre-tratamiento",
         fill = "Tercil de facturación pre-tratamiento"
-      )
+      ) +
+      theme(legend.position = "none")
 
   if (y_dollar) {
     p + scale_y_continuous(labels = scales::dollar_format())
