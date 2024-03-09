@@ -11,6 +11,19 @@ runR = "Rscript --no-save --no-restore --verbose"
 runStata = "stata-mp -q -b"
 logAll = "2>&1"
 
+# --- Output options ---#
+PREFFERED_SPEC = "S3_bal_ctrl_nyt16"
+OUTCOME_VARIABLES = [
+    "Scaled1vatPurchasesK",
+    "Scaled1vatSalesK",
+    "Scaled1netVatLiabilityK",
+    "Scaled1vatPaidK",
+    "vatPurchases0",
+    "vatSales0",
+    "netVatLiability0",
+    "vatPaid0"
+]
+
 # --- Main Build Rule --- #
 rule all:
     input:

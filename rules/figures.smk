@@ -14,31 +14,21 @@ SIMPLE_PLOTS = [
     "takeup_size",
     "takeup"
 ]
-OUTCOME_VARIABLES = [
-    "Scaled1vatPurchasesK",
-    "Scaled1vatSalesK",
-    "Scaled1netVatLiabilityK",
-    "Scaled1vatPaidK",
-    "vatPurchases0",
-    "vatSales0",
-    "netVatLiability0",
-    "vatPaid0"
-]
 PL0 = expand("out/figures/{fig}.png", fig = SIMPLE_PLOTS)
 PL1 = expand(
     "out/figures/es.did.y.all.{outcome}.{estimate}.png",
     outcome = OUTCOME_VARIABLES,
-    estimate = "S3_bal_ctrl_nyt16"
+    estimate = PREFFERED_SPEC
 )
 PL2 = expand(
     "out/figures/es.did.y.by_size.{outcome}.{estimate}.png",
     outcome = OUTCOME_VARIABLES,
-    estimate = "S3_bal_ctrl_nyt16"
+    estimate = PREFFERED_SPEC
 )
 PL3 = expand(
     "out/figures/es.did.y.by_industry.{outcome}.{estimate}.png",
     outcome = OUTCOME_VARIABLES,
-    estimate = "S3_bal_ctrl_nyt16"
+    estimate = PREFFERED_SPEC
 )
 PLOTLIST = PL0 + PL1 + PL2 + PL3
 
