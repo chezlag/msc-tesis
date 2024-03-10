@@ -9,7 +9,9 @@ Calendario de adopción obligatoria de la emisión de e-facturas
 
 ::: {#fig-takeup-by layout="[[1,1], [1]]"}
 
-![](../../out/figures/share_zeros.png)
+![Sector de actividad](../../out/figures/takeup.by_industry.png)
+
+![Tercil de facturación pre-tratamiento](../../out/figures/takeup.by_size.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas para las empresas en la muestra. El panel (a) desagrega las empresas por sector de actividad y el panel (b) las desagrega por tercil de facturación pre-tratamiento.
 
