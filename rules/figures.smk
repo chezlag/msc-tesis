@@ -5,6 +5,7 @@ SIMPLE_PLOTS = [
     "aggte.did.y.by_industry",
     "aggte.did.y.by_size.ext",
     "aggte.did.y.by_size",
+    "reception_intensity.all",
     "reception_intensity.by_industry",
     "reception_intensity.by_size",
     "share_zeros",
