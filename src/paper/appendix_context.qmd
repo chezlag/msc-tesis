@@ -1,5 +1,12 @@
 # Contexto
 
+::: {#tbl-policy-adoption-schedule}
+
+\small \input{../../src/tables/policy_adoption_schedule.tex}
+
+Calendario de adopción obligatoria de la emisión de e-facturas
+:::
+
 ::: {#fig-takeup-by layout="[[1,1], [1]]"}
 
 ![](../../out/figures/share_zeros.png)
