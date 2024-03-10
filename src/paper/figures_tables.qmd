@@ -39,6 +39,15 @@ Estadísticas descriptivas de la muestra.
 Función de distribución acumulada de la fecha de primera recepción de e-facturas.
 :::
 
+::: {#fig-reception-intensity}
+
+![](../../out/figures/reception_intensity.all.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta la mediana y el rango interquartílico de la cobertura en cada año.
+
+Proporción de IVA compras registrado en e-facturas por año. Percentiles 25, 50 y 75 de la cobertura.
+:::
+
 ::: {#tbl-overall-att-subset1}
 
 \small \input{../../out/tables/did.y.all.overall_att_1.S3_bal_ctrl_nyt16.tex}
