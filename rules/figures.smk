@@ -1,10 +1,6 @@
 # --- Dictionaries --- #
 
-SIMPLE_PLOTS = [
-    "aggte.did.y.by_industry.ext",
-    "aggte.did.y.by_industry",
-    "aggte.did.y.by_size.ext",
-    "aggte.did.y.by_size",
+SIMPLE_PLOTS_DTY = [
     "reception_intensity.all",
     "reception_intensity.by_industry",
     "reception_intensity.by_size",
@@ -17,7 +13,13 @@ SIMPLE_PLOTS = [
     "takeup.by_size",
     "takeup.full"
 ]
-PL0 = expand("out/figures/{fig}.png", fig = SIMPLE_PLOTS)
+SIMPLE_PLOTS_EST = [
+    "aggte.did.y.by_industry.ext",
+    "aggte.did.y.by_industry",
+    "aggte.did.y.by_size.ext",
+    "aggte.did.y.by_size",
+]
+PL0 = expand("out/figures/{fig}.png", fig = SIMPLE_PLOTS_DTY + SIMPLE_PLOTS_EST)
 PL1 = expand(
     "out/figures/es.did.y.all.{outcome}.{estimate}.png",
     outcome = OUTCOME_VARIABLES,
@@ -42,7 +44,7 @@ rule figs:
 
 # --- Build rules --- #
 
-rule figures_base:
+rule figures_simple_dty:
     input:
         script = "src/figures/" + "{fig}.R",
         dty = "out/data/firms_yearly.fst"
@@ -51,7 +53,22 @@ rule figures_base:
     log:
         "logs/figures/" + "{fig}.Rout"
     wildcard_constraints:
-        fig = "|".join(SIMPLE_PLOTS)
+        fig = "|".join(SIMPLE_PLOTS_DTY)
+    shell:
+        "{runR} {input.script} -o {output.fig} > {log} {logAll}"
+
+rule figures_simple_est:
+    input:
+        script = "src/figures/" + "{fig}.R",
+        est_all = "out/analysis/did.y.all." + PREFFERED_SPEC + ".RDS",
+        est_siz = "out/analysis/did.y.by_size." + PREFFERED_SPEC + ".RDS",
+        est_ind = "out/analysis/did.y.by_industry." + PREFFERED_SPEC + ".RDS"
+    output:
+        fig = "out/figures/" + "{fig}.png"
+    log:
+        "logs/figures/" + "{fig}.Rout"
+    wildcard_constraints:
+        fig = "|".join(SIMPLE_PLOTS_EST)
     shell:
         "{runR} {input.script} -o {output.fig} > {log} {logAll}"
 
