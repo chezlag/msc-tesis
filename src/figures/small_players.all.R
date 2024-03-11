@@ -30,11 +30,11 @@ xlabels <- c("0.0001%", "0.01%", "1%", "100%")
 
 tab %>%
   ggplot(aes(buyerShare)) +
-  geom_density() +
+  stat_ecdf() +
   scale_x_log10(limits = c(1e-8, 1), breaks = xbreaks, labels = xlabels) +
   labs(
     x = "Peso de comprador en ventas de proveedor emisor de e-facturas",
-    y = "Densidad"
+    y = "Función de distribución acumulada"
   )
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")

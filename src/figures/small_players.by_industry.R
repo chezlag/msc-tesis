@@ -41,7 +41,7 @@ tab[giro8 %nin% excludedSectors] %>%
   scale_color_frontiers() +
   labs(
     x = "Peso de comprador en ventas de proveedor emisor de e-facturas",
-    y = "Densidad",
+    y = "Función de distribución acumulada",
     color = NULL
   )
 

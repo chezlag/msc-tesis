@@ -43,7 +43,7 @@ tab[!is.na(size)] %>%
   scale_x_log10(limits = c(1e-8, 1), breaks = xbreaks, labels = xlabels) +
   labs(
     x = "Peso de comprador en ventas de proveedor emisor de e-facturas",
-    y = "Densidad",
+    y = "Función de distribución acumulada",
     color = "Terciles de facturación"
   )
 
