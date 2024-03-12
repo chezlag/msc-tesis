@@ -32,19 +32,11 @@ dty[, size := cut(Scaler1, breaks = terciles, labels = 1:3)]
 
 # Plot ------------------------------------------------------------------------
 
-dty[!is.na(size) & year < 2016 & eticketTaxShare < 1] %>%
-  .[
-    , .(
-      p25 = quantile(eticketTaxShare, .25),
-      p50 = fmedian(eticketTaxShare),
-      p75 = quantile(eticketTaxShare, .75)
-    ),
-    .(size, year)
-  ] %>%
-  melt(id.vars = c("size", "year")) |>
-  ggplot(aes(year, value, fill = size)) +
-  geom_col(position = "dodge") +
-  facet_grid(~variable) +
+dty[!is.na(size) & year < 2016 & eticketTaxShare <= 1] |>
+  ggplot(aes(size, eticketTaxShare, fill = size)) +
+  geom_boxplot() +
+  facet_wrap(~year) +
+  scale_x_discrete(labels = NULL) +
   scale_fill_d3() +
   labs(x = "Año", y = "Cobertura de IVA compras en e-facturas", fill = "Terciles de facturación")
 

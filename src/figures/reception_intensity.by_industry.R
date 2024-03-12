@@ -39,19 +39,15 @@ dty[eticketTaxShare > 2 & eticketTaxShare < Inf, .N]
 excludedSectors <- c("Construcción", "Minería; EGA", "No clasificados")
 
 dty[giro8 %nin% excludedSectors & year < 2016 & eticketTaxShare < 1] %>%
-  .[
-    , .(
-      p25 = quantile(eticketTaxShare, .25),
-      p50 = fmedian(eticketTaxShare),
-      p75 = quantile(eticketTaxShare, .75)
-    ),
-    .(giro8, year)
-  ] %>%
-  melt(id.vars = c("giro8", "year")) |>
-  ggplot(aes(year, value, fill = giro8)) +
-  geom_col(position = "dodge") +
-  facet_grid(~variable) +
+  ggplot(aes(giro8, eticketTaxShare, fill = giro8)) +
+  geom_boxplot() +
+  facet_wrap(~year) +
+  scale_x_discrete(labels = NULL) +
   scale_fill_frontiers() +
-  labs(x = "Año", y = "Cobertura de IVA compras en e-facturas", fill = NULL, alpha = NULL)
+  labs(x = NULL, y = "Cobertura de IVA compras en e-facturas", fill = NULL, alpha = NULL)
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")
+
+dty[giro8 %nin% excludedSectors & year < 2016 & eticketTaxShare < 1] %>%
+  .[, lapply(c(.25, .5, .75), \(x) quantile(eticketTaxShare, x)), .(year, giro8)] %>%
+  .[order(giro8, year)]
