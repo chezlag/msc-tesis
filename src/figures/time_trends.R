@@ -19,18 +19,16 @@ dty <-
   .[cohorts, on = "fid"]
 
 tab <- dty[year < 2016] |>
-  collap(Scaled1vatPurchasesK + Scaled1vatSalesK + Scaled1netVatLiabilityK + Scaled1vatPaidK ~ G1 + year) %>%
+  collap(vatPurchasesK + vatSalesK + netVatLiabilityK + vatPaidK ~ G1 + year) %>%
   melt(id.vars = c("G1", "year"))
 
-tab[, post := fifelse(year >= G1, 2, 1)]
-tab[, post := year >= G1]
 tab[, event := year - G1]
 
 tab[, variable := fcase(
-  variable == "Scaled1vatPurchasesK", "(a) IVA Compras",
-  variable == "Scaled1vatSalesK", "(b) IVA Ventas",
-  variable == "Scaled1netVatLiabilityK", "(c) IVA adeudado",
-  variable == "Scaled1vatPaidK", "(d) Pagos de IVA"
+  variable == "vatPurchasesK", "(a) IVA Compras",
+  variable == "vatSalesK", "(b) IVA Ventas",
+  variable == "netVatLiabilityK", "(c) IVA adeudado",
+  variable == "vatPaidK", "(d) Pagos de IVA"
 )]
 
 # Plot ------------------------------------------------------------------------
@@ -42,7 +40,7 @@ tab %>%
   geom_point(data = ~ subset(.x, event == 0)) +
   facet_grid(~variable) +
   scale_color_locuszoom() +
-  scale_y_continuous(limits = c(0, NA), labels = scales::dollar_format()) +
-  labs(x = "Años", y = "Resultado normalizado", color = "Período de inicio del tratamiento")
+  scale_y_log10(limits = c(1000, NA), labels = scales::dollar_format()) +
+  labs(x = "Años", y = NULL, color = "Período de inicio del tratamiento")
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")
