@@ -1,4 +1,29 @@
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
 # Resultados
+
+::: {#fig-takeup-by layout="[[1,1], [1]]"}
+
+![Tercil de facturación pre-tratamiento](../../out/figures/takeup.by_size.png)
+
+![Sector de actividad](../../out/figures/takeup.by_industry.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas para las empresas en la muestra. El panel (a) desagrega las empresas por sector de actividad y el panel (b) las desagrega por tercil de facturación pre-tratamiento.
+
+Función de distribución acumulada de la fecha de primera recepción de e-facturas en la muestra principal, por subgrupos.
+:::
+
+::: {#fig-reception-intensity-by layout="[[1,1], [1]]"}
+
+![Tercil de facturación pre-tratamiento](../../out/figures/reception_intensity.by_size.png)
+
+![Sector de actividad](../../out/figures/reception_intensity.by_industry.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta la mediana y el rango interquartílico de la cobertura en cada año y subgrupo. El panel (a) desagrega las empresas por sector de actividad. El panel (b) las desagrega por tercil de facturación pre-tratamiento. 
+
+Proporción de IVA compras registrado en e-facturas por año y subgrupos. Percentiles 25, 50 y 75 de la cobertura.
+:::
 
 ::: {#fig-small-players}
 
@@ -11,9 +36,9 @@ Función de distribución acumulada de la participación de las empresas de la m
 
 ::: {#fig-small-players-by layout="[[1,1], [1]]"}
 
-![Terciles de facturación](../../out/figures/small_players.by_size.png)
+![Tercil de facturación pre-tratamiento](../../out/figures/small_players.by_size.png)
 
-![Sectores de actividad](../../out/figures/small_players.by_industry.png)
+![Sector de actividad](../../out/figures/small_players.by_industry.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El panel (a) desagrega las empresas por sector de actividad. El panel (b) las desagrega por tercil de facturación pre-tratamiento. El eje x está en logaritmos.
 
@@ -80,13 +105,3 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario por secto
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario en el margen extensivo por sector de actividad. Estudio de eventos.
 :::
 
-::: {#fig-reception-intensity-by layout="[[1,1], [1]]"}
-
-![Terciles de facturación](../../out/figures/reception_intensity.by_size.png)
-
-![Sectores de actividad](../../out/figures/reception_intensity.by_industry.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta la mediana y el rango interquartílico de la cobertura en cada año y subgrupo. El panel (a) desagrega las empresas por sector de actividad. El panel (b) las desagrega por tercil de facturación pre-tratamiento. 
-
-Proporción de IVA compras registrado en e-facturas por año y subgrupos. Percentiles 25, 50 y 75 de la cobertura.
-:::
