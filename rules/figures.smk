@@ -11,7 +11,8 @@ SIMPLE_PLOTS_DTY = [
     "takeup.by_industry",
     "takeup.in_sample",
     "takeup.by_size",
-    "takeup.full"
+    "takeup.full",
+    "time_trends"
 ]
 SIMPLE_PLOTS_EST = [
     "aggte.did.y.by_industry.ext",
