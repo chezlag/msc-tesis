@@ -1,3 +1,4 @@
+library(groundhog)
 pkgs <- c("modelsummary", "broom")
 groundhog.library(pkgs, "2024-01-15")
 
@@ -9,16 +10,18 @@ tidy.AGGTEobj <- function(x, ...) {
       term = "Overall ATT",
       estimate = x$overall.att,
       std.error = x$overall.se,
+      p.value = 1 - pnorm(x$overall.att / x$overall.se),
       conf.low = x$overall.att - x$overall.se * qnorm(1 - s$alp / 2),
       conf.high = x$overall.att + x$overall.se * qnorm(1 - s$alp / 2)
     )
   }
   if (x$type == "dynamic") {
     ret <- data.frame(
-      y.name = s$yname, 
+      y.name = s$yname,
       term = paste0(s$yname, ", l = ", x$egt),
       estimate = x$att.egt,
       std.error = x$se.egt,
+      p.value = 1 - pnorm(x$att.egt / x$se.egt),
       conf.low = x$att.egt - x$se.egt * x$crit.val.egt,
       conf.high = x$att.egt + x$se.egt * x$crit.val.egt
     )
