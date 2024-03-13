@@ -3,10 +3,10 @@
 SIMPLE_TABLES = [
     "sample_summary"
 ]
-TL0 = expand("out/tables/{table}.png", table = SIMPLE_TABLES)
+TL0 = expand("out/tables/{table}.tex", table = SIMPLE_TABLES)
 TL1 = expand(
     "out/tables/did.y.all.overall_att_{subset}.{estimates}.tex",
-    estimates = ["S1_bal_ctrl_nyt16", "S2_bal_ctrl_nyt16", "S3_bal_ctrl_nyt16"],
+    estimates = PREFFERED_SPEC,
     subset = ["1", "2"]
 )
 
