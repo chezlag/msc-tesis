@@ -74,8 +74,8 @@ ar <- data.frame(
 
 tidy %>%
   msummary(
-    statistic = "conf.int",
     gof_map = c("nobs"),
+    stars = TRUE,
     add_rows = ar,
     output = opt$output
   )
