@@ -33,7 +33,7 @@ dty[eticketTaxShare < 1] %>%
   ggplot(aes(year, eticketTaxShare, fill = as_factor(year))) +
   geom_boxplot() +
   scale_fill_futurama() +
-  scale_x_continuous(breaks = 2012:2016, labels = 2012:2015) +
+  scale_x_continuous(breaks = 2012:2016, labels = 2012:2016) +
   labs(x = "Año", y = "Cobertura de IVA compras en e-facturas", fill = NULL) +
   theme(legend.position = "none")
 
