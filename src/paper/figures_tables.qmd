@@ -43,7 +43,7 @@ Función de distribución acumulada de la fecha de primera recepción de e-factu
 
 ![](../../out/figures/time_trends.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra los resultados promedio de las principales variables de cumplimiento tributario, por año y por cohorte de tratamiento. Los puntos indican el inicio de tratamiento de cada cohorte y la porción a rayas de cada línea señala el período en que las empresas de la cohorte recibieron e-facturas. Todos los resultados están reescalados por la facturación promedio de la empresa en 2009–2010.
+> \scriptsize \textbf{Notas:} La figura muestra los resultados promedio de las principales variables de cumplimiento tributario, por año y por cohorte de tratamiento. Los puntos indican el inicio de tratamiento de cada cohorte y la porción a rayas de cada línea señala el período en que las empresas de la cohorte recibieron e-facturas. Todos los resultados están deflactados a pesos de 2016 y el eje y está en logaritmos. La línea violeta –Inf– corresponde al grupo que nunca recibió una e-factura en el período analizado, que no está incluido de la muestra final.
 
 Promedio anual de las principales variables de cumplimiento tributario por cohorte de tratamiento.
 :::
@@ -59,18 +59,18 @@ Proporción de IVA compras registrado en e-facturas por año. Percentiles 25, 50
 
 ::: {#tbl-overall-att-subset1}
 
-\small \input{../../out/tables/did.y.all.overall_att_1.S3_bal_ctrl_nyt16.tex}
+\input{../../out/tables/did.y.all.overall_att_1.S3_bal_ctrl_nyt16.tex}
 
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre variables relacionadas con el cumplimiento tributario de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo la @eq-overall y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
+> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre variables relacionadas con el cumplimiento tributario de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo la @eq-overall y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas.
 :::
 
 ::: {#tbl-overall-att-subset2}
 
-\small \input{../../out/tables/did.y.all.overall_att_2.S3_bal_ctrl_nyt16.tex}
+\resizebox{\textwidth}{!}{\input{../../out/tables/did.y.all.overall_att_2.S3_bal_ctrl_nyt16.tex}}
 
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la @eq-overall y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el intervalo de confianza al 95%. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
+> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la @eq-overall y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
 
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
 :::
