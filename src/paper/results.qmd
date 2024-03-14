@@ -1,6 +1,6 @@
 # Resultados {#sec-results}
 
-## Cuantificando la recepción de e-facturas
+## Caracterización de la recepción de e-facturas
 
 ¿Cuánta información aportan las e-facturas a la DGI sobre las empresas que reciben e-facturas? ¿Cómo evoluciona la nueva información en el tiempo? Entender esto da pistas sobre la magnitud de los spillovers que se pueden esperar de la política.
 
