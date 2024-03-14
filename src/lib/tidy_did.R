@@ -56,30 +56,6 @@ tidy_did_list <- function(x) {
 }
 
 tidy_did <- function(x) {
-  if (x$type == "simple") {
-    s <- x$DIDparams
-    ret <- data.frame(
-      y.name = s$yname,
-      term = "Overall ATT",
-      estimate = x$overall.att,
-      std.error = x$overall.se,
-      p.value = 1 - 2 * pnorm(abs(x$att.egt / x$se.egt)),
-      conf.low = x$overall.att - x$overall.se * qnorm(1 - s$alp / 2),
-      conf.high = x$overall.att + x$overall.se * qnorm(1 - s$alp / 2)
-    )
-  }
-  if (x$type == "dynamic") {
-    s <- x$DIDparams
-    ret <- data.frame(
-      y.name = s$yname,
-      term = paste0("ATT (l = ", x$egt, ")"),
-      event = x$egt,
-      estimate = x$att.egt,
-      std.error = x$se.egt,
-      p.value = 1 - 2 * pnorm(abs(x$overall.att / x$overall.se)),
-      conf.low = x$att.egt - x$se.egt * x$crit.val.egt,
-      conf.high = x$att.egt + x$se.egt * x$crit.val.egt
-    )
-  }
+  ret <- tidy.AGGTEobj(x)
   ret
 }
