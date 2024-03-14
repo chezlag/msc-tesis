@@ -21,7 +21,7 @@ tidy.AGGTEobj <- function(x, ...) {
       term = paste0(s$yname, ", l = ", x$egt),
       estimate = x$att.egt,
       std.error = x$se.egt,
-      p.value = 1 - 2 * pnorm(abs(x$att.egt / x$se.egt)),
+      p.value = 1 - 2 * pnorm(abs(x$att.egt / x$se.egt)), # TODO: Check how to get confindence-band p-value (now it's pointwise pvalue)
       conf.low = x$att.egt - x$se.egt * x$crit.val.egt,
       conf.high = x$att.egt + x$se.egt * x$crit.val.egt
     )
