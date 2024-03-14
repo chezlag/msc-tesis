@@ -1,33 +1,44 @@
-# Pregunta de investigación e hipótesis {#sec-hypotheses}
+# Preguntas de investigación e hipótesis {#sec-hypotheses}
+
+**¿Cuánta información aportan las e-facturas a la DGI sobre las empresas que reciben e-facturas?**
+
+Las e-facturas permiten una reconstrucción en tiempo real de las transacciones de las empresas. Crean un registro digital prácticamente completo de las ventas de las empresas emisoras, y un registro *parcial* de las compras de las empresas receptoras. Cuantificar el volumen de nueva información puede ayudar a interpretar su importancia en las decisiones de las empresas receptoras. Si la recepción de e-facturas brinda una cobertura muy limitada de las compras de las empresas receptoras, los efectos esperados de la política serían más limitados.
 
 **¿Cuál es el efecto de recibir facturas electrónicas (e-facturas) sobre el cumplimiento tributario de las empresas?**
 
 Mi objetivo principal es analizar como impacta la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Me centro en dos aspectos. Primero, estudio si la recepción de e-facturas afecta la forma en que las empresas declaran impuestos. En concreto, analizo si recibir e-facturas induce variaciones en el IVA compras e IVA ventas declarado por las empresas. También analizo como varía el IVA adeudado neto de las empresas –que queda definido a partir del IVA compras e IVA ventas declarados–. Segundo, estudio el impacto de la política sobre el pago de impuestos. Me focalizo en los pagos de IVA, en tanto es el impuesto más importante en la deuda tributaria de las empresas. El IVA, además, aparece explícitamente en las e-facturas como un ítem de cada transacción.
 
-Considero que el cumplimiento tributario de las empresas mejorará a raíz de la política. Espero que la recepción de e-facturas proporcione a la autoridad tributaria más información para verificar las declaraciones juradas de las empresas. Por otro lado, también espero que el formato digital de los comprobantes simplifique la verificación de información de las empresas. La DGI desarrolló un nuevo conjunto de controles de incumplimiento explotando la información contenida en los comprobantes electrónicos [@canalesUruguayPerfilFactura2018]. La digitalización, por lo tanto, debería aumentar la probabilidad de detección de la evasión. En síntesis, la política podría actuar a través de dos canales: (i) aumento de la información reportada por terceros y (ii) aumento del riesgo de auditoría.
+Considero que el cumplimiento tributario de las empresas mejorará a raíz de la política por dos razones. Espero que la recepción de e-facturas proporcione a la autoridad tributaria más información para verificar las declaraciones juradas de las empresas. Por otro lado, también espero que el formato digital de los comprobantes simplifique la verificación de información de las empresas. La DGI desarrolló un nuevo conjunto de controles de incumplimiento explotando la información contenida en los comprobantes electrónicos [@canalesUruguayPerfilFactura2018]. La digitalización, por lo tanto, debería aumentar la probabilidad de detección de la evasión. La recepción de e-facturas, además, es altamente saliente para las empresas compradoras.
+
+En síntesis, la política podría actuar a través de dos canales: (i) aumento de la información reportada por terceros y (ii) aumento del riesgo de auditoría y la percepción de ese riesgo por parte de las empresas.
 
 Planteo las siguientes hipótesis específicas:
 
-**H1:** *El IVA compras debería aumentar.*
+- **H1:** El IVA compras debería aumentar, ya que ambos canales pueden operar para que estas aumenten.
+- **H2:** El IVA ventas no debería reducirse. 
+- **H3:** El grado de variación del IVA ventas puede ser indicativo de la importancia relativa de cada canal sobre los resultados observados.
+	- **H3a:** Si la política solo actuara a través de la información reportada por terceros, no debería tener efecto sobre el IVA ventas.
+	- **H3b:** Si la política afecta el riesgo de auditoría percibido, el IVA ventas debería aumentar.
+	- **H3c:** Si la política incrementa el riesgo de auditoría lo suficiente, las empresas deberían evadir menos. El IVA ventas debería aumentar más que el IVA compras, y el IVA adeudado debería aumentar.
+- **H4:** Deberían haber heterogeneidades en la respuesta por tamaño y sector de actividad. Las empresas con mayor propensidad a evadir deberían responder en mayor medida a la recepción de e-facturas.
 
-La recepción de e-facturas da a la DGI información directa sobre las compras de la empresa receptora. Con esto en mente, lo primero que espero que suceda es que las empresas que reciban e-facturas aumenten sus compras reportadas en comparación a las empresas que no están expuestas a la política.
+La recepción de e-facturas da a la DGI información directa sobre las compras de la empresa receptora. Lo primero que espero que suceda es que las empresas que reciban e-facturas aumenten sus compras reportadas en comparación a las empresas que aún no estuvieran expuestas a la política.[^hypotheses-1] 
 
-Espero respuestas en el margen intensivo y extensivo. Hay una fracción no trivial de empresas que no reportan IVA compras (@fig-share-zero); espero que la recepción de e-facturas lleve a que nuevas empresas comiencen a reportar e-facturas. También espero que aumente el IVA compras reportado por empresas que ya reportaban algún monto de IVA compras.
+[^hypotheses-1]: Espero respuestas en el margen intensivo y extensivo. Hay una fracción no trivial de empresas que no reportan IVA compras (@fig-share-zero); espero que la recepción de e-facturas lleve a que nuevas empresas comiencen a reportar e-facturas. También espero que aumente el IVA compras reportado por empresas que ya reportaban algún monto de IVA compras.
 
-**H2:** *El IVA ventas no debería reducirse.*
+La recepción de e-facturas no brinda a la DGI nueva información acerca de las ventas de las empresas receptoras. Si la recepción de e-facturas solo afectara a las empresas a partir del aumento de la información reportada por terceros, no esperaría cambios en la declaración de IVA ventas. Sin embargo, las empresas optimizan sus reportes a la DGI teniendo en cuenta múltiples márgenes de ajuste. En los modelos reseñados en la sección anterior se resalta que la evasión depende negativamente de la probabilidad de auditoría. Si la política también afectara la probabilidad de auditoría, entonces esperaría que el IVA ventas también aumente.
 
-La recepción de e-facturas no brinda a la DGI nueva información acerca de las ventas de las empresas receptoras. Por lo tanto, en principio no esperaría que las ventas reportadas varíen diferencialmente en las empresas receptoras.
+El IVA adeudado surge de la diferencia entre IVA ventas e IVA compras. La variación relativa de estas variables puede dar indicios sobre la importancia relativa de cada uno de los canales sobre los que operaría la política. Si el aumento en la probabilidad de auditoría es suficientemente importante –suficiente como para que los beneficios de evadir se reduzcan de forma estadísticamente detectable–, entonces esperaría que aumente el IVA adeudado (disminución de la evasión). La @tbl-hypotheses resume los efectos esperados.
 
-No obstante, hay muchas variables que afectan la deuda tributaria de las empresas, y éstas optimizan sus reportes a la DGI teniendo en cuenta múltiples márgenes de ajuste. En los modelos reseñados en la sección anterior se resalta la importancia de la probabilidad de auditoría en las decisiones de evasión de las empresas. Si la política aumenta el riesgo percibido por las empresas, pueden empezar a reportar más ventas. En ningún caso esperaría que las ventas reportadas se reduzcan.
+::: {#tbl-hypotheses}
 
-**H3:** *El efecto sobre el IVA adeudado es indeterminado.*
+| Canal 1: Información | Canal 2: P(auditoría) | IVA Compras | IVA Ventas | IVA adeudado |
+| -------------------- | --------------------- | ----------- | ---------- | ------------ |
+| $\uparrow$           | =                     | +           | =          | -            |
+| $\uparrow$           | $\uparrow$            | +           | +          | ~            |
+| $\uparrow$           | $\uparrow\uparrow$    | +           | +          | +            |
 
-El IVA adeudado surge de la diferencia entre IVA ventas e IVA compras. El efecto sobre la deuda de IVA de la empresa dependerá de cuanto varíen sus componentes individualmente. Si aumenta la diferencia entre IVA ventas e IVA compras, el pago de IVA debería aumentar; mientras que si se disminuye la diferencia entre ventas y compras reportadas, el pago de IVA debería reducirse.
-
-**H4:** *El efecto sobre el pago de impuestos es indeterminado.*
-
-El pago efectivo de IVA depende del IVA adeudado (IVA ventas - IVA compras) y de decisiones adicionales de las empresas sobre como afrontar sus deudas.
-
-**H5:** *Hay heterogeneidades en la respuesta por tamaño y sector de actividad en empresas más propensas a evadir.*
+Hipótesis principales
+:::
 
 Hay ciertas características de las empresas que se asocian con mayores niveles de evasión. Por ejemplo, el modelo de @klevenWhyCanModern2016 sugiere que el tamaño de un empresa es determinante en sus posibilidades de evadir impuestos sin ser detectadas: las empresas más grandes guardan mejores registros de sus actividades –que pueden ser luego utilizados en una auditoría– y resulta más difícil asegurar una colusión efectiva cuando hay que involucrar más empleados. Por otra parte, varios estudios han mostrado que el cumplimiento tributario empeora en los sectores más cercanos a los consumidores finales, en tanto los mecanismos autorreforzantes del IVA desaparecen en esta etapa [ej: @pomeranzNoTaxationInformation2015; @naritomiConsumersTaxAuditors2019; @waseemOverclaimedRefundsUndeclared2023]. Considerando lo anterior, espero encontrar mayores respuestas a la recepción de e-facturas en las empresas de menor facturación y en sectores con más contacto con consumidores finales tales como el comercio minorista.
