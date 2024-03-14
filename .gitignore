@@ -16,10 +16,13 @@ logs/
 sandbox/
 resources/
 notebooks/
+tests/
 .vscode/
+cpout.sh
 *.pdf
 *.log
 *.html
 *.xls
+tmp*.R
 # Private data
 src/data/bcs_covariates.csv
