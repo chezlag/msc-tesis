@@ -35,6 +35,7 @@ rule tables:
 rule tab_overall_att:
     input:
         script = "src/tables/" + "did.y.all.overall_att_{subset}.R",
+        fcn_tidy = "src/lib/" + "tidy_did.R",
         params_sample = "src/model_specs/" + "sample_{sample}.json",
         params_panel = "src/model_specs/" + "panel_{panel}.json",
         params_spec = "src/model_specs/" + "spec_{spec}.json",
