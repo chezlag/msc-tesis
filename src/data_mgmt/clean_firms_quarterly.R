@@ -17,7 +17,8 @@ message("Processing tax paid and tax retained by third parties.")
 
 tax <-
   read_fst("src/data/dgi_firmas/out/data/tax_paid_retained.fst",
-           as.data.table = TRUE)
+    as.data.table = TRUE
+  )
 
 taxvarlist <- grep("Paid$|Retained$", names(tax), value = TRUE)
 taxformula <- arsenal::formulize(taxvarlist, idvars)
@@ -49,9 +50,7 @@ yearlyvarlist <- c(
   "Scaler1",
   "Scaler2",
   "Scaler3",
-  "Scaler4",
-  "Purch1",
-  "Purch2"
+  "Scaler4"
 )
 yearly <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[, ..yearlyvarlist]
@@ -67,7 +66,7 @@ dt <- ctax |>
 
 message("Defining new variables.")
 
-# Deflacto y paso a Millones de UI
+# Deflacto
 cfevarlist <- c(
   "grossAmountReceived",
   "netAmountReceived",
@@ -77,13 +76,22 @@ cfevarlist <- c(
 varlist <- c(taxvarlist, cfevarlist)
 for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 
-# Transformo variables de interés
-for (v in paste0(varlist, "K")) dt[, (paste0("Log", v)) := log(get(v) + 1)]
-for (v in paste0(varlist, "K")) dt[, (paste0("IHS", v)) := asinh(get(v))]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled3", v)) := get(v) / Scaler3]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled4", v)) := get(v) / Scaler4]
+# Chen & Roth (2023) y-var
+for (v in paste0(varlist, "K")) {
+  ymin <- dt[get(v) > 0, fmin(get(v))]
+  dt[, y := get(v) / ymin]
+  for (e in c(10, 0, 20, 300)) { # full effect
+    dt[, (paste0("CR", e, v)) := fifelse(
+      get(v) > 0, log(y), -e / 100
+    )]
+  }
+  dt[, (paste0("CR", v, "Ext")) := fifelse( # extensive margin
+    get(v) > 0, 1, 0
+  )]
+  dt[, (paste0("CR", v, "Int")) := fifelse( # intensive margin
+    get(v) > 0, log(y), NA_integer_
+  )]
+}
 
 # Recepción/emisión de tickets en t
 dt[, received := !is.na(nTicketsReceived)]

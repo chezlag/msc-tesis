@@ -129,7 +129,7 @@ static[, inStatic := TRUE]
 
 dtlist <- list(cbal, csls, ctax)
 lapply(dtlist, setkeyv, idvars) |> invisible()
-map2(dtlist, c("in214", "in217", "inPay"), ~ .x[, (.y) := TRUE])
+walk2(dtlist, c("in214", "in217", "inPay"), \(x, y) x[, (y) := TRUE])
 dt <- dtlist |>
   purrr::reduce(merge, all = TRUE) %>%
   merge(cfetab, all.x = TRUE) %>%
@@ -142,7 +142,7 @@ dt <- dtlist |>
 
 message("Defining new variables.")
 
-# Deflacto y paso a Millones de UI
+# Deflacto y paso a Millones de UI (all variables)
 cfevarlist <- c(
   "grossAmountReceived",
   "netAmountReceived",
@@ -154,11 +154,27 @@ for (v in varlist) dt[, (paste0(v, "K")) := get(v) / defl]
 for (v in varlist) dt[, (paste0(v, "M")) := get(v) / 1e06]
 for (v in varlist) dt[, (paste0(v, "MUI")) := get(paste0(v, "M")) / ui]
 
-# Logaritmo e IHS de variables deflactadas
-for (v in paste0(varlist, "K")) dt[, (paste0("Log", v)) := log(get(v))]
-for (v in paste0(varlist, "K")) dt[, (paste0("IHS", v)) := asinh(get(v))]
+# Selecciono variables y relevantes para transformar
+varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
 
-# Reescalo usando turnover de 2009-2010 y de los dos años anteriores
+# Chen & Roth (2023) y-var
+for (v in paste0(varlist, "K")) {
+  ymin <- dt[get(v) > 0, fmin(get(v))]
+  dt[, y := get(v) / ymin]
+  for (e in c(10, 0, 20, 300)) { # full effect
+    dt[, (paste0("CR", e, v)) := fifelse(
+      get(v) > 0, log(y), -e / 100
+    )]
+  }
+  dt[, (paste0("CR", v, "Ext")) := fifelse( # extensive margin
+    get(v) > 0, 1, 0
+  )]
+  dt[, (paste0("CR", v, "Int")) := fifelse( # intensive margin
+    get(v) > 0, log(y), NA_integer_
+  )]
+}
+
+# Variables para reescalar
 create_lag_by_group <- function(dt, condition, oldvarname, newvarname, idvars) {
   dt[eval(parse(text = condition)), (newvarname) := get(oldvarname)]
   dt[, (newvarname) := fmax(get(newvarname)), by = idvars]
@@ -173,28 +189,6 @@ dt[, Scaler1 := (Turnover2009 + Turnover2010) / 2]
 dt[, Scaler2 := (shift(turnoverK, 1L) + shift(turnoverK, 2L)) / 2, fid]
 dt[, Scaler3 := (Assets2009 + Assets2010) / 2]
 dt[, Scaler4 := (Equity2009 + Equity2010) / 2]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled1", v)) := get(v) / Scaler1]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled2", v)) := get(v) / Scaler2]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled3", v)) := get(v) / Scaler3]
-for (v in paste0(varlist, "K")) dt[, (paste0("Scaled4", v)) := get(v) / Scaler4]
-
-# Compras reportadas al inicio del período y en los dos años anteriores
-create_lag_by_group(dt, "year == 2009", "imputedPurchasesK", "Purch2009", "fid")
-create_lag_by_group(dt, "year == 2010", "imputedPurchasesK", "Purch2010", "fid")
-dt[, Purch1 := (Purch2009 + Purch2010) / 2]
-dt[, Purch2 := (shift(imputedPurchasesK, 1L) + shift(imputedPurchasesK, 2L)) / 2, fid]
-
-# Franjas de facturación en MUI
-dt[(djFict), djFictInBracket1 := RevenueMUI < 2]
-dt[(djFict), djFictInBracket2 := inrange(RevenueMUI, 2, 3)]
-dt[(djFict), djFictInBracket3 := RevenueMUI > 3]
-dt[
-  (djFict),
-  djFictBracketSwitch :=
-    (djFictInBracket1 & !shift(djFictInBracket1)) |
-      (djFictInBracket2 & !shift(djFictInBracket2)) |
-      (djFictInBracket3 & !shift(djFictInBracket3))
-]
 
 # covariables
 dt[, firm_age := year - birth_year]

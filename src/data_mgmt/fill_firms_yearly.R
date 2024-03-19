@@ -46,6 +46,13 @@ dt[, anyRecordedPurchases := fifelse(!is.na(imputedPurchases), imputedPurchases 
 dt[, anyRecordedSales := fifelse(!is.na(taxableTurnover), taxableTurnover > 0, FALSE)]
 dt[, anyRecordedRevenue := fifelse(!is.na(Revenue), Revenue > 0, FALSE)]
 
+varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
+for (v in paste0(varlist, "K")) {
+  dt[, (paste0("CR", v, "Ext")) := fifelse(
+    !is.na(get(v)), get(v) > 0, FALSE
+  )]
+}
+
 message("Exporting cross-joined dataset: ", opt$output) # ---------------------
 
 write_fst(dt, opt$output)
