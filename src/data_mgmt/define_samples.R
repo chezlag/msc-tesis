@@ -40,11 +40,24 @@ lookup_list[[5]] <- dty[year <= 2011, .(maxPreTurnoverMUI = fmax(turnoverMUI)), 
 lookup_list[[6]] <- dty[, .(minTurnoverMUI = fmin(turnoverMUI)), fid]
 lookup_list[[7]] <- dty[year <= 2011, .(minPreTurnoverMUI = fmin(turnoverMUI)), fid]
 
-# En todos los años / en algún año / todos los años pre (múltiples variables)
+# Type of tax filing
 varlist <- c("Exempt", "Simple", "Regular", "CEDE")
 for (v in varlist) dty[, (paste0("taxType", v)) := taxType == v]
-cols <- c("in214", "in217", "djFict", "activeBusiness", "taxTypeSimple", "taxTypeRegular", "taxTypeExempt", "taxTypeCEDE")
-colyrs <- list(2009:2016, 2009:2015, 2009:2016, 2009:2015, 2009:2016, 2009:2016, 2009:2016, 2009:2016)
+dty[, taxTypeSimpleRegular := taxType %in% varlist[2:3]]
+
+# En todos los años / en algún año / todos los años pre (múltiples variables)
+cols <- c(
+  "in214",
+  "in217",
+  "djFict",
+  "activeBusiness",
+  "taxTypeSimple",
+  "taxTypeRegular",
+  "taxTypeExempt",
+  "taxTypeCEDE",
+  "taxTypeSimpleRegular"
+)
+colyrs <- list(2009:2016, 2009:2015, 2009:2016, 2009:2015, 2009:2016, 2009:2016, 2009:2016, 2009:2016, 2009:2016)
 lookup_AllT <- map2(
   cols,
   colyrs,
@@ -83,8 +96,10 @@ lut[, inSample0 := djFictAnyT & (in214AnyT | in217AnyT)]
 lut[, inSample1 := djFictAllT & in217AllT & (!nonAbsorbing | is.na(nonAbsorbing))]
 lut[, inSample2 := inSample1 & taxTypeSimpleAllT]
 lut[, inSample3 := taxTypeSimpleAllTPre]
+lut[, inSample4 := taxTypeSimpleRegularAllT]
 
 lut[, inSample1f := djFictAllTPre]
 lut[, inSample2f := inSample1f & taxTypeSimpleAllTPre]
+lut[, inSample4f := taxTypeSimpleRegularAllTPre]
 
 write_fst(lut, opt$output)

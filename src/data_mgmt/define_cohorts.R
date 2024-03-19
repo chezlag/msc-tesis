@@ -14,11 +14,15 @@ lookup_list <- list()
 lookup_list[[1]] <-
   dty[(received), .(G1 = fmin(year) |> as.double()), fid]
 
-# Year received e-tickets share is over 5% of 2009–2010 turnover
-median <- fmedian(dty$Scaled1netAmountReceivedK)
-dty[, receivedSzOverMedian := fifelse(!is.na(Scaled1netAmountReceivedK),
-                                      Scaled1netAmountReceivedK > median,
-                                      FALSE)]
+# Year received e-tickets share is over median
+dty[, eticketTax := grossAmountReceived - netAmountReceived]
+dty[, eticketTaxShare := eticketTax / vatPurchases]
+median <- dty[, fmedian(eticketTaxShare)]
+dty[, receivedSzOverMedian := fifelse(
+  !is.na(eticketTaxShare),
+  eticketTaxShare > median,
+  FALSE
+)]
 lookup_list[[2]] <-
   dty[(receivedSzOverMedian), .(G2 = fmin(year) |> as.double()), fid]
 
