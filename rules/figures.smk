@@ -43,6 +43,9 @@ PLOTLIST = PL0 + PL1 + PL2 + PL3
 rule figs:
     input: PLOTLIST
 
+rule sfigs:
+    input: PL1
+
 # --- Build rules --- #
 
 rule figures_simple_dty:
@@ -79,15 +82,11 @@ rule plot_es_did_y_all:
         fcn = "src/figures/" + "gges.R",
         est = "out/analysis/" + "did.y.all.{estimate}.RDS"
     output:
-        fig = expand(
-            "out/figures/" + "es.did.y.all.{outcome}.{est}.png",
-            outcome = OUTCOME_VARIABLES,
-            est = "{estimate}"
-        )
+        fig = "out/figures/" + "did.y.all.{estimate}.png"
     log:
         "logs/figures/" + "es.did.y.all.{estimate}.Rout"
     shell:
-        "{runR} {input.script} --spec {wildcards.estimate} > {log} {logAll}"
+        "{runR} {input.script} --spec {wildcards.estimate} -o {output.fig} > {log} {logAll}"
 
 rule plot_es_did_y_by_size:
     input:
