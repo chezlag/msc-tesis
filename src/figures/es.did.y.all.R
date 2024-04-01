@@ -14,7 +14,7 @@ pkgs <- c(
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
-source("src/lib/cli_parsing_s.R")
+source("src/lib/cli_parsing_os.R")
 source("src/lib/tidy_did.R")
 source("src/lib/theme_set.R")
 source("src/figures/gges.R")

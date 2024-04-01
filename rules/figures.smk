@@ -22,8 +22,7 @@ SIMPLE_PLOTS_EST = [
 ]
 PL0 = expand("out/figures/{fig}.png", fig = SIMPLE_PLOTS_DTY + SIMPLE_PLOTS_EST)
 PL1 = expand(
-    "out/figures/es.did.y.all.{outcome}.{estimate}.png",
-    outcome = OUTCOME_VARIABLES,
+    "out/figures/es.did.y.all.{estimate}.png",
     estimate = PREFFERED_SPEC
 )
 PL2 = expand(
@@ -79,10 +78,9 @@ rule figures_simple_est:
 rule plot_es_did_y_all:
     input:
         script = "src/figures/" + "es.did.y.all.R",
-        fcn = "src/figures/" + "gges.R",
         est = "out/analysis/" + "did.y.all.{estimate}.RDS"
     output:
-        fig = "out/figures/" + "did.y.all.{estimate}.png"
+        fig = "out/figures/" + "es.did.y.all.{estimate}.png"
     log:
         "logs/figures/" + "es.did.y.all.{estimate}.Rout"
     shell:
