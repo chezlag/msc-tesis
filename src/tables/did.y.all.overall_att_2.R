@@ -48,16 +48,14 @@ for (v in varlist) dty[, (paste0(v, "0")) := get(v) > 0]
 # Table -----------------------------------------------------------------------
 
 yvarlist <- c(
-  "vatPurchases0",
-  "vatSales0",
-  "netVatLiability0",
-  "vatPaid0"
+  "CRvatPurchasesKExt",
+  "CRvatSalesKExt",
+  "CRnetVatLiabilityKExt",
 )
 ylablist <- c(
   "P(IVA Compras > 0)",
   "P(IVA Ventas > 0)",
-  "P(IVA adeudado > 0)",
-  "P(Pago de IVA > 0)"
+  "P(IVA adeudado > 0)"
 )
 
 est <- readRDS(opt$input)

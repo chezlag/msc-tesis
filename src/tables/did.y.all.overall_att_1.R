@@ -45,16 +45,14 @@ dty <-
 # Table -----------------------------------------------------------------------
 
 yvarlist <- c(
-  "Scaled1vatPurchasesK",
-  "Scaled1vatSalesK",
-  "Scaled1netVatLiabilityK",
-  "Scaled1vatPaidK"
+  "CR10vatPurchasesK",
+  "CR10vatSalesK",
+  "CR10netVatLiabilityK",
 )
 ylablist <- c(
   "IVA Compras",
   "IVA Ventas",
-  "IVA adeudado",
-  "Pago de IVA"
+  "IVA adeudado"
 )
 
 est <- readRDS(opt$input)
