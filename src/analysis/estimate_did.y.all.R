@@ -11,6 +11,7 @@ pkgs <- c(
 )
 groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_om.R")
+source("src/lib/winsorize.R")
 
 set.seed(20240115)
 
@@ -41,7 +42,8 @@ dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"] %>%
   merge(cohorts, by = "fid") %>%
-  .[eval(parse(text = params$sample_yearly))]
+  .[eval(parse(text = params$sample_yearly))] %>%
+  .[year %in% 2009:2015]
 
 # size and age quartiles – sample specific
 quartiles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.25), na.rm = TRUE)]
@@ -53,33 +55,24 @@ quartiles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.25), na.rm = TRUE)]
 dty[, assetsQuartile := cut(Scaler3, breaks = quartiles, labels = 1:4)]
 dty[is.na(assetsQuartile), assetsQuartile := floor(runif(1, 1, 5))]
 
-# Extensive margin responses
-varlist <- c("vatPurchases", "vatSales", "netVatLiability", "vatPaid")
-for (v in varlist) dty[, (paste0(v, "0")) := get(v) > 0]
+# size and assets deciles – sample specific
+deciles <- dty[, quantile(Scaler3, probs = seq(0, 1, 0.1), na.rm = TRUE)] # assets
+dty[, assetsDecile := cut(Scaler3, breaks = deciles, labels = 1:10)]
+dty[is.na(assetsDecile), assetsDecile := floor(runif(1, 1, 11))]
+deciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 0.1), na.rm = TRUE)] # revenue
+dty[, sizeDecile := cut(Scaler1, breaks = deciles, labels = 1:10)]
+dty[is.na(sizeDecile), sizeDecile := floor(runif(1, 1, 11))]
 
 # outcome variable list
 stubnames <- c(
   "vatPurchases",
   "vatSales",
-  "netVatLiability",
-  "vatPaid"
+  "netVatLiability"
 )
 varlist <- c(
-  paste0("Scaled1", stubnames, "K"),
-  paste0(stubnames, "0")
+  paste0("CR10", stubnames, "K"),
+  paste0("CR", stubnames, "Ext")
 )
-
-# remove incomplete years from each dataset
-patterns <- list(
-  "vatPurchases|vatSales|netVatLiability",
-  "vatPaid"
-)
-yearlist <- list(
-  2009:2015,
-  2010:2015
-)
-map(patterns, ~ grep(.x, varlist, value = TRUE)) %>%
-  walk2(yearlist, ~ dty[year %nin% .y, (.x) := NA])
 
 # Estimate --------------------------------------------------------------------
 
@@ -123,9 +116,7 @@ dynamic <- ddlist %>%
       type = "dynamic",
       clustervars = "fid",
       bstrap = TRUE,
-      na.rm = TRUE,
-      min_e = -4,
-      max_e = 3
+      na.rm = TRUE
     )
   }))
 
