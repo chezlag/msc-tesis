@@ -1,0 +1,4 @@
+{
+    "sample_fid": "(taxTypeSimpleAllTPre)",
+    "sample_yearly": "taxType %in% c('Simple', 'Regular') & turnoverMUI <= 4"
+}
