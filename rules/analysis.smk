@@ -2,15 +2,15 @@
 
 # --- Dictionaries --- #
 
-SAMPLE_LIST = ["1", "2", "3", "1f", "2f"]
+SAMPLE_LIST = ["1", "2", "3", "4", "1f", "2f", "4f"]
 SPEC_LIST = ["base", "ctrl", "wt"]
 PANEL_LIST = ["bal", "unbal"]
 GROUP_LIST = ["nyt16", "nytInf", "nt"]
 
 DID_YEARLY = expand(
     "out/analysis/did.y.all.{estimates}_{group}.RDS",
-    estimates = ["S1_bal_ctrl", "S2_bal_ctrl", "S3_bal_ctrl"],
-    group = ["nyt16"]
+    estimates = ["S4_bal_ctrl", "S4_unbal_ctrl"],
+    group = ["nytInf", "nt"]
 )
 DID_YEARLY_BYV = expand(
     "out/analysis/did.y.by_{byvar}.{estimates}_{group}.RDS",
@@ -33,10 +33,7 @@ DID_QUARTERLY = expand(
 
 rule did:
     input:
-        DID_YEARLY,
-        DID_YEARLY_BYV,
-        DID_YEARLY_SURV,
-        DID_QUARTERLY
+        DID_YEARLY
 
 # --- Build rules --- #
 

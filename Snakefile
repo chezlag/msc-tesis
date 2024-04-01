@@ -12,16 +12,17 @@ runStata = "stata-mp -q -b"
 logAll = "2>&1"
 
 # --- Output options ---#
-PREFFERED_SPEC = "S3_bal_ctrl_nyt16"
+PREFFERED_SPEC = "S4_bal_ctrl_nytInf"
 OUTCOME_VARIABLES = [
-    "Scaled1vatPurchasesK",
-    "Scaled1vatSalesK",
-    "Scaled1netVatLiabilityK",
-    "Scaled1vatPaidK",
-    "vatPurchases0",
-    "vatSales0",
-    "netVatLiability0",
-    "vatPaid0"
+    "CR10vatPurchasesK",
+    "CR10vatSalesK",
+    "CR10netVatLiabilityK"
+    # "CRvatPurchasesKExt",
+    # "CRvatSalesKExt",
+    # "CRnetVatLiabilityKExt",
+    # "CRvatPurchasesKInt",
+    # "CRvatSalesKInt",
+    # "CRnetVatLiabilityKInt"
 ]
 
 # --- Main Build Rule --- #
