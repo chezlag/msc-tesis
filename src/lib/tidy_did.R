@@ -3,8 +3,8 @@ pkgs <- c("modelsummary", "broom")
 groundhog.library(pkgs, "2024-01-15")
 
 tidy.AGGTEobj <- function(x, ...) {
+  s <- x$DIDparams
   if (x$type == "simple") {
-    s <- x$DIDparams
     ret <- data.frame(
       y.name = s$yname,
       term = "Overall ATT",
@@ -19,6 +19,7 @@ tidy.AGGTEobj <- function(x, ...) {
     ret <- data.frame(
       y.name = s$yname,
       term = paste0(s$yname, ", l = ", x$egt),
+      event = x$egt,
       estimate = x$att.egt,
       std.error = x$se.egt,
       p.value = 2 * pnorm(-abs(x$att.egt / x$se.egt)), # TODO: Check how to get confindence-band p-value (now it's pointwise pvalue)
