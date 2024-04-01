@@ -1,4 +1,4 @@
 {
-    "formula": "~ ageQuartile + assetsQuartile + giro3",
+    "formula": "~ sizeDecile + assetsDecile + ageQuartile + division",
     "wt": null
 }
