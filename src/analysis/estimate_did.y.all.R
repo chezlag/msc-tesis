@@ -16,9 +16,6 @@ source("src/lib/winsorize.R")
 set.seed(20240115)
 
 message("Parsing model parameters.")
-message("Sample: ", opt$sample)
-message("Panel: ", opt$panel)
-message("Spec: ", opt$spec)
 params <- list(
   opt$sample,
   opt$panel,
@@ -27,6 +24,7 @@ params <- list(
 ) %>%
   map(fromJSON) %>%
   unlist(recursive = FALSE)
+opt$winsorize <- paste0("0.", opt$winsorize) |> as.numeric()
 
 # Input -----------------------------------------------------------------------
 
@@ -71,7 +69,17 @@ stubnames <- c(
 )
 varlist <- c(
   paste0("CR10", stubnames, "K"),
-  paste0("CR", stubnames, "Ext")
+  paste0("CR0", stubnames, "K"),
+  paste0("CR20", stubnames, "K"),
+  paste0("CR300", stubnames, "K"),
+  paste0("CR", stubnames, "KInt")
+)
+# winsorize continuous variables
+for (v in varlist) dty[, (v) := winsorize(get(v), opt$winsorize), year]
+# add extensive margin variables
+varlist <- c(
+  varlist,
+  paste0("CR", stubnames, "KExt")
 )
 
 # Estimate --------------------------------------------------------------------

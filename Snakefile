@@ -12,7 +12,7 @@ runStata = "stata-mp -q -b"
 logAll = "2>&1"
 
 # --- Output options ---#
-PREFFERED_SPEC = "S4_bal_ctrl_nytInf"
+PREFFERED_SPEC = "S4_bal_ctrl_p99_nytInf"
 OUTCOME_VARIABLES = [
     "CR10vatPurchasesK",
     "CR10vatSalesK",
