@@ -22,9 +22,9 @@ source("src/figures/gges.R")
 # Yearly plots  ---------------------------------------------------------------
 
 yvarlist <- c(
-  "CR10vatPurchasesK",
-  "CR10vatSalesK",
-  "CR10netVatLiabilityK"
+  "CRvatPurchasesKExt",
+  "CRvatSalesKExt",
+  "CRnetVatLiabilityKExt"
 )
 ylablist <- c(
   "IVA Compras",
