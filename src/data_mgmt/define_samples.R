@@ -4,6 +4,11 @@ groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_o.R")
 
 dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE)
+dty <- merge(
+  dty,
+  dty[, .N, fid] |> setnames("N", "yearsInSample"),
+  by = "fid"
+)
 
 # Define lookup tables of fid -----------------------------------------------------------
 
@@ -45,7 +50,7 @@ varlist <- c("Exempt", "Simple", "Regular", "CEDE")
 for (v in varlist) dty[, (paste0("taxType", v)) := taxType == v]
 dty[, taxTypeSimpleRegular := taxType %in% varlist[2:3]]
 
-# En todos los años / en algún año / todos los años pre (múltiples variables)
+# En todos los años que aparece / en algún año / todos los años pre (múltiples variables)
 cols <- c(
   "in214",
   "in217",
@@ -57,20 +62,18 @@ cols <- c(
   "taxTypeCEDE",
   "taxTypeSimpleRegular"
 )
-colyrs <- list(2009:2016, 2009:2015, 2009:2016, 2009:2015, 2009:2016, 2009:2016, 2009:2016, 2009:2016, 2009:2016)
-lookup_AllT <- map2(
+yearlist <- 2009:2015
+lookup_AllT <- map(
   cols,
-  colyrs,
-  \(x, y) {
-    dty[year %in% y & get(x) == TRUE, .N, fid][N == length(y), .(fid)] %>%
+  \(x) {
+    dty[year %in% yearlist & get(x) == TRUE, .N, .(fid, yearsInSample)][N == yearsInSample, .(fid)] %>%
       .[, paste0(x, "AllT") := TRUE]
   }
 )
-lookup_AnyT <- map2(
+lookup_AnyT <- map(
   cols,
-  colyrs,
   \(x, y) {
-    dty[year %in% y & get(x) == TRUE, .N, fid][, .(fid)] %>%
+    dty[year %in% yearlist & get(x) == TRUE, .N, fid][, .(fid)] %>%
       .[, paste0(x, "AnyT") := TRUE]
   }
 )
