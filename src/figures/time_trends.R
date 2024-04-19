@@ -10,7 +10,7 @@ source("src/lib/theme_set.R")
 
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample1), .(fid)]
+  .[(inSample3), .(fid)]
 cohorts <-
   read_fst("out/data/cohorts.fst", as.data.table = TRUE)
 dty <-
@@ -19,16 +19,13 @@ dty <-
   .[cohorts, on = "fid"]
 
 tab <- dty[year < 2016] |>
-  collap(vatPurchasesK + vatSalesK + netVatLiabilityK + vatPaidK ~ G1 + year) %>%
+  collap(vatPurchasesK + vatSalesK + netVatLiabilityK ~ G1 + year) %>%
   melt(id.vars = c("G1", "year"))
 
-tab[, event := year - G1]
-
 tab[, variable := fcase(
-  variable == "vatPurchasesK", "(a) IVA Compras",
-  variable == "vatSalesK", "(b) IVA Ventas",
-  variable == "netVatLiabilityK", "(c) IVA adeudado",
-  variable == "vatPaidK", "(d) Pagos de IVA"
+  variable == "vatPurchasesK", "(a) Input VAT",
+  variable == "vatSalesK", "(b) Output VAT",
+  variable == "netVatLiabilityK", "(c) Net VAT liability"
 )]
 
 # Plot ------------------------------------------------------------------------
@@ -41,6 +38,6 @@ tab %>%
   facet_grid(~variable) +
   scale_color_locuszoom() +
   scale_y_log10(limits = c(1000, NA), labels = scales::dollar_format()) +
-  labs(x = "Años", y = NULL, color = "Período de inicio del tratamiento")
+  labs(x = "Year", y = NULL, color = "Year of first e-invoice reception")
 
 ggsave(opt$output, width = 170, height = 100, units = "mm")

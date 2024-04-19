@@ -27,9 +27,9 @@ yvarlist <- c(
   "CR10netVatLiabilityK"
 )
 ylablist <- c(
-  "IVA Compras",
-  "IVA Ventas",
-  "IVA adeudado"
+  "Input VAT",
+  "Output VAT",
+  "Net VAT Liabilty"
 )
 
 est <- readRDS(paste0("out/analysis/did.y.all.", opt$spec, ".RDS"))
@@ -44,7 +44,7 @@ tidy <- map(
       y.name == yvarlist[1], ylablist[1],
       y.name == yvarlist[2], ylablist[2],
       y.name == yvarlist[3], ylablist[3]
-    )]
+    ) |> as_factor()]
 )
 
 tidy[[1]][, stars := fcase(
@@ -69,7 +69,7 @@ tidy[[2]] %>%
   scale_x_continuous(labels = -6:3, breaks = -6:3) +
   scale_shape_manual(values = c(0, 2, 4)) +
   ggsci::scale_color_lancet() +
-  labs(x = "Evento", y = NULL, color = NULL, shape = NULL) +
+  labs(x = "Event", y = "Log-points", color = NULL, shape = NULL) +
   theme_half_open() +
   theme(legend.position = c(0.05, 0.2))
 

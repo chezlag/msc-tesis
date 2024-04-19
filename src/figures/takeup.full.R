@@ -15,9 +15,9 @@ dts[is.na(dateFirstEmission), dateFirstEmission := ymd("2020-01-01")]
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-01-01")]
 
 textdt <- data.frame(
-  x = ymd("2015-09-01"),
+  x = ymd("2015-03-01"),
   y = 0.75,
-  label = "Emisión obligatoria\npara empresas con\ningresos > 30M UI\n––>"
+  label = "Mandatory emission\nfor firms with\nincome > 3M USD\n––>"
 )
 
 p1 <- dts %>%
@@ -30,8 +30,8 @@ p1 <- dts %>%
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01)) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-11-30"))) +
   labs(
-    x = "Fecha de primera emisión", y = "Función de distribución acumulada",
-    subtitle = "(a) Primera emisión"
+    x = "First emission date", y = "Cummulative distribution function",
+    subtitle = "(a) First emission"
   ) +
   theme(plot.subtitle = element_text(hjust = 0.5))
 
@@ -45,8 +45,8 @@ p2 <- dts %>%
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01)) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-11-30"))) +
   labs(
-    x = "Fecha de primera recepción", y = NULL,
-    subtitle = "(b) Primera recepción"
+    x = "First reception date", y = NULL,
+    subtitle = "(b) First reception"
   ) +
   theme(plot.subtitle = element_text(hjust = 0.5))
 
