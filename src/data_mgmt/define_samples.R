@@ -4,11 +4,11 @@ groundhog.library(pkgs, "2024-01-15")
 source("src/lib/cli_parsing_o.R")
 
 dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE)
-dty <- merge(
-  dty,
-  dty[, .N, fid] |> setnames("N", "yearsInSample"),
-  by = "fid"
+yis <- merge(
+  dty[year %in% 2009:2015, .(yearsInSample15 = .N), fid],
+  dty[year %in% 2009:2016, .(yearsInSample16 = .N), fid]
 )
+dty <- merge(dty, yis, by = "fid")
 
 # Define lookup tables of fid -----------------------------------------------------------
 
@@ -45,6 +45,12 @@ lookup_list[[5]] <- dty[year <= 2011, .(maxPreTurnoverMUI = fmax(turnoverMUI)), 
 lookup_list[[6]] <- dty[, .(minTurnoverMUI = fmin(turnoverMUI)), fid]
 lookup_list[[7]] <- dty[year <= 2011, .(minPreTurnoverMUI = fmin(turnoverMUI)), fid]
 
+# Balanced sample
+yis[, balanced15 := yearsInSample15 == fmax(yearsInSample15)]
+yis[, balanced16 := yearsInSample16 == fmax(yearsInSample16)]
+lookup_list[[8]] <- yis
+
+
 # Type of tax filing
 varlist <- c("Exempt", "Simple", "Regular", "CEDE")
 for (v in varlist) dty[, (paste0("taxType", v)) := taxType == v]
@@ -66,8 +72,17 @@ yearlist <- 2009:2015
 lookup_AllT <- map(
   cols,
   \(x) {
-    dty[year %in% yearlist & get(x) == TRUE, .N, .(fid, yearsInSample)][N == yearsInSample, .(fid)] %>%
+    dty[year %in% yearlist & get(x) == TRUE, .N, .(fid, yearsInSample16)] %>%
+      .[N == yearsInSample16, .(fid)] %>%
       .[, paste0(x, "AllT") := TRUE]
+  }
+)
+lookup_AllT15 <- map(
+  cols,
+  \(x) {
+    dty[year %in% 2009:2015 & get(x) == TRUE, .N, .(fid, yearsInSample15)] %>%
+      .[N == yearsInSample15, .(fid)] %>%
+      .[, paste0(x, "AllT15") := TRUE]
   }
 )
 lookup_AnyT <- map(
@@ -86,7 +101,7 @@ lookup_AllTPre <- map(
 
 # Define samples  -----------------------------------------------------------------------
 
-lut <- list(lookup_list, lookup_AllT, lookup_AnyT, lookup_AllTPre) %>%
+lut <- list(lookup_list, lookup_AllT, lookup_AllT15, lookup_AnyT, lookup_AllTPre) %>%
   unlist(recursive = FALSE) %>%
   reduce(merge, by = "fid", all = TRUE)
 
