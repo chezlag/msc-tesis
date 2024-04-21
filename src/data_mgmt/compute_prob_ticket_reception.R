@@ -5,13 +5,11 @@ pkgs <- c(
   "data.table",
   "forcats",
   "fst",
-  "ggplot2",
-  "ggsci",
   "janitor",
   "lubridate",
   "magrittr",
   "readxl",
-  "skimr"
+  "stringr"
 )
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
@@ -36,8 +34,11 @@ tab <- merge(
   collap(dty, turnoverMUI ~ year + supply, fsum) |> setnames("turnoverMUI", "total"),
   by = c("year", "supply"), all = TRUE
 )
-tab[is.na(turnoverMUI), turnoverMUI := 0]
-tab[, szTicket := turnoverMUI / total]
+setnames(tab, "turnoverMUI", "turnoverInTicket")
+tab[is.na(turnoverInTicket), turnoverInTicket := 0]
+tab[, szTicket := turnoverInTicket / total]
+
+fwrite(tab[!is.na(supply)], "out/data/share_eticket_by_industry.csv")
 
 # Percent of inputs provided by each sector -----------------------------------
 
@@ -85,11 +86,4 @@ prob <- merge(
 prob[, probTicketReception := szDemand * szTicket]
 ret <- collap(prob, probTicketReception ~ year + demand, fsum)
 
-fwrite(ret, "out/data/prob_ticket_reception.csv")
-
-# ret |>
-#   ggplot(aes(year, probTicketReception, color = demand)) +
-#   geom_line()
-# tab |>
-#   ggplot(aes(year, szTicket, color = supply)) +
-#   geom_line()
+fwrite(ret, "out/data/prob_ticket_reception_by_industry.csv")
