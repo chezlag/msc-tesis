@@ -53,15 +53,12 @@ April 2024
 
 ---
 
-# Conceptual framework
-
 > ❓ **Research question**
 >
 > What is the effect of receiving e-invoices on tax compliance?
 
-<br>
 
-- Firms can underpay VAT by underreporting sales and/or overreporting costs
+# Conceptual framework
 
 - Electronic invoicing creates a new dataset on (emitting) firms' output and (receiving) firms' input
 
@@ -73,12 +70,13 @@ April 2024
 
 - Uruguay is a middle income country in LAC (GDP per cápita ~15K USD)
 - VAT is the largest tax liability for firms and the largest source of tax revenue. Evasion of VAT was estimated at 26% (Gomez-Sabaini & Jimenez 2012)
-- Mandatory rollout of e-invocing –starting w largest firms– began 2012
+- Mandatory rollout of e-invocing –starting w largest firms– began 2012.
 
 # Approach
 
-- **Main challenge:** Causal identification is tricky – non-random buyer-seller pairings
-- **How I overcome it:** Event study-type regression (Callaway & Sant'Anna 2021), using the  quasi-experimental variation of **first e-invoice reception**, focusing on small firms.
+- **Main challenge:** Nonrandom buyer-seller pairings, intensity and timing.
+- **How I overcome it:** IV strategy (LATE), using network of industry linkages to compute the probability of receiving an e-ticket by industry and year.
+
 <!-- Since emitting firms are v large, there may be less risk of collusion with small players (no individual buyer surpasses 1% of seller turnover) -->
 <!-- Also,  -->
 
@@ -87,65 +85,76 @@ April 2024
 
 # Data
 
-- Administrative data on uruguayan firms 2010–2015 (incomplete implementation)
+- Administrative data on uruguayan firms 2009–2016
   - Monthly summaries of buyer-seller pair transactions
   - VAT affidavits
-- **Main sample:** Small firms excl. simplified VAT filing (N bal = 8610, ~15% of firms)
+- Input-output table (2012) for industry linkages
+- **Main sample:** Firms with regular (non-simplified) tax filing and not in LTU
 - **Outcome variables:** input VAT, output VAT, VAT liabilities
-  - Functional form: Log w Chen & Roth (2023) extensive margin @ 10%
+  - Functional form: deflacted + IHS
   - Winsorized at 99th percentile
-- **Covariates:** pre-policy asset and income  deciles, 22 ISIC divisions, firm age quartiles
-- **Treatment variable:** Date of first e-invoice
-- **Control group:** Not-yet-treated firms
+<!-- - **Covariates:** pre-policy asset and income  deciles, 22 ISIC divisions, firm age quartiles -->
+- **Treatment variable:** Tax registered in e-invoices (deflacted  + IHS), N invoices (IHS)
+- **Instrumental variable:** Prob. of receiving an e-invoice by industry 
 
 ---
 
-### CDF of first emission and first reception date
+### CDF of first emission and share of total output in e-invoices
 
-![h:550](../../out/figures/takeup.full.png)
-
----
-
-### Treatment effect on tax compliance of first e-invoice reception 
-
-![h:550](../../out/figures/es.did.y.all.S4_bal_ctrl_p99_nytInf.png)
+![h:550](../../out/figures/takeup.share.png)
 
 ---
 
-### Treatment effect on tax compliance of first e-invoice reception 
+### Network structure and e-invoice roll-out by industry
 
-![h:550](../../out/tables/did.y.all.overall_att_all.png)
+![h:550](../../out/figures/slides_manual.png)
+
+(gif of e-invoice rollout, or faceted plot per year)
 
 ---
 
-# Why no effect?
+# The instrument
 
-- Incomplete implementation of e-invoicing (rollout ended in 2020)
+Probability of receiving an e-invoice for industry $j$ in time $t$ is equal to the sum of the partial probabilities of recieving an e-invoice from each industry $h$
 
-- Incomplete coverage of input costs – hard to curtail cost overreporting
+<br>
 
-![h:350](../../out/figures/reception_intensity.all.png)
+$$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jht}}{\text{Total inputs}_{jt}}}_{\text{Share of }j\text{'s inputs} \text{coming from }h} \cdot\ \text{Share e-invoiced output}_{ht}$$
+
+![bg right:50% w:600](../../out/figures/prob_ticket_reception.by_industry.png)
+
+---
+
+### First stage
+
+![h:500](../../out/tables/first_stage.png)
+
+`F-test (1st stage), IHSeticketTaxK: stat = 8613.9, p < 1e-15` (preferred spec)
+
+---
+
+### Effect of reception of electronic invoices on tax compliance 
+
+![h:550](../../out/tables/iv.png)
+
+---
+
+> **Prefered specification**
+> 10% increase in tax in e-invoice $\Rightarrow$ 0.3% increase in VAT liability
+
+# Why the small effect?
+
+- Incomplete implementation of e-invoicing – effective rollout ended last year
+- Incomplete coverage of input costs – hard to curtail cost overreporting at this early stage
+
+![bg right w:600](../../out/figures/reception_intensity.all.png)
 
 -----
 
-# Limitations
-
-- Reduced time period (can't see full effect of the reform)
-- Small firms only
-
 # Future steps
 
-- Check for heterogeneous results by firm size and industry
-- Add robustness checks (change extensive margin responses)
-
----
-
-### Buyers' share of e-invoice emitting sellers' income
-
-![h:550](../../out/figures/small_players.all.png)
-
----
-
-### Raw series
-
-![h:550](../../out/figures/time_trends.png)
+- Check for heterogeneous results (firm size, ...?)
+- Add robustness checks (Chen & Roth 2023)
+- Threats to identification? $\text{cov}(Y,Z)\neq0$ 
+  - Could happen if sector linkages were related to how much a firm can evade (reasonable concern, may be dampened at aggregate level).
+- More disaggregated sectors? (might improve precision)
