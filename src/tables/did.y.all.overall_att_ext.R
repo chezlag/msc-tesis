@@ -44,9 +44,9 @@ yvarlist <- c(
   "CRnetVatLiabilityKExt"
 )
 ylablist <- c(
-  "P(IVA Compras > 0)",
-  "P(IVA Ventas > 0)",
-  "P(IVA adeudado > 0)"
+  "P(Input VAT > 0)",
+  "P(Output VAT > 0)",
+  "P(Net VAT liabilities > 0)"
 )
 
 # Select estimations

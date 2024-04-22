@@ -44,9 +44,9 @@ yvarlist <- c(
   "CR10netVatLiabilityK"
 )
 ylablist <- c(
-  "IVA Compras",
-  "IVA Ventas",
-  "IVA adeudado"
+  "Input VAT",
+  "Output VAT",
+  "Net VAT liability"
 )
 
 # Select estimations
