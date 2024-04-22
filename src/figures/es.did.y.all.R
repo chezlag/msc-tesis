@@ -21,6 +21,7 @@ source("src/figures/gges.R")
 
 # Yearly plots  ---------------------------------------------------------------
 
+opt$spec <- "S4_bal_ctrl_p99_nytInf"
 yvarlist <- c(
   "CR10vatPurchasesK",
   "CR10vatSalesK",
@@ -53,7 +54,9 @@ tidy[[1]][, stars := fcase(
   p.value < 0.10, "*",
   default = ""
 )]
-tidy[[1]][, caption := paste0(variable, ": ", round(estimate, 3), stars)]
+tidy[[1]][, caption := paste0(
+  variable, ": ", round(estimate, 3), " (", round(std.error, 3), ")", stars
+)]
 caption <- paste(c("Overall ATT", tidy[[1]][, caption]), collapse = "\n")
 
 dodge <- 0.3
@@ -69,8 +72,8 @@ tidy[[2]] %>%
   scale_x_continuous(labels = -6:3, breaks = -6:3) +
   scale_shape_manual(values = c(0, 2, 4)) +
   ggsci::scale_color_lancet() +
-  labs(x = "Event", y = "Log-points", color = NULL, shape = NULL) +
+  labs(x = "Event", y = "Log-points", color = NULL, shape = NULL, caption = caption) +
   theme_half_open() +
-  theme(legend.position = c(0.05, 0.2))
-
-ggsave(opt$output, width = 170, height = 100, units = "mm")
+  theme(legend.position = c(0.05, 0.2), plot.caption = element_text(size = 9))
+opt$output <- paste0("out/figures/es.did.y.all.", opt$spec, ".png")
+ggsave(opt$output, width = 170, height = 120, units = "mm")
