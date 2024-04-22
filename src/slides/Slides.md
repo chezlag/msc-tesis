@@ -40,7 +40,7 @@ April 2024
 
 # Motivation
 
-- Technology can improve tax compliance by improving identification of taxpayers, detection of inconsitencies, and collection capabilities (Okunogbe 2023)
+- Technology can improve tax compliance by improving identification of taxpayers, detection of inconsistencies, and collection capabilities (Okunogbe 2023)
 - **Electronic invoicing** – Digital record of every transaction with automatic transmission to tax authority
 - Widely implemented policy, has been shown to reduce noncompliance in middle and low income countries alike
 - One important feature of the policy has not been evaluated: **spillovers**
@@ -60,9 +60,11 @@ April 2024
 
 # Conceptual framework
 
-- Electronic invoicing creates a new dataset on (emitting) firms' output and (receiving) firms' input
+Electronic invoicing creates a new dataset on (emitting) firms' output and (receiving) firms' input. For receiving firms I expect:
 
-- **Expected effects:** 	&darr; input VAT, = output VAT, &darr; net VAT liability
+<br>
+
+![h:180](../../resources/ConceptDiagram.png)
 
 ---
 
@@ -74,8 +76,8 @@ April 2024
 
 # Approach
 
-- **Main challenge:** Nonrandom buyer-seller pairings, intensity and timing.
-- **How I overcome it:** IV strategy (LATE), using network of industry linkages to compute the probability of receiving an e-ticket by industry and year.
+- **Main challenge:** Nonrandom buyer-seller pairings
+- **How I overcome it:** Staggered DD, using time of first e-invoice reception and focusing on small firms.
 
 <!-- Since emitting firms are v large, there may be less risk of collusion with small players (no individual buyer surpasses 1% of seller turnover) -->
 <!-- Also,  -->
@@ -88,28 +90,42 @@ April 2024
 - Administrative data on uruguayan firms 2009–2016
   - Monthly summaries of buyer-seller pair transactions
   - VAT affidavits
-- Input-output table (2012) for industry linkages
-- **Main sample:** Firms with regular (non-simplified) tax filing and not in LTU
-- **Outcome variables:** input VAT, output VAT, VAT liabilities
-  - Functional form: deflacted + IHS
-  - Winsorized at 99th percentile
-<!-- - **Covariates:** pre-policy asset and income  deciles, 22 ISIC divisions, firm age quartiles -->
-- **Treatment variable:** Tax registered in e-invoices (deflacted  + IHS), N invoices (IHS)
-- **Instrumental variable:** Prob. of receiving an e-invoice by industry 
+- **Main sample:** Small firms with non-simplified tax regimes (N = 8.5K)
+- **Outcome variables:** input VAT, output VAT, net VAT liability
+  - Functional form: deflacted + IHS + winsorized p99
+- **Treatment variable:** Year of first e-invoice reception
+- **Control group:** Not-yet-treated firms
+- **Covariates:** pre-policy asset and income  deciles, 22 ISIC sections, firm age quartiles
 
 ---
 
 ### CDF of first emission and share of total output in e-invoices
 
-![h:550](../../out/figures/takeup.share.png)
+![h:480](../../out/figures/takeup.shareV2.png)
+
+Small number of emitting firms (6%) with large share of output (50% in 2016)
 
 ---
 
-### Network structure and e-invoice roll-out by industry
+### Effect of e-invoice reception on tax compliance (Staggered DD, CS21)
 
-![h:550](../../out/figures/slides_manual.png)
+![h:490](../../out/figures/es.did.y.all.S4_bal_ctrl_p99_nytInf.png)
 
-(gif of e-invoice rollout, or faceted plot per year)
+No effect on any variables. Small sample, breaks down w unbal. sample
+
+---
+
+# Alternative approach
+
+![bg right h:600](../../out/figures/industry_graph.png)
+
+IV strategy (LATE), using network of industry linkages to compute the probability of receiving an e-ticket by industry and year.
+
+**Treatment variable:** Tax registered in e-invoices (deflacted  + IHS) 
+
+**Instrumental variable:** Prob. of receiving an e-invoice by industry 
+
+**Main sample:** Firms with regular (non-simplified) tax filing and not under LTU supervision
 
 ---
 
@@ -119,23 +135,17 @@ Probability of receiving an e-invoice for industry $j$ in time $t$ is equal to t
 
 <br>
 
-$$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jht}}{\text{Total inputs}_{jt}}}_{\text{Share of }j\text{'s inputs} \text{coming from }h} \cdot\ \text{Share e-invoiced output}_{ht}$$
+$$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jh,2012}}{\text{Total inputs}_{j,2012}}}_{\text{Share of }j\text{'s inputs} \text{coming from }h} \cdot\ \text{Share e-invoiced output}_{ht}$$
 
-![bg right:50% w:600](../../out/figures/prob_ticket_reception.by_industry.png)
-
----
-
-### First stage
-
-![h:500](../../out/tables/first_stage.png)
-
-`F-test (1st stage), IHSeticketTaxK: stat = 8613.9, p < 1e-15` (preferred spec)
+![bg right:45% w:580](../../out/figures/prob_ticket_reception.by_industry.png)
 
 ---
 
-### Effect of reception of electronic invoices on tax compliance 
+### Effect of e-invoice reception on tax compliance (IV estimates)
 
-![h:550](../../out/tables/iv.png)
+![h:500](../../out/tables/iv_short.png)
+
+`F-test (1st stage), IHSeticketTaxK: stat = 9173.1, p < 1e-15`
 
 ---
 
@@ -147,14 +157,40 @@ $$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jht}}{\text{
 - Incomplete implementation of e-invoicing – effective rollout ended last year
 - Incomplete coverage of input costs – hard to curtail cost overreporting at this early stage
 
-![bg right w:600](../../out/figures/reception_intensity.all.png)
+![bg right w:600](../../out/figures/reception_intensity_all.png)
 
 -----
 
 # Future steps
 
+- Tests to validate instrument (error autocorrelation?)
 - Check for heterogeneous results (firm size, ...?)
 - Add robustness checks (Chen & Roth 2023)
 - Threats to identification? $\text{cov}(Y,Z)\neq0$ 
   - Could happen if sector linkages were related to how much a firm can evade (reasonable concern, may be dampened at aggregate level).
-- More disaggregated sectors? (might improve precision)
+
+- Disaggregate sectors (might improve precision)
+
+---
+
+<!-- _class: lead -->
+
+# Appendix
+
+---
+
+### Effect of e-invoice reception on tax compliance (DD Overall)
+
+![h:550](../../out/tables/did.y.all.overall_att_all.png)
+
+---
+
+### Effect of e-invoice reception on extensive margin (IV estimates)
+
+![h:550](../../out/tables/iv_short_extensive.png)
+
+---
+
+### IV estimates, alternate regressor (number of e-invoices)
+
+![h:550](../../out/tables/iv_short_ntickets.png)
