@@ -28,4 +28,5 @@ dfig %>%
     color = NULL
   )
 
+opt$output <- "out/figures/takeup.in_sample.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")

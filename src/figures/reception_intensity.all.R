@@ -17,7 +17,6 @@ groundhog.library(pkgs, date)
 source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
 source("src/lib/stata_helpers.R")
-theme_set(theme)
 
 samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
@@ -37,12 +36,10 @@ dty[balanced15 & eticketTaxShare < 1] %>%
   scale_x_continuous(breaks = 2011:2016, labels = 2011:2016) +
   scale_y_continuous(labels = scales::label_percent()) +
   labs(
-    x = "Year", y = "Coverage of input VAT in e-invoices", fill = NULL,
-    title = "Share of Input VAT in e-invoices",
-    subtitle = "Among e-invoice recepients"
+    x = "Year", y = "Coverage of input VAT in e-invoices", fill = NULL
   ) +
   theme_half_open() +
   theme(legend.position = "none")
 
-opt$output <- "out/figures/reception_intensity_all.png"
-ggsave(opt$output, width = 120, height = 100, units = "mm")
+opt$output <- "out/figures/reception_intensity.all.png"
+ggsave(opt$output, width = 170, height = 100, units = "mm")
