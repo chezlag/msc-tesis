@@ -51,6 +51,8 @@ gtbl <- est %>%
     )
   )
 
+opt$output <- "out/tables/twfe.y.all.overall_att.all.png"
+gtsave(gtbl, opt$output)
 opt$output <- "out/tables/twfe.y.all.overall_att.all.tex"
 gtsave(gtbl, opt$output)
 

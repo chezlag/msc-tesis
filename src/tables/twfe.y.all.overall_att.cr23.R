@@ -4,6 +4,7 @@ pkgs <- c(
   "forcats",
   "gt",
   "magrittr",
+  "modelsummary",
   "purrr",
   "stringr"
 )
@@ -56,6 +57,8 @@ gtbl <- est %>%
     )
   )
 
+opt$output <- "out/tables/twfe.y.all.overall_att.cr23.png"
+gtsave(gtbl, opt$output)
 opt$output <- "out/tables/twfe.y.all.overall_att.cr23.tex"
 gtsave(gtbl, opt$output)
 
