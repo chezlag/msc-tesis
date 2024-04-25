@@ -18,7 +18,7 @@ tidy.AGGTEobj <- function(x, ...) {
   if (x$type == "dynamic") {
     ret <- data.frame(
       y.name = s$yname,
-      term = paste0(s$yname, ", l = ", x$egt),
+      term = paste0("ATT, l = ", x$egt),
       event = x$egt,
       estimate = x$att.egt,
       std.error = x$se.egt,
