@@ -1,4 +1,4 @@
-cs21_att_gt <- function(yname, xformla, data, unbalanced = FALSE) {
+cs21_att_gt <- function(yname, xformla, data, unbalanced = TRUE) {
   message("Estimating ATT(g,t) for ", yname, " ", xformla)
   did::att_gt(
     yname = yname,

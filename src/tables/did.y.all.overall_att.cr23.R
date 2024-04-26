@@ -2,13 +2,16 @@ library(groundhog)
 pkgs <- c(
   "fastverse",
   "forcats",
+  "did",
   "gt",
   "magrittr",
+  "modelsummary",
   "purrr",
   "stringr"
 )
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
+source("src/lib/cli_parsing_o.R")
 source("src/lib/tidy_did.R")
 
 # Input -----------------------------------------------------------------------
@@ -19,18 +22,14 @@ est <- readRDS("out/analysis/did.y.all.tab2.RDS")
 
 ylablist <- c("Input VAT", "Output VAT", "Net VAT liability")
 rows <- data.table(
-  `epsilon` = rep(c(.1, 0, .2, 3), 3)
-  # Balanced = rep("Y", 12),
-  # `Firm & year FE` = rep("Y", 12),
-  # `Winsorized at p99` = rep("Y", 12),
-  # `Turnover < 3M UI` = rep("Y", 12)
+  `ε` = rep(c(.1, 0, .2, 3), 3)
 ) |>
   t() %>%
   cbind(rownames(.), .) |>
   data.frame()
 rownames(rows) <- NULL
 
-est %>%
+gtbl <- est %>%
   map(tidy_did_list) |>
   msummary(
     gof_map = "nobs",
@@ -60,6 +59,9 @@ est %>%
     )
   )
 
+opt$output <- "out/tables/did.y.all.overall_att.cr23.png"
+gtsave(gtbl, opt$output)
+opt$output <- "out/tables/did.y.all.overall_att.cr23.tex"
 gtsave(gtbl, opt$output)
 
 # delete table environment lines

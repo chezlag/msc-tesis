@@ -15,6 +15,7 @@ source("src/lib/cli_parsing_om.R")
 source("src/lib/winsorize.R")
 source("src/model/cs21.R")
 source("src/lib/create_controls.R")
+source("src/lib/tidy_did.R")
 
 # Input -----------------------------------------------------------------------
 
@@ -30,10 +31,9 @@ dty <-
   merge(cohorts, by = "fid")
 
 # Create samples
-
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
-dty[, sampleA := nomissing & taxTypeRegularAllTPre & turnoverMUI < 1 & taxType %in% c("Simple", "Regular") & in217AllT15 & year < 2016 & !emittedAnyT] # nolint
-dty[, sampleB := nomissing & taxTypeSimpleAllTPre & taxType %in% c("Simple", "Regular") & maxTurnoverMUI < 2 & in217AllT15 & year < 2016 & !emittedAnyT] # nolint
+dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+dty[, sampleB := nomissing & taxTypeRegularAllT15 & balanced15 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
 
 # Subset samples & create controls
 stublist <- c("vatPurchasesK", "vatSalesK", "netVatLiabilityK")
@@ -59,28 +59,30 @@ ylist <- paste0("CR10", stublist)
 dtlist <- list(sA99, sA95, sB99)
 params <- list(
   rep(ylist, each = 3),
-  rep(dtlist, 3),
-  rep(c(FALSE, FALSE, TRUE), 3)
+  rep(dtlist, 3)
 )
 
 tab1 <- pmap(
   params,
-  \(y, dt, u) {
-    cs21_att_gt(y, "~ sizeDecile + assetsDecile + ageQuartile + division", dt, u) |>
+  \(y, dt) {
+    cs21_att_gt(y, "~ ageQuartile + division", dt, TRUE) |>
       cs21_simple()
   }
 )
+# tab1 |>
+#   map(tidy_did_list) |>
+#   msummary(stars = TRUE)
 
 fig1 <- map(
   ylist,
   \(y) {
-    cs21_att_gt(y, "~ sizeDecile + assetsDecile + ageQuartile + division", sA99) |>
+    cs21_att_gt(y, "~ ageQuartile + division", sA99, TRUE) |>
       cs21_dynamic()
   }
 )
-fig1 |>
-  map(tidy_did_list) |>
-  msummary(stars = TRUE)
+# fig1 |>
+#   map(tidy_did_list) |>
+#   msummary(stars = TRUE)
 
 # Robustness: Chen & Roth (2023) ------------------------------------------------
 
@@ -89,7 +91,7 @@ ylist <- allylist[c(1, 4, 7, 10, 2, 5, 8, 11, 3, 6, 9, 12)]
 tab2 <- map(
   ylist,
   \(y) {
-    cs21_att_gt(y, "~ sizeDecile + assetsDecile + ageQuartile + division", sA99) |>
+    cs21_att_gt(y, "~ ageQuartile + division", sA99) |>
       cs21_simple()
   }
 )
@@ -106,7 +108,7 @@ params <- list(
 tab3 <- pmap(
   params,
   \(y, dt) {
-    cs21_att_gt(y, "~ sizeDecile + assetsDecile + ageQuartile + division", dt) |>
+    cs21_att_gt(y, "~ ageQuartile + division", dt) |>
       cs21_simple()
   }
 )
