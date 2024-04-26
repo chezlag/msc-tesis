@@ -52,7 +52,8 @@ gtbl <- est %>%
     locations = cells_body(
       columns = c(1, 4, 7, 10)
     )
-  )
+  ) |>
+  opt_table_font(font = "Times New Roman")
 
 opt$output <- "out/tables/did.y.all.overall_att.ext.png"
 gtsave(gtbl, opt$output)
