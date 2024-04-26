@@ -20,7 +20,7 @@ est <- readRDS("out/analysis/twfe.y.all.tab2.RDS")
 
 ylablist <- c("Input VAT", "Output VAT", "Net VAT liability")
 rows <- data.table(
-  `epsilon` = rep(c(.1, 0, .2, 3), 3)
+  `ε` = rep(c(.1, 0, .2, 3), 3)
 ) |>
   t() %>%
   cbind(rownames(.), .) |>
