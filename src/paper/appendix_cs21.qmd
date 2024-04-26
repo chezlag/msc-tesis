@@ -1,0 +1,43 @@
+\renewcommand\thefigure{\thechapter.\arabic{figure}}
+\renewcommand\thetable{\thechapter.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+# Robustez: Callaway & Sant'Anna (2021) {#sec-appendix-cs21}
+
+::: {#fig-did-es}
+
+![](../../out/figures/es.did.y.all.S4_bal_ctrl_nytInf.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto de tratamiento promedio $l$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $l$ períodos. La muestra consiste de un panel balanceado de empresas que facturan menos de 1M de UI entre 2009–2015 y no pagan IVA en el régimen simplificado. Los resultados están censurados en el percentil 99. Las barras representan intervalos de confianza simultáneos y los errores estándar están clusterizados por empresa.
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio de eventos.
+:::
+
+::: {#tbl-did-all}
+
+![](../../out/tables/did.y.all.overall_att.all.png)
+
+> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especiﬁcación principal de DD presentada en la sección XX. La tabla muestra la estimación del efecto agregado siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
+
+Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas.
+:::
+
+::: {#tbl-twfe-ext}
+
+![](../../out/tables/did.y.all.overall_att.ext.png)
+
+> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa.
+
+Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
+:::
+
+::: {#tbl-twfe-cr23}
+
+![](../../out/tables/did.y.all.overall_att.cr23.png)
+
+> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
+
+Robustez de las estimaciones de diferencias en diferencias al variar el valor atribuido a los cambios del margen extensivo.
+:::
+
