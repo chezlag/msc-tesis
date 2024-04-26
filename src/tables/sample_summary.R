@@ -18,20 +18,25 @@ source("src/lib/cli_parsing_o.R")
 
 # Input -----------------------------------------------------------------------
 
-sample <- read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample3), .(fid)]
+sample <- read_fst("out/data/samples.fst", as.data.table = TRUE)
 dts <- read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 
+dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
+dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+dty[, sampleB := nomissing & taxTypeRegularAllT15 & balanced15 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+
+dty <- dty[(sampleA)]
+dts <- dts[fid %in% unique(dty[, fid])]
+
 # Compute pre-treatment means of main variables
 varlist <- c(
-  "RevenueM",
-  "Scaled1vatSalesK",
-  "Scaled1vatPurchasesK",
-  "Scaled1netVatLiabilityK",
-  "Scaled1vatPaidK",
+  "turnoverK",
+  "vatSalesK",
+  "vatPurchasesK",
+  "netVatLiabilityK",
   "fid"
 )
 pretreat <- dty[year == 2010, ..varlist]
@@ -50,11 +55,10 @@ tab[, N := 1]
 
 # Label variables
 labelledlist <- list(
-  RevenueM = "Ingreso reportado (millones de UYU)",
-  Scaled1vatSalesK = "IVA Ventas (% de ingreso)",
-  Scaled1vatPurchasesK = "IVA Compras (% de ingreso)",
-  Scaled1netVatLiabilityK = "IVA adeudado (% de ingreso)",
-  Scaled1vatPaidK = "Pagos de IVA (% de ingreso)",
+  turnoverK = "Ingreso reportado ($ UYU)",
+  vatSalesK = "IVA Ventas ($ UYU)",
+  vatPurchasesK = "IVA Compras ($ UYU)",
+  netVatLiabilityK = "IVA adeudado ($ UYU)",
   receivedAnyT = "Recibió alguna e-factura",
   emittedAnyT = "Emitió alguna e-factura",
   neverTreated = "Nunca recibió e-factura",
@@ -87,4 +91,4 @@ tab %>%
     gt::md("**Resultados pre-tratamiento.** Mediana (p25 – p75)"),
     4:8
   ) %>%
-  gtsave(opt$output)
+  gtsave("out/tables/sample_summary.png")
