@@ -37,6 +37,7 @@ dty[, treatedAnyT := event != -Inf]
 
 # Create samples
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
+dty[fid == 14903448 & year == 2009, nomissing := FALSE]
 dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
 dty[, sampleB := nomissing & taxTypeRegularAllT15 & balanced15 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
 
@@ -49,7 +50,7 @@ allylist <- c(
   paste0("CR300", stublist)
 )
 extylist <- paste0("CR", stublist, "Ext")
-xlist <- c("fid", "year", "G1", "birth_date", "Scaler1", "Scaler3", "division")
+xlist <- c("fid", "year", "G1", "birth_date", "Scaler1", "Scaler3", "seccion", "received")
 evntlist <- grep("^treat", names(dty), value = TRUE)
 keeplist <- c(xlist, allylist, extylist, evntlist)
 sA99 <- create_controls(dty[(sampleA), ..keeplist])
@@ -117,9 +118,58 @@ tab3 <- pmap(
   }
 )
 
+# Het. effects: Assets ----------------------------------------------------------
+
+ylist <- paste0("CR10", stublist)
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+
+tab4 <- pmap(
+  params,
+  \(y, dt) {
+    dt[, treatAbove := treat & assetsAboveMedian]
+    dt[, treatBelow := treat & !assetsAboveMedian]
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
+    twfe
+  }
+)
+
+# Het. effects: Final consumption share ----------------------------------------
+
+tab5 <- pmap(
+  params,
+  \(y, dt) {
+    dt[, treatAbove := treat & finalAboveMedian]
+    dt[, treatBelow := treat & !finalAboveMedian]
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
+    twfe
+  }
+)
+
+# Het effects: Exports ---------------------------------------------------------
+
+tab6 <- pmap(
+  params,
+  \(y, dt) {
+    dt[, treatAbove := treat & exportAboveMedian]
+    dt[, treatBelow := treat & !exportAboveMedian]
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
+    twfe
+  }
+)
+
 # Export results ---------------------------------------------------------------
 
 saveRDS(tab1, "out/analysis/twfe.y.all.tab1.RDS")
 saveRDS(fig1, "out/analysis/twfe.y.all.fig1.RDS")
 saveRDS(tab2, "out/analysis/twfe.y.all.tab2.RDS")
 saveRDS(tab3, "out/analysis/twfe.y.all.tab3.RDS")
+saveRDS(tab4, "out/analysis/twfe.y.all.tab4.RDS")
+saveRDS(tab5, "out/analysis/twfe.y.all.tab5.RDS")
+saveRDS(tab6, "out/analysis/twfe.y.all.tab6.RDS")
