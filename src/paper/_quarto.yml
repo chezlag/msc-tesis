@@ -21,19 +21,21 @@ book:
     - data.qmd
     - method.qmd
     - results.qmd
+    - discussion.qmd
     - closing_remarks.qmd
     - references.qmd
     - figures_tables.qmd
   appendices:
-    - appendix_context.qmd
+    - appendix_additional.qmd
     - appendix_cs21.qmd
-  #   - appendix_results.qmd
+    - appendix_iv.qmd
 
 bibliography: references.bib
 
 lang: es
 
 toc: true
+toc-depth: 2
 
 code-fold: true
 execute: 

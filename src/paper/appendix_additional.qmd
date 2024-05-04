@@ -1,0 +1,95 @@
+\renewcommand\thefigure{\thechapter.\arabic{figure}}
+\renewcommand\thetable{\thechapter.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+# Análisis adicionales
+
+::: {#tbl-policy-adoption-schedule}
+
+\small \input{../../src/tables/policy_adoption_schedule.tex}
+
+Calendario de adopción obligatoria de la emisión de e-facturas
+:::
+
+::: {#tbl-industry-summary}
+
+![](../../out/tables/industry_summary.png)
+
+> \scriptsize \textbf{Notas:} La tabla presenta estadísticas descriptivas de los sectores de actividad utilizados en el análisis. Las dos primeras columnas muestran la proporción de la producción de cada sector que se destina al consumo de los hogares y a exportaciones. Se resaltan los sectores que están por encima de la mediana en cada aspecto para realizar las estimaciones descritas en @eq-twfe-het. Las demás columnas muestran la probabilidad de recibir una e-factura para cada sector-año. Esta es la variable instrumental utilizada en el @sec-appendix-iv.
+
+Estadísticas descriptivas de los sectores de actividad
+:::
+
+
+::: {#fig-takeup-by layout="[[1,1], [1]]"}
+
+![Por quintil de facturación pre-tratamiento](../../out/figures/takeup.by_size.png)
+
+![Por sectores de actividad](../../out/figures/takeup.by_industry.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas, desagregando por quintil de facturación (panel a) y sector de actividad (panel b). Considero el panel balanceado de empresas que hacen una declaración de impuestos convencional todos los años entre 2009–2015.
+
+Función de distribución acumulada de la fecha de primera recepción de e-facturas, por submuestras.
+:::
+
+::: {#fig-reception-intensity-by layout="[[1,1], [1]]"}
+
+![Por quintil de facturación pre-tratamiento](../../out/figures/reception_intensity.by_size.png)
+
+![Por sector de actividad](../../out/figures/reception_intensity.by_industry.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta un boxplot por subgrupo y año, indicando la mediana, el rango intercuartílico y los outliers. El panel (a) desagrega las empresas por quintil de facturación pre-tratamiento. El panel (b) las desagrega por sector de actividad. Considero el panel balanceado de empresas que hacen una declaración de impuestos convencional todos los años entre 2009–2015.
+
+Proporción de IVA compras registrado en e-facturas por año, por submuestras.
+:::
+
+::: {#fig-small-players}
+
+![](../../out/figures/small_players.all.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El eje x está en logaritmos.
+
+Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores.
+:::
+
+::: {#fig-small-players-by layout="[[1,1], [1]]"}
+
+![Tercil de facturación pre-tratamiento](../../out/figures/small_players.by_size.png)
+
+![Sector de actividad](../../out/figures/small_players.by_industry.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El panel (a) desagrega las empresas por sector de actividad. El panel (b) las desagrega por tercil de facturación pre-tratamiento. El eje x está en logaritmos.
+
+Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores, por subgrupos.
+:::
+
+::: {#tbl-twfe-cr23}
+
+![](../../out/tables/twfe.y.all.overall_att.cr23.png)
+
+> \scriptsize \textbf{Notas:} Esta tabla presenta la robustez de las estimaciones presentadas en la @tbl-twfe-all al variar el valor $\varepsilon$ asignado al margen extensivo, siguiendo a @chenLogsZerosProblems2023. Las columnas 1, 5 y 9 se corresponden a la especificación preferida presentada en las columnas 1, 4 y 7 de la @tbl-twfe-all. Las demás columnas varían únicamente el valor asignado a $\varepsilon$ en 0, 0.2 y 3, según se indica en la última fila.
+
+Robustez de las estimaciones de diferencias en diferencias al variar el valor atribuido a los cambios del margen extensivo.
+:::
+
+::: {#tbl-twfe-het-size}
+
+![](../../out/tables/twfe.y.all.overall_att.by_size.png)
+
+Efectos heterogéneos por tamaño de la empresa. Diferencias en diferencias.
+:::
+
+::: {#tbl-twfe-het-industry}
+
+![](../../out/tables/twfe.y.all.overall_att.by_industry.png)
+
+Efectos heterogéneos por exposición al consumo final de los hogares. Diferencias en diferencias.
+:::
+
+::: {#tbl-twfe-het-export}
+
+![](../../out/tables/twfe.y.all.overall_att.by_export.png)
+
+Efectos heterogéneos por exposición a las exportaciones. Diferencias en diferencias.
+:::

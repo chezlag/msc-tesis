@@ -4,7 +4,7 @@
 
 ![](../../out/figures/takeup.full.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI. La línea a rayas indica el inicio de la obligatoriedad de emisión para las empresas con ingresos mayores a 30 millones de UI. Las empresas con menos ingresos anuales fueron mandatadas a emitir e-facturas de acuerdo al cronograma en la tabla (+++) del anexo.
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI. La línea a rayas indica el inicio de la obligatoriedad de emisión para las empresas con ingresos mayores a 30 millones de UI. Las empresas con menos ingresos anuales fueron mandatadas a emitir e-facturas de acuerdo al cronograma en la @tbl-policy-adoption-schedule del anexo.
 >
 > \scriptsize \textbf{Fuente:} Elaboración propia en base a microdatos del sistema de comprobantes electrónicos.
 
@@ -59,7 +59,7 @@ Proporción de IVA compras registrado en e-facturas por año.
 
 ::: {#fig-twfe-es}
 
-![](../../out/figures/es.did.y.all.S4_bal_ctrl_nytInf.png)
+![](../../out/figures/es.twfe.y.all.png)
 
 > \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo la @eq-es y corresponden al efecto de tratamiento promedio $l$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $l$ períodos. La muestra consiste de un panel balanceado de empresas que facturan menos de 1M de UI entre 2009–2015 y no pagan IVA en el régimen simplificado. Los resultados están censurados en el percentil 99. Las barras representan intervalos de confianza simultáneos y los errores estándar están clusterizados por empresa.
 
@@ -70,26 +70,18 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 
 ![](../../out/tables/twfe.y.all.overall_att.all.png)
 
-> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especiﬁcación principal de DD presentada en la sección XX. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especiﬁcación preferida (como se muestra en la @fig-twfe-es). Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016. Esta tabla se analiza en la sección XX. 
+> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especificación principal de DD presentada en la sección @sec-method. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especiﬁcación preferida (como se muestra en la @fig-twfe-es). Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016. Esta tabla se analiza en la sección [Sección @sec-results-effect]. 
 
-Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas.
+Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias.
 :::
 
 ::: {#tbl-twfe-ext}
 
 ![](../../out/tables/twfe.y.all.overall_att.ext.png)
 
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la @eq-twfe y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa.
+> \scriptsize \textbf{Notas:} Esta tabla registra los resultados presentada en la sección [Sección @sec-method]. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para la probabilidad de que las variables de resultado sean mayores a cero. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
 
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
 :::
 
-::: {#tbl-twfe-cr23}
-
-![](../../out/tables/twfe.y.all.overall_att.cr23.png)
-
-> \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la @eq-twfe y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa. Las estimaciones incluyen controles por nivel de activos, edad y sector de actividad.
-
-Robustez de las estimaciones de diferencias en diferencias al variar el valor atribuido a los cambios del margen extensivo.
-:::
 
