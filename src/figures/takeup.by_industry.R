@@ -10,13 +10,14 @@ samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dts <-
   read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[samples[(balanced15 & taxTypeRegularAllT15)], on = "fid"]
 
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
+dts[, industry := define_industry(seccion) |> tag_industry()]
 
-dts[giro8 %nin% c("Construcción", "Minería; EGA", "No clasificados")] %>%
+dts[!is.na(industry)] %>%
   ggplot(aes(color = giro8)) +
-  stat_ecdf(aes(dateFirstReception), geom = "line", size = 1) +
+  stat_ecdf(aes(dateFirstReception), geom = "line", linewidth = 1) +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
   ggsci::scale_color_frontiers() +
   labs(
@@ -25,4 +26,5 @@ dts[giro8 %nin% c("Construcción", "Minería; EGA", "No clasificados")] %>%
     color = NULL
   )
 
+opt$output <- "out/figures/takeup.by_industry.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")

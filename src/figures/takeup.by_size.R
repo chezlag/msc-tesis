@@ -10,15 +10,16 @@ samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dts <-
   read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[samples[(balanced15 & taxTypeRegularAllT15)], on = "fid"]
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[samples[(balanced15 & taxTypeRegularAllT15)], on = "fid"]
 
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
-terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
-dty[, size := cut(Scaler1, breaks = terciles, labels = 1:3)]
+# terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
+quantiles <- dty[, quantile(Scaler1, probs = seq(0, 1, .20), na.rm = TRUE)]
+dty[, size := cut(Scaler1, breaks = quantiles, labels = 1:5)]
 
 tab <-
   merge(dts, dty[year == 2011, .(fid, size)], by = "fid", all.x = TRUE)
@@ -31,7 +32,8 @@ tab[!is.na(size)] %>%
   labs(
     x = "Fecha primera recepción",
     y = "Función de distribución acumulada",
-    color = "Terciles de facturación"
+    color = "Quintiles de facturación"
   )
 
+opt$output <- "out/figures/takeup.by_size.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")

@@ -22,30 +22,34 @@ samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[samples[(balanced15 & taxTypeRegularAllT15)], on = "fid"]
 
 dty[, eticketTax := grossAmountReceived - netAmountReceived]
-dty[, eticketTaxShare := eticketTax / vatPurchases]
+dty[, eticketTaxShare := eticketTax / vatSales]
 
-# Tengo 15000 NA de IVA compras y 11000 están en las empresas que reciben
-# Es todo por 2016
-dty[, .(eticketTax, vatPurchases)] |> skim()
-dty[(received) & year < 2016, .(eticketTax, vatPurchases, in217, eticketTaxShare)] |> skim()
-skim(dty[eticketTaxShare < 100, .(eticketTaxShare)])
-dty[eticketTaxShare > 2 & eticketTaxShare < Inf, .N]
+# # Tengo 15000 NA de IVA compras y 11000 están en las empresas que reciben
+# # Es todo por 2016
+# dty[, .(eticketTax, vatPurchases)] |> skim()
+# dty[(received) & year < 2016, .(eticketTax, vatPurchases, in217, eticketTaxShare)] |> skim()
+# skim(dty[eticketTaxShare < 100, .(eticketTaxShare)])
+# dty[eticketTaxShare > 2 & eticketTaxShare < Inf, .N]
+
+dty[, industry := define_industry(seccion) |> tag_industry()]
 
 # Plot ------------------------------------------------------------------------
 
-excludedSectors <- c("Construcción", "Minería; EGA", "No clasificados")
-
-dty[giro8 %nin% excludedSectors & year < 2016 & eticketTaxShare < 1] %>%
+p2 <- dty[!is.na(industry) & year >= 2014 & eticketTaxShare < 1] %>%
   ggplot(aes(giro8, eticketTaxShare, fill = giro8)) +
   geom_boxplot() +
   facet_wrap(~year) +
   scale_x_discrete(labels = NULL) +
   scale_fill_frontiers() +
-  labs(x = NULL, y = "Cobertura de IVA compras en e-facturas", fill = NULL, alpha = NULL)
+  labs(
+    x = NULL, y = "Coverage of input VAT in e-invoices", fill = NULL
+  )
+p2
 
+opt$output <- "out/figures/reception_intensity.by_industry.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")
 
 dty[giro8 %nin% excludedSectors & year < 2016 & eticketTaxShare < 1] %>%

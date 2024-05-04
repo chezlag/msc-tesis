@@ -8,8 +8,7 @@ pkgs <- c(
   "ggplot2",
   "ggsci",
   "lubridate",
-  "magrittr",
-  "skimr"
+  "magrittr"
 )
 date <- "2024-01-15"
 groundhog.library(pkgs, date)
@@ -22,22 +21,25 @@ samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[samples[(inSample3)], on = "fid"]
+  .[samples[(balanced15 & taxTypeRegularAllT15)], on = "fid"]
 
 dty[, eticketTax := grossAmountReceived - netAmountReceived]
-dty[, eticketTaxShare := eticketTax / vatPurchases]
+dty[, eticketTaxShare := eticketTax / vatSales]
 
-terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
-dty[, size := cut(Scaler1, breaks = terciles, labels = 1:3)]
+# terciles <- dty[, quantile(Scaler1, probs = seq(0, 1, 1 / 3), na.rm = TRUE)]
+quantiles <- dty[, quantile(Scaler1, probs = seq(0, 1, .20), na.rm = TRUE)]
+dty[, size := cut(Scaler1, breaks = quantiles, labels = 1:5)]
 
 # Plot ------------------------------------------------------------------------
 
-dty[!is.na(size) & year < 2016 & eticketTaxShare <= 1] |>
+p1 <- dty[!is.na(size) & year >= 2014 & eticketTaxShare <= 1] |>
   ggplot(aes(size, eticketTaxShare, fill = size)) +
   geom_boxplot() +
   facet_wrap(~year) +
   scale_x_discrete(labels = NULL) +
   scale_fill_d3() +
-  labs(x = "Año", y = "Cobertura de IVA compras en e-facturas", fill = "Terciles de facturación")
+  labs(x = "Year", y = "Coverage of input VAT in e-invoices", fill = "Turnover quintiles")
+p1
 
+opt$output <- "out/figures/reception_intensity.by_size.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")

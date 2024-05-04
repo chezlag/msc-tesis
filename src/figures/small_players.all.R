@@ -10,7 +10,7 @@ source("src/lib/theme_set.R")
 
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE) %>%
-  .[(inSample3), .(fid)]
+  .[(balanced15 & taxTypeRegularAllT15), .(fid)]
 cfe <-
   read_fst("src/data/dgi_firmas/out/data/eticket_transactions.fst", as.data.table = TRUE)
 
