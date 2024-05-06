@@ -87,9 +87,9 @@ Efectos heterogéneos por tamaño de la empresa. Diferencias en diferencias.
 Efectos heterogéneos por exposición al consumo final de los hogares. Diferencias en diferencias.
 :::
 
-::: {#tbl-twfe-het-export}
+::: {#tbl-twfe-het-imports}
 
-![](../../out/tables/twfe.y.all.overall_att.by_export.png)
+![](../../out/tables/twfe.y.all.overall_att.by_imports.png)
 
-Efectos heterogéneos por exposición a las exportaciones. Diferencias en diferencias.
+Efectos heterogéneos por exposición a las importaciones. Diferencias en diferencias.
 :::
