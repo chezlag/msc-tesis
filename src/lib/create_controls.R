@@ -14,20 +14,17 @@ create_controls <- function(dt) {
   dt[is.na(sizeDecile), sizeDecile := floor(runif(1, 1, 11))]
   # Above/below median assets
   dt[, assetsAboveMedian := as.integer(assetsDecile) >= 6]
-  # industry sector
-  dt[, industry := fcase(
-    seccion %in% c("A", "B"), "a_b",
-    seccion %in% c("D", "E"), "d_e",
-    seccion %in% c("G", "I"), "g_i",
-    seccion %in% c("H", "J"), "h_j",
-    seccion %in% c("M", "N"), "m_n",
-    seccion %in% c("P", "Q", "R", "S", "T"), "p_q_r_s_t",
-    seccion %in% c("C", "F", "K", "L", "O"), str_to_lower(seccion)
-  )]
-  # final hh consumption sz
-  cou12 <- fread("out/data/cou_hh_consumption.csv")[, .(supply, szHHConsumption, szExport)]
-  cou12[, finalAboveMedian := szHHConsumption > fmedian(szHHConsumption)]
-  cou12[, exportAboveMedian := szExport > fmedian(szExport)]
-  dt <- merge(dt, cou12, by.x = "industry", by.y = "supply")
+  # final uses sz
+  couf <- fread("out/data/cou_final.csv")[, .(supply_industry, households, exports)]
+  couf[, householdsAboveMedian := households > fmedian(households)]
+  couf[, exportsAboveMedian := exports > fmedian(exports)]
+  dt <- merge(dt, couf, by.x = "seccion", by.y = "supply_industry", all.x = TRUE)
+  # intermediate uses (imports)
+  coui <- fread("out/data/cou_intermediate.csv")[
+    supply_industry == "IMPORTS", .(demand_industry, szDemand)
+  ]
+  coui[, importsAboveMedian := szDemand > fmedian(szDemand)]
+  dt <- merge(dt, coui, by.x = "seccion", by.y = "demand_industry", all.x = TRUE)
+  # export
   dt
 }

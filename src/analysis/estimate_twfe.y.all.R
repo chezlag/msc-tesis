@@ -143,8 +143,8 @@ tab4 <- pmap(
 tab5 <- pmap(
   params,
   \(y, dt) {
-    dt[, treatAbove := treat & finalAboveMedian]
-    dt[, treatBelow := treat & !finalAboveMedian]
+    dt[, treatAbove := treat & householdsAboveMedian]
+    dt[, treatBelow := treat & !householdsAboveMedian]
     setFixest_estimation(data = dt, panel.id = ~ fid + year)
     twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
     twfe
@@ -156,8 +156,21 @@ tab5 <- pmap(
 tab6 <- pmap(
   params,
   \(y, dt) {
-    dt[, treatAbove := treat & exportAboveMedian]
-    dt[, treatBelow := treat & !exportAboveMedian]
+    dt[, treatAbove := treat & exportsAboveMedian]
+    dt[, treatBelow := treat & !exportsAboveMedian]
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
+    twfe
+  }
+)
+
+# Het effects: Imports ---------------------------------------------------------
+
+tab7 <- pmap(
+  params,
+  \(y, dt) {
+    dt[, treatAbove := treat & importsAboveMedian]
+    dt[, treatBelow := treat & !importsAboveMedian]
     setFixest_estimation(data = dt, panel.id = ~ fid + year)
     twfe <- feols(.[y] ~ treatBelow + treatAbove | fid + year)
     twfe
@@ -173,3 +186,4 @@ saveRDS(tab3, "out/analysis/twfe.y.all.tab3.RDS")
 saveRDS(tab4, "out/analysis/twfe.y.all.tab4.RDS")
 saveRDS(tab5, "out/analysis/twfe.y.all.tab5.RDS")
 saveRDS(tab6, "out/analysis/twfe.y.all.tab6.RDS")
+saveRDS(tab7, "out/analysis/twfe.y.all.tab7.RDS")
