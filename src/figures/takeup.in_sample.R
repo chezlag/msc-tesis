@@ -9,22 +9,33 @@ source("src/lib/theme_set.R")
 samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dts <-
-  read_fst("out/data/firms_static.fst", as.data.table = TRUE) %>%
+  read_fst("out/data/firms_static.fst", as.data.table = TRUE)
+dty <-
+  read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[samples[(activeBusinessAnyT)], on = "fid"]
+
+dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
+dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+sampleA <- dty[(sampleA), .N, fid][, .(fid)]
 
 dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
-dalt <- dts %>%
-  .[, .(fid, inSample3, dateFirstReception)]
-dfig <- rbind(dalt[, color := "Todas las firmas"], dalt[(inSample3), color := "Firmas en muestra"])
+d1 <- dts[, .(fid, dateFirstReception)]
+d1[, color := "All firms"]
+
+d2 <- dts[sampleA, on = "fid"] |>
+  _[, .(fid, dateFirstReception)]
+d2[, color := "Firms in sample"]
+
+dfig <- rbind(d1, d2)
 dfig %>%
   ggplot(aes(color = color)) +
   stat_ecdf(aes(dateFirstReception), geom = "step") +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
   scale_color_aaas() +
   labs(
-    x = "Fecha primera recepción",
-    y = "Función de distribución acumulada",
+    x = "Date first reception",
+    y = "Cummulative distribution function",
     color = NULL
   )
 

@@ -23,7 +23,7 @@ Función de distribución acumulada de las fechas de primera emisión y primera 
 
 ::: {#tbl-sample-summary}
 
-\small \input{../../out/tables/sample_summary.tex}
+![](../../out/tables/sample_summary.png)
 
 > \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. Las variables monetarias están expresadas en pesos constantes de 2016.
 
