@@ -70,7 +70,7 @@ var_label(tab) <- labelledlist
 
 theme_gtsummary_compact()
 theme_gtsummary_language(language = "es", decimal.mark = ",", big.mark = ".")
-tab %>%
+gtbl <- tab %>%
   tbl_summary(
     statistic = list(
       N ~ "{n}"
@@ -91,4 +91,7 @@ tab %>%
     gt::md("**Resultados pre-tratamiento.** Mediana (p25 – p75)"),
     4:8
   ) %>%
-  gtsave("out/tables/sample_summary.png")
+  opt_table_font(font = "Times New Roman")
+
+gtsave(gtbl, "out/tables/sample_summary.png", zoom = 2)
+gtsave(gtbl, "out/tables/sample_summary.tex")
