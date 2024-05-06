@@ -14,11 +14,12 @@ dty <-
   read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[samples[(activeBusinessAnyT)], on = "fid"]
 
+dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
+
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
 dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
 sampleA <- dty[(sampleA), .N, fid][, .(fid)]
 
-dts[is.na(dateFirstReception), dateFirstReception := ymd("2020-12-12")]
 
 d1 <- dts[, .(fid, dateFirstReception)]
 d1[, color := "All firms"]
