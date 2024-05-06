@@ -3,7 +3,7 @@ project:
   output-dir: "../../out/paper"
 
 book:
-  title: "Nuevas tecnologías y evasión de impuestos"
+  title: "Nuevas tecnologías y cumplimiento tributario"
   subtitle: "La recepción de facturas electrónicas en Uruguay"
   author: 
   - name: "Guillermo Sánchez Laguardia"
