@@ -8,7 +8,7 @@ theme_set(theme_half_open(font_size = 10))
 source("src/lib/tag_industry.R")
 
 tkt <- fread("out/data/share_eticket_by_industry.csv")
-tkt[, industry := tag_industry(supply) |> forcats::fct_reorder(szTicket, last, .desc = TRUE)]
+tkt[, industry := tag_industry(supply)]
 
 indlist <- c("Manufacturing", "Construction", "Finance")
 
@@ -20,12 +20,11 @@ p2 <- tkt %>%
   scale_x_continuous(expand = c(0, 0.1)) +
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01), labels = label_percent()) +
   labs(
-    x = "Year", y = "Share of output in e-invoices",
-    subtitle = "b) Share of industry output in e-invoices", color = NULL
+    x = "Year", y = "Share of output in e-invoices", color = NULL,
+    subtitle = "(b) Share of industry output in e-invoices"
   ) +
-  theme(plot.subtitle = element_text(hjust = 0.5))
+  theme(plot.subtitle = element_text(hjust = 0.5), legend.position = "bottom")
 
+p2
 opt$output <- "out/figures/share_output_eticket.by_industry.png"
 ggsave(opt$output, width = 100, height = 100, units = "mm")
-
-# ggsave("out/figures/takeup.share.png", width = 170, height = 100, units = "mm")
