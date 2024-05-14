@@ -1,0 +1,70 @@
+\renewcommand\thefigure{\thechapter.\arabic{figure}}
+\renewcommand\thetable{\thechapter.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+# Robustez: Variables Instrumentales {#sec-appendix-iv}
+
+La estrategia principal de análisis sugiere que la e-facturación no genero una mejora estadísticamente significativa en el cumplimiento tributario de las empresas que comenzaron a recibir e-facturas. Como mencioné, hay que interpretar este resultado con dos advertencias. En primer lugar, se trata de un efecto de corto plazo, en un contexto en que la política. En segundo lugar, el análisis se centra en las empresas más pequeñas, ya que es lo que permite el diseño utilizado. Para expandir el análisis, en esta sección aplico un diseño de variable instrumental que me permite incorporar firmas de todo tamaño en las estimaciones. Los resultados, sin embargo, deben seguirse interpretando como un efecto de corto plazo.
+
+## Estrategia empírica
+
+Estimar directamente el efecto de recibir e-facturas sobre el IVA adeudado y sus componentes tiene dos problemas principales: la co-determinación y la causalidad reversa. En un intento de superar estas dificultades, aplico una estrategia de variable instrumental.
+
+**Variable instrumental.** Instrumento la recepción de e-facturas mediante la probabilidad de recibir una e-factura. Computo esta variable a nivel de sector y año. Utilizo dos fuentes de información: el Cuadro de Oferta y Utilización (COU) del año 2012 y los comprobantes del sistema de facturación electrónica. El primero me permite ver la distribución de la compra de insumos entre sectores; con el segundo puedo calcular cuanto de la producción de un sector estaba sujeta a e-facturación en cada año. Luego, la probabilidad de que una empresa del sector $j$ reciba una e-factura en $t$, $P_{jt}$, va a ser igual a la suma de las probabilidades de recibir una e-factura de cada sector $h$:
+
+$$P_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jh,2012}}{\text{Total inputs}_{j,2012}}}_{\text{Share of }j\text{'s inputs coming from }h} \cdot\ \text{Share e-invoiced output}_{ht}$$ {#eq-instrument}
+
+Defino el instrumento a nivel de 11 sectores. Aunque esto implica una pérdida de poder considerable respecto a la alternativa de construirla a nivel de empresa, la red de vínculos entre empresas solo se forma cuando comienza la emisión de e-facturas, y estos vínculos pueden verse modificados a raíz de la política. En la [Sección @sec-iv-desc] presento estadísticas descriptivas de la variable instrumental y sus componentes.
+
+**Especificación.** La estrategia está inspirada en @nunnUSFoodAid2014 y es similar en espíritu a un diseño *shift-share*. Planteo las siguientes ecuaciones, instrumentando la recepción de e-facturas con la probabilidad de recibirlas:
+
+$$Y_{ijt} = \beta\ R_{ijt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \nu_{ijt}$${#eq-iv-second}
+
+$$R_{ijt} = \alpha\ P_{jt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \varepsilon_{ijt}
+$${#eq-iv-first}
+
+La @eq-iv-second muestra la segunda etapa de la estimación de MC2E y la @eq-iv-first muestra la primera etapa. El subíndice $i$ refiere a empresas, $j$ a sector de actividad y $t$ al año. 
+
+La variable dependiente $Y_{ijt}$ es IVA Compras, IVA ventas o IVA adeudado. $R_{ijt}$ es la variable endógena de interés: el monto de IVA compras registrado en e-facturas. Deflacto las variables dependientes y la endógena, y las transformo con el arcoseno hiperbólico. De esta forma, el coeficiente de interés $\beta$ puede interpretarse como una elasticidad. Los efectos fijos por empresa $\psi_{ij}$ controlan todas las diferencias entre empresas invariantes en el tiempo y los efectos fijos por año $\tau_{t}$ controlan por shocks en el tiempo que afectan a todas empresas por igual. Incluyo también efectos fijos por decil de activos pre-tratamiento interactuados con los efectos fijos del tiempo $\mathbf{X_{ijt}}\Gamma$, para permitir que los shocks afecten de forma diferencial a empresas de distinto tamaño.
+
+**Identificación.** La estrategia requiere dos supuestos de identificación: ningún inobservable puede afectar simultáneamente al instrumento y el resultado; y el instrumento solo puede afectar a las variables de resultado a través del regresor endógeno.
+
+**Muestra.** Considero un panel balanceado de empresas que declaran IVA bajo el régimen no simplificado (ver [Sección @sec-context]) todos años entre 2009–2015. A diferencia del análisis principal, no restrinjo la muestra por el tamaño de las firmas. Por lo tanto, utilizo aprox. 12500 empresas en las estimaciones.
+
+## Estadísticas descriptivas {#sec-iv-desc}
+
+Construyo la probabilidad de recibir una e-factura a partir de la interacción entre los vínculos intersectoriales y la expansión de la emisión de e-facturas. La estrategia de variable instrumental luego explota la relación entre la probabilidad de recepción –exógena a las decisiones de las empresas receptoras– y el monto/número de compras registradas en e-facturas. 
+
+Primero, presento los dos elementos que utilizo para construir el instrumento. El panel (a) de la @fig-iv-desc presenta la red de vínculos intersectoriales para la economía uruguaya en 2012. El tamaño de cada nodo es proporcional al peso del sector en la economía. Los vértices están ponderados por el valor de las transacciones totales entre los nodos que conecta. Los colores, por su parte, identifican sub-comunidades en la red. Así, podemos observar que la industria manufacturera y el sector agropecuario son los dos sectores más importantes de la economía y que están muy vinculados entre si.
+
+El panel (b) de la @fig-iv-desc ilustra la expansión de la emisión de e-facturas. Como ya mencioné, en el período analizado la política comenzó con unas pocas empresas de gran facturación. El resultado es que, aún cuando en 2016 solo 6% de las empresas estaban emitiendo e-facturas, el 52% de la producción nacional se comercializaba con comprobantes digitales. Hay una variación intersectorial importante que será clave para brindarle variabilidad al instrumento construido.
+
+Segundo, presento el instrumento. El panel (c) de la @fig-iv-desc muestra como varía la probabilidad de recibir una e-factura entre sectores y a lo largo del tiempo. Destaco dos sectores de forma ilustrativa: Construcción es el sector con mayor probabilidad de recibir e-facturas durante todo el período (68% en 2016), Act. Financieras el de menor probabilidad (30% en 2016). Vemos que los sectores más emisores no son necesariamente los que mayor probabilidad tienen de recibir e-facturas; ver por ejemplo, la industria manufacturera.
+
+::: {#fig-iv-desc}
+
+![](../../out/figures/iv_desc.png)
+
+Probabilidad de recepción de e-facturas y sus componentes.
+:::
+
+## Resultados
+
+**Resultados principales.** La @tbl-iv-all presenta los resultados principales. Las columnas 1, 4 y 7 presentan la especificación preferida, considerando un panel balanceado de empresa y censurando los resultados en el percentil 99. Encuentro que la recepción de e-facturas reduce el IVA compras reportado por las empresas y es significativo al 10%. La elasticidad estimada es de -0.03; en otras palabras, un aumento de 10% del IVA compras registrado en e-facturas genera una reducción de 0.3% en el IVA compras. Es un efecto coherente con las hipótesis planteadas en la [Sección @sec-hypotheses], a saber, que la política podría afectar el cumplimiento tributario de las empresas receptoras a partir de una reducción en el sobre-reporte de costos. Encuentro una asociación positiva entre la recepción de e-facturas y el IVA adeudado, pero no es estadísticamente distinta de cero. En cualquier caso, los efectos encontrados son pequeños y corroboran el efecto nulo hallado en el análisis principal.
+
+**Robustez.** Realizo varios ejercicios de robustez. Primero, aplico una censura más conservadora de las variables de resultado para testear la sensibilidad a outliers. Las columnas 2, 5 y 8 de la @tbl-iv-all presentan los resultados, que no varían significativamente de la especificación preferida. Segundo, las columnas 3, 6 y 9 de la @tbl-iv-all presentan los resultados de permitir salidas de las empresas entre 2012–2015. Los resultados se mantienen y el efecto sobre IVA compras pasa a ser significativo al 5%.  Por último, la @tbl-iv-alt repite el análisis con una variable endógena alternativa: el número de comprobantes recibidos. Los resultados no difieren en signo ni significación, pero si sugieren una elasticidad mayor de las declaraciones de IVA al número de comprobantes que a los montos registrados. En la especificación preferida, estimo que un aumento de 10% en el número de comprobantes recibidos se asocia a un aumento de 0.7% del IVA compras reportado.
+
+::: {#tbl-iv-all}
+
+![](../../out/tables/iv.y.all.all.png)
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variabl instrumental.
+:::
+
+::: {#tbl-iv-alt}
+
+![](../../out/tables/iv.y.all.alt.png)
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental, con regresor endógeno alternativo.
+:::
