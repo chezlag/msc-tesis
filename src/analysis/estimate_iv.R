@@ -1,5 +1,6 @@
 library(groundhog)
 pkgs <- c(
+  "BMisc",
   "fastverse",
   "fixest",
   "fst",
@@ -7,6 +8,8 @@ pkgs <- c(
   "stringr"
 )
 groundhog.library(pkgs, "2024-01-15")
+source("src/lib/define_industry.R")
+source("src/lib/create_controls.R")
 source("src/lib/winsorize.R")
 
 set.seed(20240115)
@@ -16,40 +19,47 @@ set.seed(20240115)
 sample <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)
 dty <-
-  read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
-  .[sample, on = "fid"]
+  read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) |>
+  _[sample, on = "fid"]
 
-dty[, demand := fcase(
-  seccion %in% c("A", "B"), "a_b",
-  seccion %in% c("D", "E"), "d_e",
-  seccion %in% c("G", "I"), "g_i",
-  seccion %in% c("H", "J"), "h_j",
-  seccion %in% c("M", "N"), "m_n",
-  seccion %in% c("P", "Q", "R", "S", "T"), "p_q_r_s_t",
-  seccion %in% c("C", "F", "K", "L", "O"), str_to_lower(seccion)
-)]
+dty[, demand := define_industry(seccion)]
+
 dty <- merge(
   dty,
   fread("out/data/prob_ticket_reception_by_industry.csv"),
-  by = c("year", "demand")
+  by = c("year", "demand"), all.x = TRUE
 )
+dty[, avgProbTicketReception := fmean(probTicketReception), year]
 
 dty[, eticketTaxK := grossAmountReceivedK - netAmountReceivedK]
 
 cols <- c("eticketTaxK", "nTicketsReceived", "grossAmountReceivedK")
 walk(cols, \(x) dty[is.na(get(x)), (x) := 0])
 walk(cols, \(x) dty[, (paste0("IHS", x)) := asinh(get(x))])
-walk(paste0("IHS", yvarlist), \(x) dty[, (x) := winsorize(get(x), .99), year])
+walk(paste0("IHS", cols), \(x) dty[, (x) := winsorize(get(x), .99), year])
+dty[, avgEticketTaxK := fmean(eticketTaxK), year]
 
-yvarlist <- c("vatPurchasesK", "vatSalesK", "netVatLiabilityK")
-walk(yvarlist, \(x) dty[, (paste0("IHS", x)) := asinh(get(x))])
-walk(paste0("IHS", yvarlist), \(x) dty[, (x) := winsorize(get(x), .99), year])
+stublist <- c("vatPurchasesK", "vatSalesK", "netVatLiabilityK")
+walk(stublist, \(x) dty[, (paste0("IHS", x)) := asinh(get(x))])
+walk(paste0("IHS", stublist), \(x) dty[, (x) := winsorize(get(x), .99), year])
 
 # define samples
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
-dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & !emittedAnyT]
-dty[, sampleB := nomissing & taxTypeRegularAllT15 & taxTypeRegularAllTPre & year < 2016 & !emittedAnyT]
-dty[, sampleC := nomissing & taxTypeRegularAllT15 & balanced15 & !emittedAnyT]
+dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & !emittedAnyT & year < 2016]
+dty[, sampleB := nomissing & taxTypeRegularAllT15 & taxTypeRegularAllTPre & !emittedAnyT & year < 2016]
+dty[, sampleC := nomissing & taxTypeRegularAllT15 & !emittedAnyT & year < 2016]
+
+ylist <- stublist %>% c(., paste0("IHS", .), paste0("CR", ., "Ext"))
+xexoglist <- c("fid", "year", "birth_date", "Scaler1", "Scaler3", "seccion", "received")
+xendoglist <- c("eticketTaxK", "nTicketsReceived") %>% c(., paste0("IHS", .))
+z <- c("probTicketReception", "avgProbTicketReception", "avgEticketTaxK")
+keeplist <- c(ylist, xexoglist, xendoglist, z)
+sA99 <- create_controls(dty[(sampleA), ..keeplist])
+sA95 <- create_controls(dty[(sampleA), ..keeplist])
+sB99 <- create_controls(dty[(sampleB), ..keeplist], balanced = FALSE)
+walk(ylist, \(v) sA99[, (v) := winsorize(get(v), .99), year])
+walk(ylist, \(v) sA95[, (v) := winsorize(get(v), .95), year])
+walk(ylist, \(v) sB99[, (v) := winsorize(get(v), .99), year])
 
 
 # Estimate first stage --------------------------------------------------------------
