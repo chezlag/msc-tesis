@@ -61,52 +61,146 @@ walk(ylist, \(v) sA99[, (v) := winsorize(get(v), .99), year])
 walk(ylist, \(v) sA95[, (v) := winsorize(get(v), .95), year])
 walk(ylist, \(v) sB99[, (v) := winsorize(get(v), .99), year])
 
-
-# Estimate first stage --------------------------------------------------------------
-
-first_stage <- function(y) {
-  ret <- purrr::map(
-    c("sampleA", "sampleB", "sampleC"),
-    \(x) {
-      fixest::setFixest_estimation(data = dty[get(x) == TRUE])
-      fixest::feols(.[y] ~ probTicketReception | fid + year)
-    }
-  )
-  ret[[1]]$`Balanced` <- "X"
-  ret[[2]]$`Allowing exits` <- "X"
-  ret[[3]]$`Balanced` <- "X"
-  ret[[3]]$`Incl. 2016` <- "X"
-  ret
-}
-
-xvarlist <- c("IHSeticketTaxK", "IHSnTicketsReceived")
-fs <- map(xvarlist, first_stage) |> unlist(recursive = FALSE)
-
-saveRDS(fs, "out/analysis/first_stage.RDS")
-
 # Estimate IV -----------------------------------------------------------------------
 
-estimate_iv <- function(y) {
-  ret <- purrr::map(
-    c("sampleA", "sampleB"),
-    \(s) {
-      purrr::map(
-        c("IHSeticketTaxK", "IHSnTicketsReceived"),
-        \(x) {
-          fixest::setFixest_estimation(data = dty[get(s) == TRUE])
-          fixest::feols(.[y] ~ 1 | fid + year | .[x] ~ probTicketReception)
-        }
-      )
-    }
-  ) |> unlist(recursive = FALSE)
-  ret[[1]]$`Balanced` <- "X"
-  ret[[2]]$`Balanced` <- "X"
-  ret[[3]]$`Allowing exits` <- "X"
-  ret[[4]]$`Allowing exits` <- "X"
-  ret
-}
+## Baseline results ------------------------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab1 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK ~ probTicketReception
+    )
+  }
+)
 
-yvarlist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
-iv <- map(yvarlist, estimate_iv) |> unlist(recursive = FALSE)
+## Alternative endogenous regressor -------------
+tab2 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSnTicketsReceived ~ probTicketReception
+    )
+  }
+)
 
-saveRDS(iv, "out/analysis/iv.RDS")
+## Extensive margin ------------------------------
+ylist <- c("vatPurchases", "vatSales", "netVatLiability") %>% paste0("CR", ., "KExt")
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab3 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK ~ probTicketReception
+    )
+  }
+)
+
+## Robustness: Additional controls ----------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+felist <- c(
+  "assetsDecile^year",
+  "assetsDecile^year + avgProbTicketReception^year",
+  "assetsDecile^year + avgProbTicketReception^year + avgEticketTaxK^year"
+)
+params <- list(
+  rep(ylist, each = 3),
+  rep(felist, 3)
+)
+tab4 <- pmap(
+  params,
+  \(y, fe) {
+    setFixest_estimation(data = sA99, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + .[fe] |
+        IHSeticketTaxK ~ probTicketReception
+    )
+  }
+)
+
+## Het.: Size ------------------------------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab5 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK + IHSeticketTaxK:sizeAboveMedian ~
+        probTicketReception + probTicketReception:sizeAboveMedian
+    )
+  }
+)
+
+## Het.: Importing -------------------------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab6 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK + IHSeticketTaxK:importsAboveMedian ~
+        probTicketReception + probTicketReception:importsAboveMedian
+    )
+  }
+)
+
+## Het.: Exports ---------------------------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab7 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK + IHSeticketTaxK:exportsAboveMedian ~
+        probTicketReception + probTicketReception:exportsAboveMedian
+    )
+  }
+)
+
+# Export -----------------------------------------------------------------------------
+saveRDS(tab1, "out/analysis/iv.tab1.RDS")
+saveRDS(tab2, "out/analysis/iv.tab2.RDS")
+saveRDS(tab3, "out/analysis/iv.tab3.RDS")
+saveRDS(tab4, "out/analysis/iv.tab4.RDS")
+saveRDS(tab5, "out/analysis/iv.tab5.RDS")
+saveRDS(tab6, "out/analysis/iv.tab6.RDS")
+saveRDS(tab7, "out/analysis/iv.tab7.RDS")
