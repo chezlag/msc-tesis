@@ -90,7 +90,7 @@ Electronic invoicing creates a new dataset on (emitting) firms' output and (rece
 - Administrative data on uruguayan firms 2009–2016
   - Monthly summaries of buyer-seller pair transactions
   - VAT affidavits
-- **Main sample:** Small firms with non-simplified tax regimes (N = 8.5K)
+- **Main sample:** Small firms with non-simplified tax regimes (N = 1.8K)
 - **Outcome variables:** input VAT, output VAT, net VAT liability
   - Functional form: deflacted + IHS + winsorized p99
 - **Treatment variable:** Year of first e-invoice reception
@@ -103,15 +103,41 @@ Electronic invoicing creates a new dataset on (emitting) firms' output and (rece
 
 ![h:480](../../out/figures/takeup.shareV2.png)
 
-Small number of emitting firms (6%) with large share of output (50% in 2016)
+Small number of emitting firms (6%) with large share of output (52% in 2016)
 
 ---
 
-### Effect of e-invoice reception on tax compliance (Staggered DD, CS21)
+### Effect of e-invoice reception on tax compliance (Dynamic)
 
-![h:490](../../out/figures/es.did.y.all.S4_bal_ctrl_p99_nytInf.png)
+![h:490](../../out/figures/es.twfe.y.all.png)
 
-No effect on any variables. Small sample, breaks down w unbal. sample
+---
+
+### Effect of e-invoice reception on tax compliance (Overall)
+
+![h:490](../../out/tables/twfe.y.all.overall_att.all.png)
+
+No sig effect on any variable (signs are irrelevant?)
+
+---
+
+## DD Robustness
+
+- Robust to winsorizing at p95 and including 2016 data
+- Robust to reestimating with Callaway & Sant'Anna (2021) [[go]](#robustness-callaway--santanna-2021-back)
+- Small effects on extensive margin, dissapear w CS21
+
+## DD Heterogeneity
+
+- Sectors w high exposure to imports – no effect [[go]](#dd-het-high-import-industries-back)
+- Sectors w high share of household consumption – no effect [[go]](#dd-het-high-hh-consumption-industries-back)
+- High/low pre-policy assets – v strong effect (prob unreliable) [[go]](#dd-het-pre-policy-asset-levels-back)
+
+---
+
+<!-- _class: lead -->
+
+# IV
 
 ---
 
@@ -141,16 +167,41 @@ $$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jh,2012}}{\t
 
 ---
 
+# IV specification
+
+I estimate the following IV spec by 2SLS:
+
+<br>
+
+$$Y_{ijt} = \beta\ R_{ijt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \nu_{ijt}$$
+
+$$R_{ijt} = \alpha\ P_{jt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \varepsilon_{ijt}$$
+
+- Firms indexed with $i$, time with $t$, industry with $j$
+- $R_{ijt}$ is amount of input VAT recorded in e-invoices
+- Taking logs in $Y, R$ – $\beta$ is an elasticy
+- Firm FE capture time-invariant diff; time FE to capture common shocks.
+
+---
+
 ### Effect of e-invoice reception on tax compliance (IV estimates)
 
-![h:500](../../out/tables/iv_short.png)
+![h:500](../../out/tables/iv_short_all.png)
 
 `F-test (1st stage), IHSeticketTaxK: stat = 9173.1, p < 1e-15`
 
 ---
 
+## IV Robustness
+
+- Robust to winsorizing at p95 and allowing exits between 2012–2015 [[go]](#iv-alternate-specs-back)
+- Alternate instrument: number of e-invoices received – same results [[go]](#iv-alternate-regressor-number-of-e-invoices-back)
+- No extensive margin effects [[go]](#iv-extensive-margin-back)
+
+---
+
 > **Prefered specification**
-> 10% increase in tax in e-invoice $\Rightarrow$ 0.3% increase in VAT liability
+> 10% increase in tax in e-invoice $\Rightarrow$ 0.3% increase in input VAT
 
 # Why the small effect?
 
@@ -159,17 +210,19 @@ $$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jh,2012}}{\t
 
 ![bg right w:600](../../out/figures/reception_intensity_all.png)
 
------
+---
 
-# Future steps
+# Closing remarks
 
-- Tests to validate instrument (error autocorrelation?)
-- Check for heterogeneous results (firm size, ...?)
-- Add robustness checks (Chen & Roth 2023)
+- Small effect is reasonable considering state of the policy at time of evaluation
+- Promising results w alternate specification
+
+## Future steps
+
+- To do it right – get more data
+- Validate IV strategy – Error autorcorrelation?
 - Threats to identification? $\text{cov}(Y,Z)\neq0$ 
   - Could happen if sector linkages were related to how much a firm can evade (reasonable concern, may be dampened at aggregate level).
-
-- Disaggregate sectors (might improve precision)
 
 ---
 
@@ -179,18 +232,43 @@ $$\text{P(Reception)}_{jt}= \sum_h \underbrace{\frac{\text{Inputs}_{jh,2012}}{\t
 
 ---
 
-### Effect of e-invoice reception on tax compliance (DD Overall)
+### Robustness: Callaway & Sant'Anna (2021) [[back]](#dd-heterogeneity)
 
-![h:550](../../out/tables/did.y.all.overall_att_all.png)
-
----
-
-### Effect of e-invoice reception on extensive margin (IV estimates)
-
-![h:550](../../out/tables/iv_short_extensive.png)
+![h:550](../../out/tables/did.y.all.overall_att.all.png)
 
 ---
 
-### IV estimates, alternate regressor (number of e-invoices)
+### DD Het: High import industries [[back]](#dd-heterogeneity)
 
-![h:550](../../out/tables/iv_short_ntickets.png)
+![h:550](../../out/tables/twfe.y.all.overall_att.by_imports.png)
+
+
+---
+
+### DD Het: High HH consumption industries [[back]](#dd-heterogeneity)
+
+![h:550](../../out/tables/twfe.y.all.overall_att.by_industry.png)
+
+---
+
+### DD Het: Pre-policy asset levels [[back]](#dd-heterogeneity)
+
+![h:550](../../out/tables/twfe.y.all.overall_att.by_size.png)
+
+---
+
+### IV: Alternate specs [[back]](#iv-robustness)
+
+![h:550](../../out/tables/iv.y.all.all.png)
+
+---
+
+### IV: Alternate regressor (number of e-invoices) [[back]](#iv-robustness)
+
+![h:550](../../out/tables/iv_short_alt.png)
+
+---
+
+### IV: Extensive margin [[back]](#iv-robustness)
+
+![h:550](../../out/tables/iv.y.ext.png)
