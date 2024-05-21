@@ -11,7 +11,7 @@ book:
     affiliations:
       - name: "Universidad de la República"
         department: "Facultad de Ciencias Económicas y Adminstración"
-  date: "2024-01"
+  date: today
   chapters:
     - index.qmd
     - intro.qmd
