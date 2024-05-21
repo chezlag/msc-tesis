@@ -39,15 +39,6 @@ Estadísticas descriptivas de la muestra.
 Función de distribución acumulada de la fecha de primera recepción de e-facturas.
 :::
 
-::: {#fig-time-trends}
-
-![](../../out/figures/time_trends.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra los resultados promedio de las principales variables de cumplimiento tributario, por año y por cohorte de tratamiento. Los puntos indican el inicio de tratamiento de cada cohorte y la porción a rayas de cada línea señala el período en que las empresas de la cohorte recibieron e-facturas. Todos los resultados están deflactados a pesos de 2016 y el eje y está en logaritmos. La línea violeta –Inf– corresponde al grupo que nunca recibió una e-factura en el período analizado.
-
-Promedio anual de las principales variables de cumplimiento tributario por cohorte de tratamiento.
-:::
-
 ::: {#fig-reception-intensity}
 
 ![](../../out/figures/reception_intensity.all.png)
@@ -55,6 +46,15 @@ Promedio anual de las principales variables de cumplimiento tributario por cohor
 > \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta un boxplot por año, con la mediana y el rango interquartílico.
 
 Proporción de IVA compras registrado en e-facturas por año.
+:::
+
+::: {#fig-time-trends}
+
+![](../../out/figures/time_trends.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra los resultados promedio de las principales variables de cumplimiento tributario, por año y por cohorte de tratamiento. Los puntos indican el inicio de tratamiento de cada cohorte y la porción a rayas de cada línea señala el período en que las empresas de la cohorte recibieron e-facturas. Todos los resultados están deflactados a pesos de 2016 y el eje y está en logaritmos. La línea violeta –Inf– corresponde al grupo que nunca recibió una e-factura en el período analizado.
+
+Promedio anual de las principales variables de cumplimiento tributario por cohorte de tratamiento.
 :::
 
 ::: {#fig-twfe-es}
