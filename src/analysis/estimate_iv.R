@@ -150,8 +150,8 @@ tab5 <- pmap(
     ret <- feols(
       .[y] ~ 1 |
         fid + year + assetsDecile^year |
-        IHSeticketTaxK + IHSeticketTaxK:sizeAboveMedian ~
-        probTicketReception + probTicketReception:sizeAboveMedian
+        IHSeticketTaxK / sizeAboveMedian ~
+        probTicketReception / sizeAboveMedian
     )
   }
 )
@@ -196,6 +196,26 @@ tab7 <- pmap(
   }
 )
 
+## Het.: HH cons ---------------------------------
+ylist <- c("IHSvatPurchasesK", "IHSvatSalesK", "IHSnetVatLiabilityK")
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+tab8 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    ret <- feols(
+      .[y] ~ 1 |
+        fid + year + assetsDecile^year |
+        IHSeticketTaxK + IHSeticketTaxK:householdsAboveMedian ~
+        probTicketReception + probTicketReception:householdsAboveMedian
+    )
+  }
+)
+
 # Export -----------------------------------------------------------------------------
 saveRDS(tab1, "out/analysis/iv.tab1.RDS")
 saveRDS(tab2, "out/analysis/iv.tab2.RDS")
@@ -204,3 +224,4 @@ saveRDS(tab4, "out/analysis/iv.tab4.RDS")
 saveRDS(tab5, "out/analysis/iv.tab5.RDS")
 saveRDS(tab6, "out/analysis/iv.tab6.RDS")
 saveRDS(tab7, "out/analysis/iv.tab7.RDS")
+saveRDS(tab8, "out/analysis/iv.tab8.RDS")

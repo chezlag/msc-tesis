@@ -55,11 +55,21 @@ Probabilidad de recepción de e-facturas y sus componentes.
 
 **Robustez.** Realizo varios ejercicios de robustez. Primero, aplico una censura más conservadora de las variables de resultado para testear la sensibilidad a outliers. Las columnas 2, 5 y 8 de la @tbl-iv-all presentan los resultados, que no varían significativamente de la especificación preferida. Segundo, las columnas 3, 6 y 9 de la @tbl-iv-all presentan los resultados de permitir salidas de las empresas entre 2012–2015. Los resultados se mantienen y el efecto sobre IVA compras pasa a ser significativo al 5%.  Por último, la @tbl-iv-alt repite el análisis con una variable endógena alternativa: el número de comprobantes recibidos. Los resultados no difieren en signo ni significación, pero si sugieren una elasticidad mayor de las declaraciones de IVA al número de comprobantes que a los montos registrados. En la especificación preferida, estimo que un aumento de 10% en el número de comprobantes recibidos se asocia a un aumento de 0.7% del IVA compras reportado.
 
+**Heterogeneidades.** Para explorar potenciales heterogeneidades, permito que el efecto de la recepción de e-facturas sobre las variables de interés difiera de acuerdo a ciertas características de las empresas o sus sectores de actividad, medidas por $I_{ijt}$. La ecuación de la segunda etapa pasa a ser
+
+$$Y_{ijt} = \beta_{1}R_{ijt} + \beta_{2}(R_{ijt}\times I_{ijt}) + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \nu_{ijt}$${#eq-iv-het}
+
+Como los efectos de la variable indicatriz $I_{ijt}$ se absorben con los efectos fijos de empresa, la única diferencia entre las ecuaciones -@eq-iv-second y -@eq-iv-het es la inclusión del término interactuado $R_{ijt}\times I_{ijt}$. Para preservar la causalidad, instrumento $R_{ijt}$ y $R_{ijt}\times I_{ijt}$ utilizando $P_{jt}$ y $P_{jt}\times I_{ijt}$. 
+
+La @fig-iv-het resume los resultados del análisis de heterogeneidades. Presenta los resultados de la especificación preferida –panel balanceado con *winsorizing* de la variable dependiente en el percentil 99– y cada color representa un eje de heterogeneidades. La línea punteada opera como referencia, indicando el resultado de la estimación base sin $I_{ijt}$. Se grafican $\beta_{1}$ y $\beta_{1}+\beta_{2}$ de cada regresión, de modo de poder interpretar los coeficientes estimados como el efecto de la recepción de e-facturas sobre cada subgrupo definido por $I_{ijt}$. Incluyo intervalos de confianza al 95%.
+
+Estudio efectos heterogéneos en los tres ejes descritos en la [sección @sec-results-effects-het]: facturación por encima/debajo de la mediana, industrias con alta/baja proporción de output destinada al consumo final de los hogares e industrias con alta/baja proporción de insumos importados. En términos generales, no encuentro diferencias estadísticamente significativas en ninguno de los ejes analizados entre los subgrupos definidos, ni tampoco respecto a la efecto agregado simple.
+
 ::: {#tbl-iv-all}
 
 ![](../../out/tables/iv.y.all.all.png)
 
-Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variabl instrumental.
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental.
 :::
 
 ::: {#tbl-iv-alt}
@@ -67,4 +77,11 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variabl 
 ![](../../out/tables/iv.y.all.alt.png)
 
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental, con regresor endógeno alternativo.
+:::
+
+::: {#fig-iv-het}
+
+![](../../out/figures/iv_het.png)
+
+Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental, con efectos heterogéneos por sub-grupos.
 :::

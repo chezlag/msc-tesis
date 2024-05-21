@@ -36,7 +36,7 @@ Planteo varios ejercicios de robustez para confirmar los resultados. Primero, re
 
 **Callaway & Sant'Anna (2021).** Como último ejercicio de robustez, en el @sec-appendix-cs21 realizo todas las estimaciones de nuevo aplicando la metodología de @callawayDifferenceinDifferencesMultipleTime2021. Como mencioné en la [Sección @sec-method], este método tiene la ventaja de permitir heterogeneidades arbitrarias en el efecto de tratamiento a lo largo del tiempo y entre cohortes de tratamiento. Con esta estrategia alternativa, aunque cambian los signos de algunas estimaciones, los resultados se mantienen: no encuentro un efecto estadísticamente significativo en ninguno de los resultados analizados. Incluso dejan de ser significativos los efectos en el margen extensivo de IVA compras e IVA ventas.
 
-### Heterogeneidades
+### Heterogeneidades {#sec-results-effect-het}
 
 Para abordar la ausencia de efectos de recibir e-facturas en la muestra completa, se exploran posibles heterogeneidades en el impacto de esta política, considerando el tamaño de la empresa y la proporción de la producción destinada al consumo final de los hogares. La estrategia de estimación sigue la metodología descrita en la @eq-twfe-het.
 
