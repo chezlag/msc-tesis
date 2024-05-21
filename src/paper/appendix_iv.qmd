@@ -63,7 +63,7 @@ Como los efectos de la variable indicatriz $I_{ijt}$ se absorben con los efectos
 
 La @fig-iv-het resume los resultados del análisis de heterogeneidades. Presenta los resultados de la especificación preferida –panel balanceado con *winsorizing* de la variable dependiente en el percentil 99– y cada color representa un eje de heterogeneidades. La línea punteada opera como referencia, indicando el resultado de la estimación base sin $I_{ijt}$. Se grafican $\beta_{1}$ y $\beta_{1}+\beta_{2}$ de cada regresión, de modo de poder interpretar los coeficientes estimados como el efecto de la recepción de e-facturas sobre cada subgrupo definido por $I_{ijt}$. Incluyo intervalos de confianza al 95%.
 
-Estudio efectos heterogéneos en los tres ejes descritos en la [sección @sec-results-effects-het]: facturación por encima/debajo de la mediana, industrias con alta/baja proporción de output destinada al consumo final de los hogares e industrias con alta/baja proporción de insumos importados. En términos generales, no encuentro diferencias estadísticamente significativas en ninguno de los ejes analizados entre los subgrupos definidos, ni tampoco respecto a la efecto agregado simple.
+Estudio efectos heterogéneos en los tres ejes descritos en la [sección @sec-results-effect-het]: facturación por encima/debajo de la mediana, industrias con alta/baja proporción de output destinada al consumo final de los hogares e industrias con alta/baja proporción de insumos importados. En términos generales, no encuentro diferencias estadísticamente significativas en ninguno de los ejes analizados entre los subgrupos definidos, ni tampoco respecto a la efecto agregado simple.
 
 ::: {#tbl-iv-all}
 
