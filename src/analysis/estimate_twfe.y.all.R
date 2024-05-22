@@ -50,9 +50,10 @@ allylist <- c(
   paste0("CR300", stublist)
 )
 extylist <- paste0("CR", stublist, "Ext")
+intylist <- paste0("CR", stublist, "Int")
 xlist <- c("fid", "year", "G1", "birth_date", "Scaler1", "Scaler3", "seccion", "received")
 evntlist <- grep("^treat", names(dty), value = TRUE)
-keeplist <- c(xlist, allylist, extylist, evntlist)
+keeplist <- c(xlist, allylist, extylist, intylist, evntlist)
 sA99 <- create_controls(dty[(sampleA), ..keeplist])
 sA95 <- create_controls(dty[(sampleA), ..keeplist])
 sB99 <- create_controls(dty[(sampleB), ..keeplist])
@@ -177,6 +178,24 @@ tab7 <- pmap(
   }
 )
 
+# Margen intensivo -------------------------------------------------------------
+
+ylist <- intylist
+dtlist <- list(sA99, sA95, sB99)
+params <- list(
+  rep(ylist, each = 3),
+  rep(dtlist, 3)
+)
+
+tab8 <- pmap(
+  params,
+  \(y, dt) {
+    setFixest_estimation(data = dt, panel.id = ~ fid + year)
+    twfe <- feols(.[y] ~ treat | fid + year)
+    twfe
+  }
+)
+
 # Export results ---------------------------------------------------------------
 
 saveRDS(tab1, "out/analysis/twfe.y.all.tab1.RDS")
@@ -187,3 +206,4 @@ saveRDS(tab4, "out/analysis/twfe.y.all.tab4.RDS")
 saveRDS(tab5, "out/analysis/twfe.y.all.tab5.RDS")
 saveRDS(tab6, "out/analysis/twfe.y.all.tab6.RDS")
 saveRDS(tab7, "out/analysis/twfe.y.all.tab7.RDS")
+saveRDS(tab8, "out/analysis/twfe.y.all.tab8.RDS")
