@@ -1,22 +1,5 @@
 # Contexto {#sec-context}
 
-```{r data-context}
-library(groundhog)
-pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "lubridate")
-date <- "2024-01-15"
-groundhog.library(pkgs, date)
-
-ROOT <- ""
-if (grepl("src/paper", getwd())) ROOT <- "../../"
-
-source(paste0(ROOT, "src/lib/theme_set.R"))
-
-samples <- read_fst(paste0(ROOT, "out/data/samples.fst"), as.data.table = TRUE)
-dts <-
-  read_fst(paste0(ROOT, "out/data/firms_static.fst"), as.data.table = TRUE) %>%
-  .[samples[(activeBusinessAnyT)], on = "fid"]
-```
-
 ## Impuestos a las empresas en Uruguay
 
 Las empresas uruguayas están sujetas a un impuesto a las ganancias empresariales (Impuesto a las Rentas de las Actividades Económicas, IRAE) y un impuesto al valor agregado (IVA), entre otros gravámenes. El IRAE grava las rentas empresariales a una tasa de 25%. El IVA tiene una tasa básica de 22% y una tasa reducida de 10% aplicada a productos de primera necesidad. Además de IVA e IRAE, hay un Impuesto al Patrimonio (IPAT) de las empresas de 1,5% y otra serie de impuestos específicos a ciertas características de la empresa y/o su producción.[^other-taxes]
@@ -47,6 +30,6 @@ Dispongo de información del sistema de facturación electrónica desde el comie
 
 [^context-2]: Equivalente en ese momento a 3.3 millones de USD de facturación anual.
 
-El panel (a) de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo, a partir de los microdatos de DGI (describo los datos en mayor detalle en la [Sección @sec-data]). A noviembre de 2016 habían ingresado `r dts[(emittedAnyT), .N]` empresas al régimen de facturación electrónica, correspondientes a 6% de la muestra. A pesar de tratarse de un número reducido de empresas emisoras, su volumen de facturación agregado es muy importante. El panel (b) de la @fig-adoption muestra el porcentaje de la producción de cada año que se comercializó con e-facturas; en 2016 alcanzó al 52% de la producción nacional. Se distingue una variación importante entre sectores de actividad –se destacan tres en la figura a modo ilustrativo–. Se observa que el 73% de las ventas de la industria manufacturera utilizaron e-facturas en 2016 mientras que solo 18% de las ventas de servicios financieros lo hicieron.
+El panel (a) de la @fig-adoption muestra como se distribuyó dicha adopción en el tiempo, a partir de los microdatos de DGI (describo los datos en mayor detalle en la [Sección @sec-data]). A noviembre de 2016 habían ingresado `3674` empresas al régimen de facturación electrónica, correspondientes a 6% de la muestra. A pesar de tratarse de un número reducido de empresas emisoras, su volumen de facturación agregado es muy importante. El panel (b) de la @fig-adoption muestra el porcentaje de la producción de cada año que se comercializó con e-facturas; en 2016 alcanzó al 52% de la producción nacional. Se distingue una variación importante entre sectores de actividad –se destacan tres en la figura a modo ilustrativo–. Se observa que el 73% de las ventas de la industria manufacturera utilizaron e-facturas en 2016 mientras que solo 18% de las ventas de servicios financieros lo hicieron.
 
 La combinación de los elevados volúmenes de facturación y el posicionamiento en la cadena productiva de las empresas emisoras de e-facturas, resultaron en que una proporción sustancial de las empresas uruguayas recibió una e-factura al poco tiempo de implementada la política. El panel (c) de la @fig-adoption ilustra como ya desde inicios de 2014 más de la mitad de las empresas uruguayas había recibido alguna e-factura. Como se verá en la [Sección @sec-results], sin embargo, la información generada por la política sobre las compras de las empresas receptoras distaba de ser completa.
