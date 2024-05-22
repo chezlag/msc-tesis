@@ -65,6 +65,13 @@ La @fig-iv-het resume los resultados del análisis de heterogeneidades. Presenta
 
 Estudio efectos heterogéneos en los tres ejes descritos en la [sección @sec-results-effect-het]: facturación por encima/debajo de la mediana, industrias con alta/baja proporción de output destinada al consumo final de los hogares e industrias con alta/baja proporción de insumos importados. En términos generales, no encuentro diferencias estadísticamente significativas en ninguno de los ejes analizados entre los subgrupos definidos, ni tampoco respecto a la efecto agregado simple.
 
+::: {#tbl-iv-first}
+
+\resizebox{\textwidth}{!}{\input{../../out/tables/iv.y.first.tex}}
+
+Primera etapa por submuestras.
+:::
+
 ::: {#tbl-iv-all}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/iv.y.all.all.tex}}
