@@ -21,3 +21,6 @@
 \makeatletter
 \renewcommand{\chaptername}{Sección}
 \makeatother
+% Make tables in smaller fonts by default
+\usepackage{etoolbox}
+\BeforeBeginEnvironment{longtable}{\small}
