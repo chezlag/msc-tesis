@@ -13,10 +13,10 @@ Comparo la variación en los resultados de las empresas que reciben facturas ele
 Para aportar evidencia que apoye el supuesto de tendencias paralelas y analizar la dinámica del impacto de recibir una e-factura, estimo una especificación de estudio de eventos de la @eq-twfe:
 
 $$
-y_{it} = \alpha_{i} + \tau_{t}+ \sum_{l\neq -1, l = -7}^{l = 3} \beta_{l}\cdot \mathbb{1}(R_{it} = l) + u_{it}
+y_{it} = \alpha_{i} + \tau_{t}+ \sum_{l\neq -1, l = -6}^{l = 3} \beta_{l}\cdot \mathbb{1}(R_{it} = l) + u_{it}
 $${#eq-es}
 
-donde $R_{it}$ indica los años desde el momento en que las empresas reciben su primera e-factura. Los coeficientes $\beta_{l}$ capturan la diferencia de resultados entre empresas tratadas y controles a $l$ períodos de recibir el tratamiento.
+donde $R_{it}$ indica los años desde el momento en que las empresas reciben su primera e-factura. Los coeficientes $\beta_{l}$ capturan la diferencia de resultados entre empresas tratadas y controles a $l$ períodos de recibir el tratamiento. Excluyo el evento $l = -1$, normalizando el resto de los coeficientes a este. Las empresas empiezan a recibir e-facturas desde 2012, con lo cuento con seis años pre-tratamiento y tres años post-tratamiento.
 
 Mis variables de resultado son IVA compras, IVA ventas y el IVA adeudado neto (= máx{IVA ventas - IVA compras, 0}). Para la forma funcional tomo las recomendaciones de @chenLogsZerosProblems2023 para lidiar con variables dependientes en logaritmos cuando hay un porcentaje no trivial de ceros en su distribución. [^chen-roth] Una de sus propuestas –la que sigo– implica reescalar la variable de resultado $Y_{it}$ respecto a su valor mínimo $Y_{min}$ y asignarle un valor específico $\varepsilon$ a los cambios en el margen extensivo. Formalmente, defino 
 
