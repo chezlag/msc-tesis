@@ -16,7 +16,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 
 ::: {#tbl-did-all}
 
-![](../../out/tables/did.y.all.overall_att.all.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/did.y.all.overall_att.all.tex}}
 
 > \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especiﬁcación principal de DD presentada en la sección [Sección @sec-method]. La tabla muestra la estimación del efecto agregado siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
 
@@ -25,7 +25,7 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 ::: {#tbl-did-ext}
 
-![](../../out/tables/did.y.all.overall_att.ext.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/did.y.all.overall_att.ext.tex}}
 
 > \scriptsize \textbf{Notas:} La tabla muestra el efecto estimado de la recepción de e-facturas sobre sobre la probabilidad de que las empresas reporten IVA compras, IVA ventas, IVA adeudado y pagos de IVA mayores a cero. Los efectos se estiman siguiendo la metodología de @callawayDifferenceinDifferencesMultipleTime2021 y corresponden al efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento comenzaron a recibir e-facturas. Se presenta la estimación puntual y el error estándar entre paréntesis clusterizado por empresa. La muestra consiste de un panel balanceado de empresas que pagan impuestos sobre facturación entre 2009–2016, excluyendo a las empresas que no habían recibido ninguna e-factura en el período de análisis. Los errores estándar están clusterizados por empresa.
 
@@ -34,7 +34,7 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 ::: {#tbl-did-cr23}
 
-![](../../out/tables/did.y.all.overall_att.cr23.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/did.y.all.overall_att.cr23.tex}}
 
 > \scriptsize \textbf{Notas:} Esta tabla presenta la robustez de las estimaciones presentadas en la @tbl-did-all al variar el valor $\varepsilon$ asignado al margen extensivo, siguiendo a @chenLogsZerosProblems2023. Las columnas 1, 5 y 9 se corresponden a la especificación preferida presentada en las columnas 1, 4 y 7 de la @tbl-twfe-all. Las demás columnas varían únicamente el valor asignado a $\varepsilon$ en 0, 0.2 y 3, según se indica en la última fila.
 

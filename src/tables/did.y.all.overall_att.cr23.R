@@ -65,7 +65,15 @@ gtsave(gtbl, opt$output)
 opt$output <- "out/tables/did.y.all.overall_att.cr23.tex"
 gtsave(gtbl, opt$output)
 
-# delete table environment lines
+# Manually adjust tex table
 tex <- readLines(opt$output)
-grep("\\{longtable\\}", tex, value = TRUE, invert = TRUE) |>
-  writeLines(opt$output)
+tex <- append(tex, "\\midrule", after = grep("Num.Obs", tex) - 1)
+pval_ref <- c(
+  "\\midrule",
+  "\\multicolumn{13}{l}{* p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001} \\\\"
+)
+tex <- append(tex, pval_ref, after = grep("bottomrule", tex) - 1)
+tex <- map_chr(tex, \(x) str_replace(x, "longtable", "tabular"))
+tex <- head(tex, length(tex) - 4)
+tex[length(tex)] <- "\\end{tabular}%"
+writeLines(tex, opt$output)

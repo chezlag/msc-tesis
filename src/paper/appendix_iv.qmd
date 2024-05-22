@@ -67,14 +67,14 @@ Estudio efectos heterogéneos en los tres ejes descritos en la [sección @sec-re
 
 ::: {#tbl-iv-all}
 
-![](../../out/tables/iv.y.all.all.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/iv.y.all.all.tex}}
 
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental.
 :::
 
 ::: {#tbl-iv-alt}
 
-![](../../out/tables/iv.y.all.alt.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/iv.y.all.alt.tex}}
 
 Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Variable instrumental, con regresor endógeno alternativo.
 :::

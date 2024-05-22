@@ -57,7 +57,7 @@ Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio 
 
 ::: {#tbl-twfe-all}
 
-![](../../out/tables/twfe.y.all.overall_att.all.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.all.tex}}
 
 > \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especificación principal de DD presentada en la sección @sec-method. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especiﬁcación preferida (como se muestra en la @fig-twfe-es). Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016. Esta tabla se analiza en la sección [Sección @sec-results-effect]. 
 
@@ -66,11 +66,9 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 ::: {#tbl-twfe-ext}
 
-![](../../out/tables/twfe.y.all.overall_att.ext.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.ext.tex}}
 
 > \scriptsize \textbf{Notas:} Esta tabla registra los resultados presentada en la sección [Sección @sec-method]. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para la probabilidad de que las variables de resultado sean mayores a cero. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
 
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
 :::
-
-

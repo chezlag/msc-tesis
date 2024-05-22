@@ -76,7 +76,7 @@ Función de distribución acumulada de la participación de las empresas de la m
 
 ::: {#tbl-twfe-cr23}
 
-![](../../out/tables/twfe.y.all.overall_att.cr23.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.cr23.tex}}
 
 > \scriptsize \textbf{Notas:} Esta tabla presenta la robustez de las estimaciones presentadas en la @tbl-twfe-all al variar el valor $\varepsilon$ asignado al margen extensivo, siguiendo a @chenLogsZerosProblems2023. Las columnas 1, 5 y 9 se corresponden a la especificación preferida presentada en las columnas 1, 4 y 7 de la @tbl-twfe-all. Las demás columnas varían únicamente el valor asignado a $\varepsilon$ en 0, 0.2 y 3, según se indica en la última fila.
 
@@ -85,21 +85,21 @@ Robustez de las estimaciones de diferencias en diferencias al variar el valor at
 
 ::: {#tbl-twfe-het-size}
 
-![](../../out/tables/twfe.y.all.overall_att.by_size.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_size.tex}}
 
 Efectos heterogéneos por tamaño de la empresa. Diferencias en diferencias.
 :::
 
 ::: {#tbl-twfe-het-industry}
 
-![](../../out/tables/twfe.y.all.overall_att.by_industry.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_industry.tex}}
 
 Efectos heterogéneos por exposición al consumo final de los hogares. Diferencias en diferencias.
 :::
 
 ::: {#tbl-twfe-het-imports}
 
-![](../../out/tables/twfe.y.all.overall_att.by_imports.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_imports.tex}}
 
 Efectos heterogéneos por exposición a las importaciones. Diferencias en diferencias.
 :::

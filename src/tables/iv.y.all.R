@@ -38,7 +38,7 @@ gtbl <- est %>%
     stars = TRUE,
     add_rows = rows
   ) %>%
-  text_replace(pattern = "IHSeticketTaxK$", "IHS (e-invoices VAT)") |>
+  text_replace(pattern = "IHSeticketTaxK$", "IHS (e-invoiced VAT)") |>
   text_replace(pattern = "IHSnTicketsReceived$", "IHS (N e-invoices)") |>
   text_replace(pattern = "^probTicketReception$", "Prob (e-invoice reception)") |>
   tab_spanner(label = ylablist[1], columns = 2:4) %>%
@@ -57,3 +57,18 @@ gtbl <- est %>%
 
 opt$output <- "out/tables/iv.y.all.all.png"
 gtsave(gtbl, opt$output)
+opt$output <- "out/tables/iv.y.all.all.tex"
+gtsave(gtbl, opt$output)
+
+# Manually adjust tex table
+tex <- readLines(opt$output)
+tex <- append(tex, "\\midrule", after = grep("Num.Obs", tex) - 1)
+pval_ref <- c(
+  "\\midrule",
+  "\\multicolumn{10}{l}{* p $<$ 0.05, ** p $<$ 0.01, *** p $<$ 0.001} \\\\"
+)
+tex <- append(tex, pval_ref, after = grep("bottomrule", tex) - 1)
+tex <- map_chr(tex, \(x) str_replace(x, "longtable", "tabular"))
+tex <- head(tex, length(tex) - 4)
+tex[length(tex)] <- "\\end{tabular}%"
+writeLines(tex, opt$output)
