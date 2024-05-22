@@ -12,6 +12,16 @@
 Calendario de adopción obligatoria de la emisión de e-facturas
 :::
 
+::: {#fig-adoption-inSample}
+
+![](../../out/figures/takeup.in_sample.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas. Se distingue entre el universo de empresas en los microdatos de DGI (línea roja) y en la muestra principal de análisis (línea azul, ver @sec-data).
+
+Función de distribución acumulada de la fecha de primera recepción de e-facturas.
+:::
+
+
 ::: {#tbl-industry-summary}
 
 ![](../../out/tables/industry_summary.png)

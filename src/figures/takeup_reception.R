@@ -22,17 +22,27 @@ sampleA <- dty[(sampleA), .N, fid][, .(fid)]
 
 tab <- dts[sampleA, on = "fid"] |>
   _[, .N, .(quarterFirstReception, yearFirstReception)]
+tab[quarterFirstReception == Inf, quarterFirstReception := ymd("2020-01-01")]
 tab[, sz := N / fsum(N)]
 
 # Plot ------------------------------------------------------------------------
 
-tab |>
+p3 <- tab |>
   ggplot(aes(quarterFirstReception, sz, fill = as.factor(yearFirstReception))) +
   geom_col() +
   coord_cartesian(xlim = c(ymd("2012-01-01"), ymd("2016-12-31"))) +
   scale_y_continuous(labels = scales::label_percent(), expand = c(0.01, 0), limits = c(0, 0.3)) +
   ggsci::scale_fill_igv() +
-  labs(x = "Trimestre de primera recepción de e-factura", y = NULL, fill = NULL) +
-  theme(legend.position = "none")
+  labs(
+    x = "Trimestre de primera recepción de e-factura", y = "Empresas receptoras en la muestra", fill = NULL,
+    subtitle = "(c) Histograma de la primera recepción de e-factura"
+  ) +
+  theme(legend.position = "none", plot.subtitle = element_text(hjust = 0.5))
 
+p3
 ggsave("out/figures/takeup_reception.png", width = 170, height = 100, units = "mm")
+
+# Plot FIG 1 ------------------------------------------------------------------
+
+p1 / p2 | p3
+ggsave("out/figures/fig1.png", width = 240, height = 200, units = "mm")

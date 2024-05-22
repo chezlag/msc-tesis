@@ -2,11 +2,9 @@
 
 ::: {#fig-adoption}
 
-![](../../out/figures/takeup.full.png)
+![](../../out/figures/fig1.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a) y la primera recepción de e-facturas (panel b). Considero el universo de empresas en los microdatos de DGI. La línea a rayas indica el inicio de la obligatoriedad de emisión para las empresas con ingresos mayores a 30 millones de UI. Las empresas con menos ingresos anuales fueron mandatadas a emitir e-facturas de acuerdo al cronograma en la @tbl-policy-adoption-schedule del anexo.
->
-> \scriptsize \textbf{Fuente:} Elaboración propia en base a microdatos del sistema de comprobantes electrónicos.
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [sección @sec-data]).
 
 Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
 :::
@@ -28,15 +26,6 @@ Función de distribución acumulada de las fechas de primera emisión y primera 
 > \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. Las variables monetarias están expresadas en pesos constantes de 2016.
 
 Estadísticas descriptivas de la muestra.
-:::
-
-::: {#fig-adoption-inSample}
-
-![](../../out/figures/takeup.in_sample.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera recepción de e-facturas. Se distingue entre el universo de empresas en los microdatos de DGI (línea roja) y en la muestra principal de análisis (línea azul). La muestra consiste de un panel balanceado de empresas que facturan menos de 1M de UI entre 2009–2015 y no pagan IVA en el régimen simplificado.
-
-Función de distribución acumulada de la fecha de primera recepción de e-facturas.
 :::
 
 ::: {#fig-reception-intensity}

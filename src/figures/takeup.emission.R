@@ -21,8 +21,8 @@ p1 <- dts %>%
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01)) +
   coord_cartesian(xlim = c(ymd("2009-01-01"), ymd("2016-11-30"))) +
   labs(
-    x = "First emission date", y = "Cummulative distribution function",
-    subtitle = "(a) First emission"
+    x = "Fecha de primera emisión", y = "Función de distribución acumulada",
+    subtitle = "(a) Primera emisión"
   ) +
   theme(plot.subtitle = element_text(hjust = 0.5))
 p1
