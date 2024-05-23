@@ -21,9 +21,9 @@ ylablist <- c("Input VAT", "Output VAT", "Net VAT liability")
 rows <- data.table(
   `Firm & year FE` = rep("Y", 9),
   Balanced = rep(c("Y", "Y", ""), 3),
+  `Includes 2016 data` = rep(c("", "", "Y"), 3),
   `Winsorized at p99` = rep(c("Y", "", "Y"), 3),
-  `Winsorized at p95` = rep(c("", "Y", ""), 3),
-  `Includes 2016 data` = rep(c("", "", "Y"), 3)
+  `Winsorized at p95` = rep(c("", "Y", ""), 3)
 ) |>
   t() %>%
   cbind(rownames(.), .) |>
