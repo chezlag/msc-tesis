@@ -4,6 +4,7 @@ $endif$
 $if(title)$
 \cleardoublepage
 \thispagestyle{empty}
+\includegraphics[width=\textwidth]{logo_udelar.png}
 {\centering
 \hbox{}\vskip 0cm plus 1fill
 {\Huge\bfseries $title$ \par}
@@ -15,21 +16,89 @@ $endif$
 $for(by-author)$
 {\Large\bfseries $by-author.name.literal$ \par}
 \vspace{3ex}
-{\Large ORCID: $by-author.orcid$ \par}
+{ORCID: $by-author.orcid$ \par}
 \vskip 0cm plus 2fill
-{\bfseries\large Programa de Maestría en Economía
+{\large Programa de Maestría en Economía
 \par}
-\vspace{3ex}
-{\bfseries\large $date$ \par}
-\vspace{12ex}
 $for(by-author.affiliations)$%
 $if(it.department)$%
-{\bfseries\large $it.department$ \par}
-\vspace{3ex}
+{\large $it.department$ \par}
 $endif$%
-{\bfseries\large $it.name$ \par}
+{\large $it.name$ \par}
 $endfor$$endfor$%
+\vspace{3ex}
+{\large Montevideo, Uruguay\par}
+{\large $date$ \par}
 \vspace{12ex}
 {\small \par}
 }
+$endif$
+% Segunda página
+$if(title)$
+\cleardoublepage
+\thispagestyle{empty}
+{\centering
+\hbox{}\vskip 0cm plus 1fill
+{\Huge\bfseries $title$ \par}
+$if(subtitle)$
+\vspace{3ex}
+{\Large\bfseries $subtitle$ \par}
+$endif$
+\vspace{12ex}
+$for(by-author)$
+{\Large\bfseries $by-author.name.literal$ \par}
+\vspace{3ex}
+}
+{Tesis de Maestría presentada al Programa de Maestría en Economía de 
+la Facultad de Economía de la Universidad de la República, como parte de los 
+requisitos necesarios para la obtención del título de Magíster en Economía. 
+\par}
+{\centering
+\vskip 0cm plus 2fill
+{Director:\\Dr. Marcelo Bérgolo\\Directora Académica:\\Dra. Paola Azar}
+\vskip 0cm plus 2fill
+{\large Programa de Maestría en Economía
+\par}
+$for(by-author.affiliations)$%
+$if(it.department)$%
+{\large $it.department$ \par}
+$endif$%
+{\large $it.name$ \par}
+$endfor$$endfor$%
+\vspace{3ex}
+{\large Montevideo, Uruguay\par}
+{\large $date$ \par}
+\vspace{12ex}
+{\small \par}
+}
+$endif$
+% Agradecimientos
+\section*{Agradecimientos}\pagenumbering{roman}
+\thispagestyle{empty}
+\input{thanks.tex}
+% Resumen
+$if(title)$
+\cleardoublepage
+\thispagestyle{empty}
+{\centering
+{\huge\bfseries $title$ \par}
+$if(subtitle)$
+\vspace{1ex}
+{\Large\bfseries $subtitle$ \par}
+$endif$
+\vspace{3ex}
+$for(by-author)$
+{\large $by-author.name.literal$*\par}
+$endfor$
+\vspace{3ex}
+}
+{\begin{quote}
+{\footnotesize
+\input{abstract.tex}
+}
+\end{quote}\par}
+{\vfill}
+{\footnotesize * IECON -- Universidad de la República (UdelaR). 
+Mail de contacto: guillermo.sanchez@fcea.edu.uy\par}
+{\small\par}
 $endif$

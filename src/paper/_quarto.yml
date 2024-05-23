@@ -12,9 +12,9 @@ book:
       - name: "Universidad de la República"
         department: "Facultad de Ciencias Económicas y Adminstración"
   date: today
+  date-format: long
   chapters:
     - index.qmd
-    - intro.qmd
     - lit_review.qmd
     - context.qmd
     - hypotheses.qmd
