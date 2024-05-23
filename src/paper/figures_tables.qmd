@@ -9,19 +9,16 @@
 Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
 :::
 
+::: {#tbl-data}
 
-| Fuente de datos       | Información contenida                                                                  | Frecuencia de los datos | Período disponible |
-|-----------------------|----------------------------------------------------------------------------------------|-------------------------|--------------------|
-| Form. 2148/2149       | Declaración jurada de estados de situación y de resultados para cómputo de IRAE e IPAT | Anual                   | 2009--2016         |
-| Form. 2176/2178       | Declaración jurada de ventas y compras gravadas con IVA                                | Anual                   | 2006--2015         |
-| Pagos de impuestos    | Pagos de IVA, IRAE y agregado de otros impuestos.                                      | Mensual                 | Ene/2010--Nov/2016 |
-| Transacciones con CFE | Resumen mensual de transacciones con CFE entre pares de empresas.                      | Mensual                 | Ene/2010--Nov/2016 |
+\resizebox{\textwidth}{!}{\input{../../out/tables/available_data.tex}}
 
-: Fuentes de datos y período de disponibilidad {#tbl-data}
+Fuentes de datos y período de disponibilidad
+:::
 
 ::: {#tbl-sample-summary}
 
-\small \input{../../out/tables/sample_summary.tex}
+\input{../../out/tables/sample_summary.tex}
 
 > \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. Las variables monetarias están expresadas en pesos constantes de 2016.
 

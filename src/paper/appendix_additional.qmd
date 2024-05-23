@@ -7,7 +7,7 @@
 
 ::: {#tbl-policy-adoption-schedule}
 
-![](../../out/tables/policy_adoption_schedule.png)
+\resizebox{\textwidth}{!}{\input{../../out/tables/policy_adoption_schedule.tex}}
 
 Calendario de adopción obligatoria de la emisión de e-facturas
 :::

@@ -12,33 +12,27 @@ source("src/lib/cli_parsing_o.R")
 
 # Input -----------------------------------------------------------------------
 
-tab <- fread("src/data/policy_adoption_schedule.csv")
+tab <- fread("src/data/available_data.tsv")
 
 # Build table -----------------------------------------------------------------
 
 gtbl <- tab |>
   gt() |>
-  cols_align("center") |>
-  tab_style(
-    style = cell_borders(
-      sides = c("top"),
-      style = "solid"
-    ),
-    locations = cells_body(
-      rows = c(3, 5, 7)
-    )
-  ) |>
+  cols_align("left") |>
   opt_table_font(font = "Times New Roman")
 
-opt$output <- "out/tables/policy_adoption_schedule.png"
-gtsave(gtbl, opt$output)
-opt$output <- "out/tables/policy_adoption_schedule.tex"
+opt$output <- "out/tables/available_data.tex"
 gtsave(gtbl, opt$output)
 
 # Manually adjust tex table
 tex <- readLines(opt$output)
 tex <- map_chr(tex, \(x) str_replace(x, "longtable", "tabular"))
-for (i in c(6, 9, 12)) {
+col_widths <- c(0.2, 0.5641, 0.1603, 0.21) %>%
+  paste0("p{", ., "\\textwidth}") |>
+  paste0(collapse = "") %>%
+  paste0("\\begin{tabular}{", ., "}")
+tex[grep("begin.tabular", tex)] <- col_widths
+for (i in c(5, 7, 9)) {
   tex <- append(tex, "\\midrule", after = i)
 }
 tex <- head(tex, length(tex) - 1)
