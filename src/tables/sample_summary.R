@@ -15,6 +15,7 @@ date <- "2024-01-15"
 groundhog.library(pkgs, date)
 
 source("src/lib/cli_parsing_o.R")
+source("src/lib/create_controls.R")
 
 # Input -----------------------------------------------------------------------
 
@@ -25,13 +26,14 @@ dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
   .[sample, on = "fid"]
 
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
-dty[, sampleA := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
-dty[, sampleB := nomissing & taxTypeRegularAllT15 & balanced15 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+dty[, sampleDD := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
+dty[, sampleIV := nomissing & taxTypeRegularAllT15 & balanced15 & !emittedAnyT & year < 2016]
 
-dty <- dty[(sampleA)]
-dts <- dts[fid %in% unique(dty[, fid])]
+sDD <- BMisc::makeBalancedPanel(dty[(sampleDD)], idname = "fid", tname = "year")
+sIV <- BMisc::makeBalancedPanel(dty[(sampleIV)], idname = "fid", tname = "year")
+sAll <- BMisc::makeBalancedPanel(dty[(sampleAll)], idname = "fid", tname = "year")
 
-# Compute pre-treatment means of main variables
+# Pre-treatment variables
 varlist <- c(
   "turnoverK",
   "vatSalesK",
@@ -39,19 +41,29 @@ varlist <- c(
   "netVatLiabilityK",
   "fid"
 )
-pretreat <- dty[year == 2010, ..varlist]
+pretreat <- rbind(
+  sDD[year == 2010, ..varlist][, sample := "DD"],
+  sIV[year == 2010, ..varlist][, sample := "IV"]
+)
 
-# Create analysis data
+# Static variables
 varlist <- c(
   "receivedAnyT",
   "emittedAnyT",
   "neverTreated",
   "fid"
 )
-tab <- dts[, ..varlist] %>%
-  merge(pretreat, by = "fid")
+static <- rbind(
+  dts[fid %in% unique(sDD[, fid]), ..varlist][, sample := "DD"],
+  dts[fid %in% unique(sIV[, fid]), ..varlist][, sample := "IV"]
+)
+
+# Create analysis data
+tab <- merge(
+  static, pretreat,
+  by = c("fid", "sample")
+)
 tab[, fid := NULL]
-tab[, N := 1]
 
 # Label variables
 labelledlist <- list(
@@ -61,8 +73,7 @@ labelledlist <- list(
   netVatLiabilityK = "IVA adeudado ($ UYU)",
   receivedAnyT = "Recibió alguna e-factura",
   emittedAnyT = "Emitió alguna e-factura",
-  neverTreated = "Nunca recibió e-factura",
-  N = "Número de empresas"
+  neverTreated = "Nunca recibió e-factura"
 )
 var_label(tab) <- labelledlist
 
@@ -72,16 +83,10 @@ theme_gtsummary_compact()
 theme_gtsummary_language(language = "es", decimal.mark = ",", big.mark = ".")
 gtbl <- tab %>%
   tbl_summary(
-    statistic = list(
-      N ~ "{n}"
-    ),
-    missing = "no"
+    missing = "no",
+    by = "sample"
   ) %>%
-  modify_header(
-    label ~ "**Variable**",
-    stat_0 ~ ""
-  ) %>%
-  modify_footnote(stat_0 = NA) %>%
+  modify_footnote(update = all_stat_cols() ~ NA) %>%
   as_gt(locale = "es") %>%
   tab_row_group(
     gt::md("**Variables de tratamiento.** n (%)"),
@@ -89,7 +94,7 @@ gtbl <- tab %>%
   ) %>%
   tab_row_group(
     gt::md("**Resultados pre-tratamiento.** Mediana (p25 – p75)"),
-    4:8
+    4:7
   ) %>%
   opt_table_font(font = "Times New Roman")
 
