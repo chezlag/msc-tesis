@@ -28,6 +28,7 @@ dty <- read_fst("out/data/firms_yearly.fst", as.data.table = TRUE) %>%
 dty[, nomissing := !is.na(vatPurchases) & !is.na(vatSales) & !is.na(netVatLiability)]
 dty[, sampleDD := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016 & maxTurnoverMUI < 1 & in217 & !is.na(turnover)] # nolint
 dty[, sampleIV := nomissing & taxTypeRegularAllT15 & balanced15 & !emittedAnyT & year < 2016]
+dty[, sampleAll := nomissing & taxTypeRegularAllT15 & balanced15 & year < 2016]
 
 sDD <- BMisc::makeBalancedPanel(dty[(sampleDD)], idname = "fid", tname = "year")
 sIV <- BMisc::makeBalancedPanel(dty[(sampleIV)], idname = "fid", tname = "year")
@@ -41,9 +42,12 @@ varlist <- c(
   "netVatLiabilityK",
   "fid"
 )
-pretreat <- rbind(
-  sDD[year == 2010, ..varlist][, sample := "DD"],
-  sIV[year == 2010, ..varlist][, sample := "IV"]
+pretreat <- rbindlist(
+  list(
+    sDD[year == 2010, ..varlist][, sample := "DD"],
+    sIV[year == 2010, ..varlist][, sample := "IV"],
+    sAll[year == 2010, ..varlist][, sample := "Sin restricciones"]
+  )
 )
 
 # Static variables
@@ -53,9 +57,12 @@ varlist <- c(
   "neverTreated",
   "fid"
 )
-static <- rbind(
-  dts[fid %in% unique(sDD[, fid]), ..varlist][, sample := "DD"],
-  dts[fid %in% unique(sIV[, fid]), ..varlist][, sample := "IV"]
+static <- rbindlist(
+  list(
+    dts[fid %in% unique(sDD[, fid]), ..varlist][, sample := "DD"],
+    dts[fid %in% unique(sIV[, fid]), ..varlist][, sample := "IV"],
+    dts[fid %in% unique(sAll[, fid]), ..varlist][, sample := "Sin restricciones"]
+  )
 )
 
 # Create analysis data
@@ -81,12 +88,14 @@ var_label(tab) <- labelledlist
 
 theme_gtsummary_compact()
 theme_gtsummary_language(language = "es", decimal.mark = ",", big.mark = ".")
-gtbl <- tab %>%
+gtbl <- tab[sample != "IV"] %>%
   tbl_summary(
     missing = "no",
     by = "sample"
   ) %>%
   modify_footnote(update = all_stat_cols() ~ NA) %>%
+  modify_header(label ~ "") |>
+  modify_header(stat_1 ~ "**Muestra principal**, N = 1.747") |>
   as_gt(locale = "es") %>%
   tab_row_group(
     gt::md("**Variables de tratamiento.** n (%)"),
@@ -98,5 +107,12 @@ gtbl <- tab %>%
   ) %>%
   opt_table_font(font = "Times New Roman")
 
-gtsave(gtbl, "out/tables/sample_summary.png", zoom = 2)
-gtsave(gtbl, "out/tables/sample_summary.tex")
+gtsave(gtbl, "out/tables/sample_summary.png")
+opt$output <- "out/tables/sample_summary.tex"
+gtsave(gtbl, opt$output)
+
+# Manually adjust tex table
+tex <- readLines(opt$output)
+tex <- map_chr(tex, \(x) str_replace(x, "longtable", "tabular"))
+tex[1] <- "\\begin{tabular}{llll}"
+writeLines(tex, opt$output)

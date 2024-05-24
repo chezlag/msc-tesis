@@ -20,7 +20,7 @@ Fuentes de datos y período de disponibilidad
 
 \input{../../out/tables/sample_summary.tex}
 
-> \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. Las variables monetarias están expresadas en pesos constantes de 2016.
+> \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. La columna 2 presenta la misma información para todas las empresas, excluyendo a las que se amparan en regímenes simplificados de declaración y a las empresas CEDE (ver [Sección @sec-context]). Las variables monetarias están expresadas en pesos constantes de 2016.
 
 Estadísticas descriptivas de la muestra.
 :::
