@@ -74,3 +74,4 @@ format:
       - before-body.tex
     include-in-header:
       - file: packages.tex
+    keep-tex: true
