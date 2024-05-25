@@ -4,7 +4,7 @@
 
 ![](../../out/figures/fig1.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [sección @sec-data]).
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [Sección @sec-data]).
 
 Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
 :::
