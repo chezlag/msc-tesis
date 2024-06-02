@@ -4,7 +4,7 @@
 
 ![](../../out/figures/fig1.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [Sección @sec-data]).
+> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas por sector de actividad (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [Sección @sec-data]). En el panel (b) se destacan tres sectores de actividad con fines ilustrativos, y se grafican los demás sectores anónimamente.
 
 Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
 :::
@@ -65,7 +65,7 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.ext.tex}}
 
-> \scriptsize \textbf{Notas:} Esta tabla registra los resultados presentada en la sección [Sección @sec-method]. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para la probabilidad de que las variables de resultado sean mayores a cero. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
+> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especificación principal de DD en el margen extenisvo y se analiza en la [Sección @sec-method]. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para la probabilidad de que las variables de resultado sean mayores a cero. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
 
 Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
 :::

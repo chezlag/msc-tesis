@@ -2,11 +2,9 @@
 
 **¿Cómo evolucionó el registro de compras de las empresas receptoras a raíz de la e-facturación?**
 
-Las e-facturas permiten una reconstrucción en tiempo real de las transacciones de las empresas. Crean un registro digital (prácticamente) completo de las ventas de las empresas emisoras, y un registro *parcial* de las compras de las empresas receptoras. A medida que más empresas emiten e-facturas, más completo es el registro de las compras de sus socios comerciales, y mayor la capacidad de la autoridad tributaria de detectar inconsistencias en los costos reportados por las empresas. Esto, a su vez, condiciona los efectos que podemos esperar de la política sobre las empresas receptoras. El primer paso de mi análisis será cuantificar el volumen de compras registradas en e-facturas a medida se implementó la e-facturación. Dado que solo cuento con datos para los primeros años de la política, espero que la cobertura de las compras sea altamente parcial.
+Las e-facturas permiten una reconstrucción en tiempo real de las transacciones de las empresas. Crean un registro digital (prácticamente) completo de las ventas de las empresas emisoras, y un registro *parcial* de las compras de las empresas receptoras. A medida que más empresas emiten e-facturas, más completo es el registro de las compras de sus socios comerciales, y mayor la capacidad de la autoridad tributaria de detectar inconsistencias en los costos reportados por las empresas. Esto, a su vez, condiciona los efectos que podemos esperar de la política sobre las empresas receptoras. El primer paso de mi análisis será cuantificar el volumen de compras registradas en e-facturas a medida que se implementó la e-facturación. Dado que solo cuento con datos para los primeros años de la política, espero que la cobertura de las compras sea altamente parcial.
 
 > **H1:** El porcentaje de compras de las empresas receptoras que queda registrado en e-facturas será limitado en el período estudiado.
-> 
-> **H2:** En consecuencia, cualquier efecto de la política sobre las empresas receptoras en esta instancia será de reducida magnitud.
 
 **¿Cuál es el efecto de recibir e-facturas sobre el cumplimiento tributario de las empresas?**
 
@@ -16,18 +14,20 @@ El principal efecto que espero de la recepción de e-facturas, por lo tanto, es 
 
 [^china]: En la evaluación de @fanDynamicEffectsComputerizing2023 de la digitalización de facturas en China encuentran que una de las formas principales en que la política mejoró el cumplimiento fue a través de la reducción del sobrerreporte de costos.
 
-> **H3:** La recepción de e-facturas reduce las compras reportadas.
+> **H2:** La recepción de e-facturas reduce las compras reportadas.
 > 
-> **H4:** La recepción de e-facturas no tiene efecto sobre las ventas reportadas.
+> **H3:** La recepción de e-facturas no tiene efecto sobre las ventas reportadas.
 > 
-> **H5:** La recepción de e-facturas aumenta el IVA adeudado
+> **H4:** La recepción de e-facturas aumenta el IVA adeudado.
+>
+> **H5:** Si se verifica que la política no captura un alto porcentaje de las compras de las empresas receptoras (H1), entonces cualquier efecto de la política sobre dichas empresas será de reducida magnitud.
 
 **¿Hay heterogeneidades en el efecto de recibir e-facturas de acuerdo a ciertas características de las empresas?**
 
 Hay ciertas características de las empresas que se asocian con mayores niveles de incumplimiento. Por ejemplo, el modelo de @klevenWhyCanModern2016 sugiere que el tamaño de un empresa es determinante en sus posibilidades de evadir impuestos sin ser detectadas: las empresas más grandes guardan mejores registros de sus actividades –que pueden ser luego utilizados en una auditoría– y resulta más difícil asegurar una colusión efectiva dentro de la firma cuantos más empleados hay que involucrar para lograrlo. Por otra parte, varios estudios han mostrado que el cumplimiento tributario empeora en los sectores más cercanos a los consumidores finales, en tanto los mecanismos auto-reforzantes del IVA desaparecen en esta etapa [ej: @pomeranzNoTaxationInformation2015; @naritomiConsumersTaxAuditors2019; @waseemOverclaimedRefundsUndeclared2023]. Por último, también resulta de interés explorar si las empresas responden distinto de acuerdo a su utilización de insumos importados. Las empresas que realizan más importaciones –cuya adquisición no queda registrada en el sistema de e-facturación– están menos expuestas a la política y, por lo tanto, es de esperar que reaccionen en menor medida al convertirse en receptoras de e-facturas.
 
-> **H6:** Las empresas de menor tamaño responden más a la recepción e-facturas
+> **H6:** Las empresas de menor tamaño responden más a la recepción e-facturas.
 > 
-> **H7:** Las empresas con una mayor proporción de su producción destinada al consumo final de los hogares responden más a la recepción de e-facturas
+> **H7:** Las empresas con una mayor proporción de su producción destinada al consumo final de los hogares responden más a la recepción de e-facturas.
 > 
 > **H8:** Las empresas con una mayor utilización de insumos importados responden menos a la recepción de e-facturas.

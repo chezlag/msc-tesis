@@ -12,6 +12,15 @@
 Calendario de adopción obligatoria de la emisión de e-facturas
 :::
 
+::: {#fig-small-players}
+
+![](../../out/figures/small_players.all.png)
+
+> \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El eje x está en logaritmos.
+
+Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores.
+:::
+
 ::: {#fig-adoption-inSample}
 
 ![](../../out/figures/takeup.in_sample.png)
@@ -21,7 +30,6 @@ Calendario de adopción obligatoria de la emisión de e-facturas
 Función de distribución acumulada de la fecha de primera recepción de e-facturas.
 :::
 
-
 ::: {#tbl-industry-summary}
 
 ![](../../out/tables/industry_summary.png)
@@ -30,7 +38,6 @@ Función de distribución acumulada de la fecha de primera recepción de e-factu
 
 Estadísticas descriptivas de los sectores de actividad
 :::
-
 
 ::: {#fig-takeup-by layout="[[1,1], [1]]"}
 
@@ -54,26 +61,6 @@ Función de distribución acumulada de la fecha de primera recepción de e-factu
 Proporción de IVA compras registrado en e-facturas por año, por submuestras.
 :::
 
-::: {#fig-small-players}
-
-![](../../out/figures/small_players.all.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El eje x está en logaritmos.
-
-Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores.
-:::
-
-::: {#fig-small-players-by layout="[[1,1], [1]]"}
-
-![Tercil de facturación pre-tratamiento](../../out/figures/small_players.by_size.png)
-
-![Sector de actividad](../../out/figures/small_players.by_industry.png)
-
-> \scriptsize \textbf{Notas:} La figura muestra el peso de las empresas de la muestra en las ventas totales de sus proveedores. El panel (a) desagrega las empresas por sector de actividad. El panel (b) las desagrega por tercil de facturación pre-tratamiento. El eje x está en logaritmos.
-
-Función de distribución acumulada de la participación de las empresas de la muestra en las ventas de sus provedores, por subgrupos.
-:::
-
 ::: {#tbl-twfe-cr23}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.cr23.tex}}
@@ -87,6 +74,9 @@ Robustez de las estimaciones de diferencias en diferencias al variar el valor at
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_size.tex}}
 
+> \scriptsize \textbf{Notas:} Esta tabla presenta la estimación de efectos heterogéneos de la política de acuerdo a si el nivel de activos de la empresa está por encima o por debajo de la mediana. Se muestra la estimación del $\beta_{low}$ y el $\beta_{high}$ de DD de la ecuación @eq-twfe-het para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
+
+
 Efectos heterogéneos por tamaño de la empresa. Diferencias en diferencias.
 :::
 
@@ -94,12 +84,16 @@ Efectos heterogéneos por tamaño de la empresa. Diferencias en diferencias.
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_industry.tex}}
 
+> \scriptsize \textbf{Notas:} Esta tabla presenta la estimación de efectos heterogéneos de la política de acuerdo a si la industria de la empresa destina su producción al consumo final de los hogares por encima o por debajo de la industria mediana. Se muestra la estimación del $\beta_{low}$ y el $\beta_{high}$ de DD de la ecuación @eq-twfe-het para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
+
 Efectos heterogéneos por exposición al consumo final de los hogares. Diferencias en diferencias.
 :::
 
 ::: {#tbl-twfe-het-imports}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.by_imports.tex}}
+
+> \scriptsize \textbf{Notas:} Esta tabla presenta la estimación de efectos heterogéneos de la política de acuerdo a si la industria de la empresa utiliza insumos importados por encima o por debajo de la industria mediana. Se muestra la estimación del $\beta_{low}$ y el $\beta_{high}$ de DD de la ecuación @eq-twfe-het para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
 
 Efectos heterogéneos por exposición a las importaciones. Diferencias en diferencias.
 :::
