@@ -10,11 +10,17 @@ Las e-facturas permiten una reconstrucción en tiempo real de las transacciones 
 
 En este estudio me concentro en el cumplimiento tributario de de las empresas en el IVA. El IVA adeudado por las empresas surge de la diferencia entre las ventas y las compras reportadas. Al declarar el IVA, las empresas pueden reducir su deuda tributaria sub-reportando ventas o sobre-reportando compras. Como mencioné, la recepción de e-facturas crea un registro digital de las compras de las empresas receptoras que puede ser utilizado por la autoridad tributaria para verificar declaraciones de impuestos. De hecho, la DGI desarrolló un nuevo conjunto de controles de incumplimiento explotando la información contenida en los comprobantes electrónicos [@canalesUruguayPerfilFactura2018].
 
-El principal efecto que espero de la recepción de e-facturas, por lo tanto, es una reducción en las compras (sobre)reportadas.[^china] Por otra parte, como la recepción de e-facturas no aporta ningún tipo de información nueva sobre las ventas de las empresas, no espero que tenga ningún efecto sobre las ventas (sub)reportadas. Considerando lo anterior, la recepción de e-facturas debería inducir un aumento del IVA adeudado por las empresas receptoras.
+La principal variable que espero se vea afectada por la recepción de e-facturas, por lo tanto, son las compras reportadas. El efecto sobre las compras depende de la respuesta en el margen intensivo –las empresas que ya reportaban compras– y de la respuesta en el margen extensivo –las empresas que no reportaban compras–. En el margen intensivo, espero que la recepción de e-facturas reduzca las compras (sobre)reportadas, en tanto la DGI cuenta con más información para verificar lo declarado por las empresas. Por el contrario, en el margen extensivo espero que la recepción de e-facturas pueda empujar a ciertas empresas que no reportaban compras a empezar a hacerlo, en tanto la autoridad tributaria pasa a contar con un registro (parcial) de sus compras. El efecto agregado de la política sobre las compras es teóricamente ambiguo, y depende de la magnitud del efecto en el margen extensivo y en el margen intensivo. Pese a ello, en base a la implementación de la e-facturación en otros países [@fanDynamicEffectsComputerizing2023] espero que el efecto total sea una reducción en las compras reportadas, con el efecto negativo en el margen intensivo dominando al efecto positivo en el margen extensivo.[^china] Por razones que detallo en la [Sección @sec-results], solo voy a poder testear mis hipótesis respecto al efecto total y al efecto en el margen extensivo.
+
+Por otra parte, como la recepción de e-facturas no aporta ningún tipo de información nueva sobre las ventas de las empresas, no espero que tenga ningún efecto sobre las ventas (sub)reportadas. Considerando lo anterior, la recepción de e-facturas debería inducir un aumento del IVA adeudado por las empresas receptoras.
 
 [^china]: En la evaluación de @fanDynamicEffectsComputerizing2023 de la digitalización de facturas en China encuentran que una de las formas principales en que la política mejoró el cumplimiento fue a través de la reducción del sobrerreporte de costos.
 
 > **H2:** La recepción de e-facturas reduce las compras reportadas.
+>
+> 	*H2a:* La recepción de e-facturas tiene un efecto positivo en las compras reportadas en el margen extensivo 
+>
+> 	*H2b:* La recepción de e-facturas tiene un efecto negativo en las compras reportadas en el margen intensivo, que domina el efecto positivo en el margen intensivo.
 > 
 > **H3:** La recepción de e-facturas no tiene efecto sobre las ventas reportadas.
 > 
@@ -22,7 +28,7 @@ El principal efecto que espero de la recepción de e-facturas, por lo tanto, es 
 >
 > **H5:** Si se verifica que la política no captura un alto porcentaje de las compras de las empresas receptoras (H1), entonces cualquier efecto de la política sobre dichas empresas será de reducida magnitud.
 
-**¿Hay heterogeneidades en el efecto de recibir e-facturas de acuerdo a ciertas características de las empresas?**
+**¿Hay heterogeneidades en el efecto de recibir e-facturas de acuerdo a algunas características de las empresas?**
 
 Hay ciertas características de las empresas que se asocian con mayores niveles de incumplimiento. Por ejemplo, el modelo de @klevenWhyCanModern2016 sugiere que el tamaño de un empresa es determinante en sus posibilidades de evadir impuestos sin ser detectadas: las empresas más grandes guardan mejores registros de sus actividades –que pueden ser luego utilizados en una auditoría– y resulta más difícil asegurar una colusión efectiva dentro de la firma cuantos más empleados hay que involucrar para lograrlo. Por otra parte, varios estudios han mostrado que el cumplimiento tributario empeora en los sectores más cercanos a los consumidores finales, en tanto los mecanismos auto-reforzantes del IVA desaparecen en esta etapa [ej: @pomeranzNoTaxationInformation2015; @naritomiConsumersTaxAuditors2019; @waseemOverclaimedRefundsUndeclared2023]. Por último, también resulta de interés explorar si las empresas responden distinto de acuerdo a su utilización de insumos importados. Las empresas que realizan más importaciones –cuya adquisición no queda registrada en el sistema de e-facturación– están menos expuestas a la política y, por lo tanto, es de esperar que reaccionen en menor medida al convertirse en receptoras de e-facturas.
 
