@@ -1,9 +1,9 @@
 ---
 marp: true
-title: "New technologies and firm tax compliance. Electronic invocing in Uruguay."
+title: "Nuevas tecnologías y cumplimiento tributario"
 author: Guillermo Sánchez Laguardia
 theme: default
-paginate: false
+paginate: true
 style: |
     section{
       justify-content: flex-start;
@@ -30,114 +30,331 @@ style: |
 <!-- _footer: ""-->
 <!-- _paginate: skip  -->
 
-# New technologies and firm tax compliance
-## Electronic invoicing in Uruguay
+# Nuevas tecnologías y cumplimiento tributario
+## La facturación electrónica en Uruguay
 
 Guillermo Sánchez Laguardia
-April 2024
+Junio 2024
 
 ---
 
-# Motivation
+# Motivación
 
-- Technology can improve tax compliance by improving identification of taxpayers, detection of inconsistencies, and collection capabilities (Okunogbe 2023)
-- **Electronic invoicing** – Digital record of every transaction with automatic transmission to tax authority
-- Widely implemented policy, has been shown to reduce noncompliance in middle and low income countries alike
-- One important feature of the policy has not been evaluated: **spillovers**
+- Los países en desarrollo recaudan menos impuestos que los países desarrollados, limitando su capacidad de implementar políticas y proveer bienes públicos.
+- No alcanza con el crecimiento económico para mejorar la recaudación – se necesitan inversiones específicas (Besley & Persson 2013)
+- La tecnología puede incrementar la recaudación tributaria a través de mejoras en la identificación de contribuyentes, la detección de inconsistencias y la capacidad de recolección (Okunogbe & Tourek 2024) 
+- **Factura electrónica** – Registro digital de cada transacción, con transmisión automática a la autoridad tributaria.
 
+---
 
-> ℹ️ **This dissertation**
-> Evaluate the effect of **receiving e-invoices** on tax compliance (i.e. of  having a trading partner that starts emmiting e-invoices)
+![bg right w:650](../../resources/esquema.jpg)
+
+# e-Facturación
+
+- Política implementada en varios países y ha sido efectiva en la reducción del incumplimiento tributario (Bellon et al. 2022, Fan et al. 2023, Eissa et al. 2015)
+- En Uruguay: $\uparrow$ 3.7% pagos de IVA (Bérgolo et al. 2017)
+- Un aspecto importante de la polííca aún no ha sido evaluado: **efectos indirectos**
+
+<!-- > ℹ️ **Esta tesis**
+> Evaluar el efecto de **recibir e-facturas** sobre el cumplmiento tributario -->
 
 <!-- Downstream spillover effects -->
 
 ---
 
-> ❓ **Research question**
->
-> What is the effect of receiving e-invoices on tax compliance?
-
-
-# Conceptual framework
-
-Electronic invoicing creates a new dataset on (emitting) firms' output and (receiving) firms' input. For receiving firms I expect:
+> ❓ **Pregunta de investigación**
+> ¿Cuál es el efecto de **recibir e-facturas** en el cumplimiento tributario?
 
 <br>
 
-![h:180](../../resources/ConceptDiagram.png)
+- Me concentro en el **Impuesto al Valor Agregado**, en tanto es el que aparece directamente en los comprobantes electrónicos.
+- Impacto de tecnologías en administración pública (Gupta et al. 2017; Lewis-Faupel et al. 2016; Banerjee et al. 2020) 
+  - Tecnologías en administración tributaria (Okunogbe y Poulinquen 2022; Okunogbe y Tourek 2024)
+- Importancia de **efectos indirectos** para evaluación completa de cualquier intervención pública (Lopez-Luzuriaga & Scartascini 2019)
+  - e-facturación genera mucha información nueva – spillovers potencialmente muy importantes
 
 ---
 
-# Setting
+# Marco conceptual
 
-- Uruguay is a middle income country in LAC (GDP per cápita ~15K USD)
-- VAT is the largest tax liability for firms and the largest source of tax revenue. Evasion of VAT was estimated at 26% (Gomez-Sabaini & Jimenez 2012)
-- Mandatory rollout of e-invocing –starting w largest firms– began 2012.
+La facturación electrónica crea un nuevo registro sobre las ventas de las empresas emisoras y las compras de las empresas receptoras. La DGI puede usar esta información para reducir el **sobre-reporte de compras** de las empresas receptoras:
 
-# Approach
 
-- **Main challenge:** Nonrandom buyer-seller pairings
-- **How I overcome it:** Staggered DD, using time of first e-invoice reception and focusing on small firms.
+
+<br>
+
+![h:350](../../resources/Conceptual.png)
+
+---
+
+# Contexto
+
+- IVA es el impuesto más cuantioso para las empresas y la principal fuente de ingresos tributarios (50% en 2019).
+- La evasión de IVA se estimaba en 26% (Gomez-Sabaini & Jimenez 2012)
+
+### La e-facturación en Uruguay
+
+- Implementación de e-facturación empieza en 2011 con un plan piloto, seguida por un período de fuertes incentivos fiscales (2012–2014). 
+  - Adhesión obligatoria anunciada en 2015, escalonada por ingresos
+- En 2016 habían pocos emisores (~3000) pero por su posicionamiento en la red productiva y su volumen de facturación, una proporción importante de las empresas habían recibido e-facturas para ese entonces.
+
+---
+
+### FDA de la primera emisión y proporción del output en e-facturas
+
+![h:480](../../out/figures/takeup.shareV2.png)
+
+Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016)
+
+---
+
+## La estrategia
+
+**Desafío principal:** Emparejamiento no aleatorio de compradores y vendedores
+
+**Como lo supero:** DD con tratamiento escalonado, usando la primera recepción de e-facturas como inicio del tratamiento y centrándome en empresas chicas.
+
+![bg left h:650](../../out/figures/takeup_reception.png)
+
+<!-- ![bg right w:600](../../out/figures/small_players.all.png) -->
 
 <!-- Since emitting firms are v large, there may be less risk of collusion with small players (no individual buyer surpasses 1% of seller turnover) -->
 <!-- Also,  -->
 
+---
+
+# Datos
+
+- **Fuentes:** Registros administrativos sobre empresas 2009–2016
+  - Resumen mensual de transacciones para cada par comprador-vendedor
+  - Declaraciones juradas de IVA (2009–2016*)
+- **Muestra ppal:** Empresas chicas con regímenes imp. no simplificados (N = 1.8K)
+  - No afectan cuando sus proveedores empiezan a emitir e-facturas [[go]](#small-players-back)
+- **Variables de resultado:** IVA compras, IVA ventas, IVA adeudado neto (= máx {IVA ventas - IVA compras, 0}) [[go]](#series-crudas-back)
+  - Forma funcional: deflactadas + log + winsorizing p99 [[go]](#logs-con-ceros-back)
+- **Tratamiento:** Primera recepción de e-factura
+- **Grupo de control:** Empresas aún no tratadas y nunca tratadas (25%)
+- **Covariables:** Deciles de activos pre-política, 22 secciones CIIU, cuartiles de edad.
 
 ---
 
-# Data
+### Descriptivas de la muestra
 
-- Administrative data on uruguayan firms 2009–2016
-  - Monthly summaries of buyer-seller pair transactions
-  - VAT affidavits
-- **Main sample:** Small firms with non-simplified tax regimes (N = 1.8K)
-- **Outcome variables:** input VAT, output VAT, net VAT liability
-  - Functional form: deflacted + IHS + winsorized p99
-- **Treatment variable:** Year of first e-invoice reception
-- **Control group:** Not-yet-treated firms
-- **Covariates:** pre-policy asset and income  deciles, 22 ISIC sections, firm age quartiles
+![](../../out/tables/sample_summary.png)
 
 ---
 
-### CDF of first emission and share of total output in e-invoices
+# Método I: Efecto agregado
 
-![h:480](../../out/figures/takeup.shareV2.png)
+Estimo un diseño de diferencias en diferencias con TWFE y tratamiento escalonado
 
-Small number of emitting firms (6%) with large share of output (52% in 2016)
+<br>
+
+$$
+y_{it} = \beta_{post}\ D_{it} + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+<br>
+
+- $D_{it}$ toma valor uno si la empresa $i$ había recibido alguna e-factura en el período $t$
+- $y_{it}$ es el resultado de la empresa $i$ en el año $t$
+-  $\alpha_{i}$ y $\tau_{t}$ son efectos fijos de empresa y año
+
+<br>
+
+El impacto total de la política viene dado por el coeficiente $\beta_{post}$, que representa el efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento recibieron una.
 
 ---
 
-### Effect of e-invoice reception on tax compliance (Dynamic)
+# Método II: Efectos dinámicos
+
+$$
+y_{it} = \sum_{l\neq -1, l = -6}^{l = 3} \beta_{l}\cdot \mathbb{1}(R_{it} = l) + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+- $R_{it}$ indica los años desde que la empresa $i$ recibió su primer e-factura
+- Excluyo $l = -1$, normalizando los $\beta_l$ a este evento
+- Política empieza en 2012 – $\min l = -6$, $\max l = 3$
+- Errores estándar clusterizados a nivel de empresa (donde se define el tratamiento)
+
+Los coeficientes $\beta_l$ capturan el efecto de tratamiento dinámico, a $l$ períodos de recibir la primer e-factura.
+
+---
+
+### Efecto de recibir e-facturas sobre cumplimiento tributario (Dinámico)
 
 ![h:490](../../out/figures/es.twfe.y.all.png)
 
+Tendencias previas paralelas, post-tratamiento oscila en torno a cero.
+
 ---
 
-### Effect of e-invoice reception on tax compliance (Overall)
+### Efecto de recibir e-facturas sobre cumplimiento tributario (Agregado)
 
 ![h:490](../../out/tables/twfe.y.all.overall_att.all.png)
 
-No sig effect on any variable (signs are irrelevant?)
+No hay efectos significativos sobre ninguna variable
 
 ---
 
-## DD Robustness
+# Robustez
 
-- Robust to winsorizing at p95 and including 2016 data
-- Robust to reestimating with Callaway & Sant'Anna (2021) [[go]](#robustness-callaway--santanna-2021-back)
-- Small effects on extensive margin, dissapear w CS21
+- Robusto a censurar resultados en p95 (outliers) y a incluir datos de 2016
+- Robusto a reestimar con Callaway & Sant'Anna (2021) [[go]](#robustez-callaway--santanna-2021-back)
+  - Problemas de estrategia TWFE son menores cuando hay un grupo relevante de nunca-tratados (26%).
+- Robusto a cambios en margen extensivo [[go]](#robustez-margen-extensivo-back)
 
-## DD Heterogeneity
 
-- Sectors w high exposure to imports – no effect [[go]](#dd-het-high-import-industries-back)
-- Sectors w high share of household consumption – no effect [[go]](#dd-het-high-hh-consumption-industries-back)
-- High/low pre-policy assets – v strong effect (prob unreliable) [[go]](#dd-het-pre-policy-asset-levels-back)
+---
+
+### Efecto de recibir e-facturas en el margen extensivo
+
+![h:490](../../out/tables/twfe.y.all.overall_att.ext.png)
+
+Aumenta 1–2% la prob que una empresa reporte IVA compras o IVA ventas
+
+---
+
+# Método III: Efectos heterogéneos
+
+Por el tamaño reducido de la muestra, para ver efectos heterogéneos separo el tratamiento en dos:
+ 
+<br>
+
+$$
+y_{it} = \beta_{low}\cdot D_{it} \cdot BelowMedian_{i} + \beta_{high}\cdot D_{it} \cdot AboveMedian_{i} + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+<br>
+
+- $AboveMedian_i$ y $BelowMedian_i$ indican si la empresa $i$ está por encima o por debajo de la mediana en la variable que define grupos heterogéneos.
+
+Comparo $\beta_{low}$ y $\beta_{high}$ para estudiar la existencia de efectos heterogeneos entre los grupos definidos.
+
+---
+
+# Efectos heterogéneos
+
+- **Importaciones.** Solo las empresas locales emiten e-facturas
+  - Sectores con alta utilización de insumos importados están menos expuestos
+  - No hay efectos [[go]](#dd-het-high-import-industries-back)
+- **Consumo final de los hogares.** Mecanismos autorreforzantes del IVA desaparecen (ej: Pomeranz 2015; Naritomi 2019; Wassem 2023)
+  - Sectores con alta proporción de ventas a hogares pueden reaccionar más
+  - No hay efectos [[go]](#dd-het-high-hh-consumption-industries-back)
+- **Tamaño de la empresa** es determinante en las posibilidades de evadir impuestos (ej: Kleven et al. 2016; Alm et al. 2021)
+  - Nivel de activos pre-política (a nivel de empresa)
+  - Hay efectos en IVA adeudado (ojo con interpretación) [[go]](#dd-het-pre-policy-asset-levels-back)
+
+---
+
+# Método IV: Variables instrumentales
+
+- En Apéndice pruebo estrategia alternativa que me permite incorporar más empresas a la estimación [[go]](#apéndice-b)
+  - Computo la probabilidad de recibir una e-factura por año y sector de actividad usando Matriz Insumo-Producto (BCU 2012) y *rollout* de e-facturación
+  - Uso la probabilidad de recepción como instrumento del monto de IVA compras que queda registrado en e-facturas (elasticidades)
+- En especificación preferida: $\uparrow$ 10% en e-facturas $\Rightarrow$ $\downarrow$ 0.3% IVA compras 
+- No hay efectos heterogéneos 
+
+---
+
+# ¿Por qué no hay efecto?
+
+- Implementación incompleta de la política al momento de evaluar – rollout terminó año pasado 
+- Cobertura incompleta de costos – dificil reducir sobre-reporte
+  - Carrillo et al (2017) – asimetría
+- Estrategia puede tener problemas – empresas chicas, panel balanceado
+  - IV da resultados similares
+
+![bg right:45% w:550](../../out/figures/reception_intensity_all.png)
+
+---
+
+# Comentarios finales
+
+- En este trabajo, busqué cuantificar el efecto de la recepción de e-facturas sobre el cumplimiento tributario de las empresas uruguayas
+- Efectos nulos o muy pequeños – coherentes con período de evaluación + métodos
+- Resultado local y de corto plazo – evaluaciones de otros países sugieren mayores efectos en el mediano y largo plazo (Bellon et al. 2022, Fan et al. 2023)
+- En el caso de Uruguay – se necesitan datos más recientes
 
 ---
 
 <!-- _class: lead -->
+<!-- paginate: skip -->
 
-# IV
+# Apéndice A
+## Diferencias en diferencias
+
+---
+
+### Small players [[back]](#datos)
+
+![h:500](../../out/figures/small_players.all.png)
+
+Muestra: ninguna empresa representa más de 1% de las ventas de su proveedor emisor
+
+---
+
+### Series crudas [[back]](#datos)
+
+![h:550](../../out/figures/time_trends.png)
+
+---
+
+### Logs con ceros [[back]](#datos)
+
+Chen y Roth (2023) muestran que las transformaciones cuasi-logarítmicas de variables dependientes no negativas pueden dar lugar a interpretaciones engañosas.
+
+Si hay efectos en el margen extensivo, entonces los efectos estimados  sobre $\log(Y + 1)$ o $\text{arcsinh}(Y)$ dependen de la unidad de medida de $Y$.
+
+Sigo una de sus propuestas: reescalo $Y$ respecto a su valor mínimo $Y_{min}$ y asigno un valor explícito $\epsilon$ a los cambios en el márgen extensivo:
+
+<br>
+
+$$
+y_{it} =
+\begin{cases}
+  \log(\frac{Y_{it}}{Y_{min}}) & \text{si } Y_{it}>0 \\
+  -\varepsilon                 & \text{si } Y_{it} = 0
+\end{cases}
+$$
+
+---
+
+### Robustez: Margen extensivo [[back]](#robustez)
+
+![](../../out/tables/twfe.y.all.overall_att.cr23.png)
+
+---
+
+### Robustez: Callaway & Sant'Anna (2021) [[back]](#robustez)
+
+![h:550](../../out/tables/did.y.all.overall_att.all.png)
+
+---
+
+### DD Het: High import industries [[back]](#efectos-heterogéneos)
+
+![h:550](../../out/tables/twfe.y.all.overall_att.by_imports.png)
+
+---
+
+### DD Het: High HH consumption industries [[back]](#efectos-heterogéneos)
+
+![h:550](../../out/tables/twfe.y.all.overall_att.by_industry.png)
+
+---
+
+### DD Het: Pre-policy asset levels [[back]](#efectos-heterogéneos)
+
+![h:550](../../out/tables/twfe.y.all.overall_att.by_size.png)
+
+---
+
+
+<!-- _class: lead -->
+
+# Apéndice B
+## Variable Instrumental
 
 ---
 
@@ -197,63 +414,12 @@ $$R_{ijt} = \alpha\ P_{jt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \va
 - Robust to winsorizing at p95 and allowing exits between 2012–2015 [[go]](#iv-alternate-specs-back)
 - Alternate instrument: number of e-invoices received – same results [[go]](#iv-alternate-regressor-number-of-e-invoices-back)
 - No extensive margin effects [[go]](#iv-extensive-margin-back)
+- No heterogeneous effects [[go]](#iv-heterogeneous-effects-back)
 
----
+<br>
 
 > **Prefered specification**
 > 10% increase in tax in e-invoice $\Rightarrow$ 0.3% increase in input VAT
-
-# Why the small effect?
-
-- Incomplete implementation of e-invoicing – effective rollout ended last year
-- Incomplete coverage of input costs – hard to curtail cost overreporting at this early stage
-
-![bg right w:600](../../out/figures/reception_intensity_all.png)
-
----
-
-# Closing remarks
-
-- Small effect is reasonable considering state of the policy at time of evaluation
-- Promising results w alternate specification
-
-## Future steps
-
-- To do it right – get more data
-- Validate IV strategy – Error autorcorrelation?
-- Threats to identification? $\text{cov}(Y,Z)\neq0$ 
-  - Could happen if sector linkages were related to how much a firm can evade (reasonable concern, may be dampened at aggregate level).
-
----
-
-<!-- _class: lead -->
-
-# Appendix
-
----
-
-### Robustness: Callaway & Sant'Anna (2021) [[back]](#dd-heterogeneity)
-
-![h:550](../../out/tables/did.y.all.overall_att.all.png)
-
----
-
-### DD Het: High import industries [[back]](#dd-heterogeneity)
-
-![h:550](../../out/tables/twfe.y.all.overall_att.by_imports.png)
-
-
----
-
-### DD Het: High HH consumption industries [[back]](#dd-heterogeneity)
-
-![h:550](../../out/tables/twfe.y.all.overall_att.by_industry.png)
-
----
-
-### DD Het: Pre-policy asset levels [[back]](#dd-heterogeneity)
-
-![h:550](../../out/tables/twfe.y.all.overall_att.by_size.png)
 
 ---
 
@@ -272,3 +438,9 @@ $$R_{ijt} = \alpha\ P_{jt} + \mathbf{X}_{ijt}\Gamma + \tau_{t} + \psi_{ij} + \va
 ### IV: Extensive margin [[back]](#iv-robustness)
 
 ![h:550](../../out/tables/iv.y.ext.png)
+
+---
+
+### IV: Heterogeneous effects [[back]](#iv-robustness)
+
+![h:550](../../out/figures/iv_het.png)
