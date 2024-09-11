@@ -1,73 +1,134 @@
 ---
-title: "Nuevas tecnologías y evasión de impuestos: La recepción de facturas electrónicas en Uruguay"
+title: "Nuevas tecnologías y cumplimiento tributario"
+subtitle: "La recepción de facturas electrónicas en Uruguay"
 author: 
   - name: "Guillermo Sánchez Laguardia"
     orcid: 0000-0002-7511-6062
+date: 2024-09-13
+date-format: "D [de] MMMM [de] YYYY"
+
 lang: es
-format: beamer
-editor: visual
+
+format:
+  beamer:
+    aspectratio: 169
+    theme: Boadilla
+    colortheme: seagull
+    classoption:
+      - '`xcolor={dvipsnames}`{=latex}'
+      - '`inputenc={utf-8}`{=latex}'
+    keep-tex: true
+    include-in-header:
+        - file: headers.tex
+    pdf-engine: pdflatex
+
 bibliography: references.bib
+
 execute: 
   echo: false
   warning: false
+
 callout-icon: false 
 ---
 
-## Introduction
 
-- Taxation is key in developing state capacities and providing public goods.
-- Increasing tax revenue is a central goal of low- and middle-income countries. 
-- New technologies offer promising avenues for improving tax compliance (and with it, tax revenue), possibly at lower costs than ever before.
+## Motivación
 
-::: {.callout-note}
+- La tributación es clave para el desarrollo de las capacidades estatales y la provisión de bienes públicos.
+- Aumentar los ingresos fiscales es un objetivo central de los países en desarrollo, que requiere de inversiones específicas `\graycite{(Besley y Persson 2013)}`{=latex}
+- Las nuevas tecnologías ofrecen vías prometedoras para mejorar la recaudación, a un costo potencialmente menor.
 
-### This dissertation
+. . .
 
-I quantify the spillover effects of electronic invoicing in firm tax compliance, using data from the implementation of e-invocing in Uruguay.
+- Estudio la **facturación electrónica** en Uruguay, una nueva tecnología implementada en varios países, incluyendo 10 de ALC `\graycite{(Barreix y Zambrano 2018)}`{=latex}
+
+
+## e-Facturación
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+```{=latex}
+\begin{figure}
+  \centering
+  \only<1>{\includegraphics[width=\textwidth]{../../resources/Esquema1.jpg}}
+  \only<2>{\includegraphics[width=\textwidth]{../../resources/Esquema2.jpg}}
+  \only<3->{\includegraphics[width=\textwidth]{../../resources/Esquema3.jpg}}
+\end{figure}
+```
 
 :::
 
-## Research Question
+::: {.column width="60%"}
 
-- Electronic invoicing has been implemented in many developed and developing countries, including 10 countries in LAC.
-- Few impact evaluations, no evaluation of spillover effects, potentially very large. Studying the e-invoice reception approximates downstream spillover effects.
+```{=latex}
+\only<1-5>{
+  \begin{itemize}
+      \item<2-> La \textbf{e-facturación} crea un \textcolor<2->{YellowOrange}{registro digital} de cada transacción de una empresa \uncover<1,3->{y lo transmite a la autoridad tributaria.}
+      \item<4-> Evaluaciones de otros países muestran que reduce el incumplimiento tributario en las empresas que emiten comprobantes electrónicos \graycite{(Bellon et al. 2022, Fan et al. 2023, Eissa et al. 2015, ...)}
+      \item<5> En Uruguay: \alg[5]{\up 3.7\%} pagos de IVA \graycite{(Bérgolo et al. 2017)}
+  \end{itemize}
+}
 
-::: {.callout-note} 
+\only<6->{
+  \begin{block}{En esta tesis}
+    Cuantifico los \textbf{efectos indirectos} de la e-facturación sobre el cumplimiento fiscal de las empresas%, es decir, el impacto sobre las empresas que \al{reciben} e-facturas.
+  \end{block}
 
-### Research question
-
-How does the **reception** of electronic invoices affect tax compliance in firms?
+  \begin{itemize}
+    \item<7-> Aspecto poco explorado, pero fundamental para cualquier evaluación de política \graycite{(Lopez-Luzuriaga y Scartascini 2019)}
+    \item<8> Trabajo reciente para Perú encuentra \alg[8]{\up 2.3\%} pagos de IVA en empresas receptoras cuando un socio comercial comienza a emitir e-facturas \graycite{(Bellon et al. 2023)}
+  \end{itemize}
+}
+```
 
 :::
 
-## Setting
+:::
 
-- Uruguay is a middle-high income country in Latin America. VAT is a high percentage 
-- Electronic invoicing involves creating a digital document of every transaction in treated firms. B2B transactions identify both seller and buyer.
+## Contribución
+
+```{=latex}
+\begin{block}{Pregunta de investigación}
+¿Cuál es el efecto de \textbf{recibir e-facturas} en el cumplimiento tributario?
+\end{block}
+```
+
+. . .
+
+- Me concentro en el Impuesto al Valor Agregado, en tanto es el que aparece directamente en los comprobantes electrónicos.
+- Conectado con literatura sobre...
+    - impacto de tecnologías en la administración pública `\graycite{(Lewis-Faupel et al 2016; Banerjee et al 2020, ...)}`{=latex}
+    - y en la administración tributaria `\graycite{(Okunogbe y Poulinquen 2022, Okunogbe y Tourek 2024, ...)}`{=latex} 
+    - evaluaciones de políticas usando datos de transacciones entre firmas `\graycite{(Pomeranz 2015, Lopez-Luzuriaga y Scartascini 2019, Boning et al. 2020)}`{=latex}
+
+
+## Marco conceptual
+
+La facturación electrónica crea un nuevo registro sobre las ventas de las empresas emisoras y las compras de las empresas receptoras. La DGI puede usar esta información para reducir el **sobre-reporte de compras** de las empresas receptoras:
+
+
+## Contexto
+
+- En Uruguay el IVA es el impuesto más cuantioso para las empresas y la principal fuente de ingresos tributarios (50% en 2019).
+- La evasión de IVA se estimaba en 26% `\graycite{(Gomez-Sabaini y Jimenez 2012)}`{=latex}
+
+## FDA de la primera emisión y proporción del output en e-facturas
+
+![](../../out/figures/takeup.shareV2.png)
+
+Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016)
+
 
 ## Data
 
 - I combine several administrative datasets on uruguayan firms between 2009–2016.
-  - **E-invoicing records.** Identifing treated firms and time of treatment.
-  - **VAT affidavits.** Main outcomes: input VAT, output VAT, VAT liability.
-  - **CIT affidavits.** For covariates and auxiliary firm information.
-
-::: {.callout-note}
+    - **E-invoicing records.** Identifing treated firms and time of treatment.
+    - **VAT affidavits.** Main outcomes: input VAT, output VAT, VAT liability.
+    - **CIT affidavits.** For covariates and auxiliary firm information.
 
 ### Main sample
 
-Small firms that declare input and output VAT. 
+Empresas pequeñas que declaran IVA e IRAE (no simplificado).
 
-:::
-
-## Method
-
-- Event study methodology based on @callawayDifferenceinDifferencesMultipleTime2021.
-- Treatment: Year in which firms first recieve an e-invoice.
-
-## Results
-
-## References
-
-::: {#refs}
-:::
