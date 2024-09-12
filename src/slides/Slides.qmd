@@ -11,7 +11,7 @@ lang: es
 
 format:
   beamer:
-    aspectratio: 169
+    aspectratio: 1610
     theme: Boadilla
     colortheme: seagull
     classoption:
@@ -21,6 +21,7 @@ format:
     include-in-header:
         - file: headers.tex
     pdf-engine: pdflatex
+    slide-level: 2
 
 bibliography: references.bib
 
@@ -114,21 +115,284 @@ La facturación electrónica crea un nuevo registro sobre las ventas de las empr
 - En Uruguay el IVA es el impuesto más cuantioso para las empresas y la principal fuente de ingresos tributarios (50% en 2019).
 - La evasión de IVA se estimaba en 26% `\graycite{(Gomez-Sabaini y Jimenez 2012)}`{=latex}
 
-## FDA de la primera emisión y proporción del output en e-facturas
+. . .
+
+**La e-facturación en Uruguay**
+
+- Implementación empieza en 2011 con un plan piloto, seguido por un período de fuertes incentivos fiscales entre 2012–2014.
+- En 2015 se anuncia un calendario de adhesión obligatoria, escalonada por ingresos.
+- En 2016 habían pocos emisores (~3000) pero por su posicionamiento en la red productiva y su volumen de facturación, una proporción importante de las empresas uruguayas habían recibido e-facturas para ese entonces.
+
+
+## La emisión de e-facturas
 
 ![](../../out/figures/takeup.shareV2.png)
 
 Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016)
 
+## La estrategia
 
-## Data
+::: {.columns}
 
-- I combine several administrative datasets on uruguayan firms between 2009–2016.
-    - **E-invoicing records.** Identifing treated firms and time of treatment.
-    - **VAT affidavits.** Main outcomes: input VAT, output VAT, VAT liability.
-    - **CIT affidavits.** For covariates and auxiliary firm information.
+::: {.column}
 
-### Main sample
+- **Desafío principal:** Emparejamiento no aleatorio de compradores y vendedores
+  <!-- - Evidencia de redes segmentadas por formalidad/informalidad `\graycite{(de Paula y Scheinkman 2010)}`{=latex} -->
 
-Empresas pequeñas que declaran IVA e IRAE (no simplificado).
+- **Como lo supero:** DD con tratamiento escalonado, usando la primera recepción de e-facturas como inicio del tratamiento y centrándome en empresas chicas.
 
+:::
+
+::: {.column}
+
+```{=latex}
+\begin{figure}
+  \centering
+  \includegraphics[height=.8\textheight]{../../out/figures/takeup_reception.png}
+\end{figure}
+```
+
+:::
+
+:::
+
+
+## Datos
+
+- **Fuentes:** Registros administrativos sobre empresas 2009–2016
+  - Resumen mensual de transacciones para cada par comprador-vendedor
+  - Declaraciones juradas de IVA e IRAE (2009–2016*)
+
+. . .
+
+- **Muestra:** Empresas pequeñas con regímenes imp. no simplificados (N = 1.8K)
+  - No afectan cuando sus proveedores empiezan a emitir e-facturas \hyperlink{small-players}{\beamergotobutton{Small players}}
+
+. . .
+
+- **Variables de resultado:** IVA compras, IVA ventas, IVA adeudado neto \hyperlink{series-crudas}{\beamergotobutton{Series crudas}}
+  - Forma funcional: deflactadas + log + winsorizing p99 \hyperlink{logs-con-ceros}{\beamergotobutton{Chen y Roth (2023)}}
+
+. . .
+
+- **Tratamiento:** Primera recepción de e-factura
+
+. . .
+
+- **Grupo de control:** Empresas aún no tratadas y nunca tratadas (25%)
+
+. . .
+
+- **Covariables:** Deciles de activos pre-política, 22 secciones CIIU, cuartiles de edad.
+
+## Descriptivas de la muestra
+
+```{=latex}
+\small{\input{../../out/tables/sample_summary.tex}}
+```
+
+## Método
+
+$$
+y_{it} = \sum_{l\neq -1, l = -6}^{l = 3} \beta_{l}\cdot \mathbb{1}(R_{it} = l) + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+- $R_{it}$ indica los años desde que la empresa $i$ recibió su primer e-factura
+- $y_{it}$ es el resultado de la empresa $i$ en el año $t$
+-  $\alpha_{i}$ y $\tau_{t}$ son efectos fijos de empresa y año
+- Excluyo $l = -1$, normalizando los $\beta_l$ a este evento
+- Errores estándar clusterizados a nivel de empresa (donde se define el tratamiento)
+
+Los coeficientes $\beta_l$ capturan el efecto de tratamiento dinámico, a $l$ períodos de recibir la primer e-factura.
+
+
+## Efecto de recibir e-facturas sobre cumplimiento tributario
+
+![](../../out/figures/es.twfe.y.all.png)
+
+
+<!--
+## Método II: Efecto agregado
+
+Estimo un diseño de diferencias en diferencias con TWFE y tratamiento escalonado
+
+$$
+y_{it} = \beta_{post}\ D_{it} + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+- $D_{it}$ toma valor uno si la empresa $i$ había recibido alguna e-factura en el período $t$
+- $y_{it}$ es el resultado de la empresa $i$ en el año $t$
+-  $\alpha_{i}$ y $\tau_{t}$ son efectos fijos de empresa y año
+
+El impacto total de la política viene dado por el coeficiente $\beta_{post}$, que representa el efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento recibieron una.
+-->
+
+## Efecto de recibir e-facturas sobre cumplimiento tributario (Agregado)
+
+```{=latex}
+\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.all.tex}}
+```
+
+No hay efectos significativos sobre ninguna variable
+
+## Robustez
+
+- Robusto a censurar resultados en p95 (outliers) y a incluir datos de 2016
+- Robusto a reestimar con Callaway & Sant'Anna (2021)
+\hyperlink{robustez-callaway--santanna-2021}{\beamergotobutton{Go}}
+  - Problemas de estrategia TWFE son menores cuando hay un grupo relevante de nunca-tratados (26%).
+- Robusto a cambios en margen extensivo
+\hyperlink{robustez-margen-extensivo}{\beamergotobutton{Go}}
+
+<!-- 
+## Método III: Efectos heterogéneos
+
+Por el tamaño reducido de la muestra, para ver efectos heterogéneos separo el tratamiento en dos:
+ 
+$$
+y_{it} = \beta_{low}\cdot D_{it} \cdot BelowMedian_{i} + \beta_{high}\cdot D_{it} \cdot AboveMedian_{i} + \alpha_{i} + \tau_{t} + u_{it}
+$$
+
+- $AboveMedian_i$ y $BelowMedian_i$ indican si la empresa $i$ está por encima o por debajo de la mediana en la variable que define grupos heterogéneos.
+
+Comparo $\beta_{low}$ y $\beta_{high}$ para estudiar la existencia de efectos heterogeneos entre los grupos definidos. 
+-->
+
+
+## Efectos heterogéneos
+
+- **Importaciones.** Solo las empresas locales emiten e-facturas
+  - Sectores con alta utilización de insumos importados están menos expuestos
+  - No hay efectos
+\hyperlink{dd-het-importaciones}{\beamergotobutton{Go}}
+
+. . .
+
+- **Consumo final de los hogares.** Mecanismos autorreforzantes del IVA desaparecen (ej: Pomeranz 2015; Naritomi 2019; Wassem 2023)
+  - Sectores con alta proporción de ventas a hogares pueden reaccionar más
+\hyperlink{dd-het-consumo-final}{\beamergotobutton{Go}}
+
+. . .
+
+- **Tamaño de la empresa** es determinante en las posibilidades de evadir impuestos (ej: Kleven et al. 2016; Alm et al. 2021)
+  - Nivel de activos pre-política (a nivel de empresa)
+  - Hay efectos en IVA adeudado (ojo con interpretación) 
+\hyperlink{dd-het-nivel-de-activos}{\beamergotobutton{Go}}
+
+<!-- 
+## Método alternativo
+
+- En Apéndice pruebo estrategia alternativa que me permite incorporar más empresas a la estimación [[go]](#apéndice-b)
+  - Computo la probabilidad de recibir una e-factura por año y sector de actividad usando Matriz Insumo-Producto (BCU 2012) y *rollout* de e-facturación
+  - Uso la probabilidad de recepción como instrumento del monto de IVA compras que queda registrado en e-facturas (elasticidades)
+- En especificación preferida: $\uparrow$ 10% en e-facturas $\Rightarrow$ $\downarrow$ 0.3% IVA compras 
+- No hay efectos heterogéneos
+-->
+
+
+## ¿Por qué no hay efecto?
+
+::: {.columns}
+
+::: {.column width=60%}
+
+- Implementación incompleta de la política al momento de evaluar – rollout terminó año pasado 
+- Cobertura incompleta de costos – dificil reducir sobre-reporte
+  - Carrillo et al (2017) – asimetría
+- Estrategia puede tener problemas – empresas chicas, panel balanceado
+  - IV da resultados similares
+
+:::
+
+::: {.column width=40%}
+
+![](../../out/figures/reception_intensity_all.png)
+
+:::
+
+:::
+
+## Comentarios finales
+
+- Efectos nulos o muy pequeños 
+  - Coherentes con período de evaluación + métodos
+- Resultado local y de corto plazo 
+  - Evaluaciones de otros países sugieren mayores efectos en el mediano y largo plazo `\graycite{(Bellon et al. 2022, Fan et al. 2023)}`{=latex}
+- En el caso de Uruguay se necesitan datos más recientes
+
+. . .
+
+- Pasos a futuro
+  - Estrategias alternativos
+
+---
+
+```{=latex}
+\heading{¡Muchas gracias!}
+```
+
+---
+
+
+## Small players
+
+![](../../out/figures/small_players.all.png){width=80%}
+
+Muestra: ninguna empresa representa más de 1% de las ventas de su proveedor emisor
+
+\hyperlink{datos}{\beamergotobutton{Back}}
+
+
+## Series crudas
+
+![](../../out/figures/time_trends.png){width=80%}
+
+\hyperlink{datos}{\beamergotobutton{Back}}
+
+## Logs con ceros
+
+Chen y Roth (2023) muestran que las transformaciones cuasi-logarítmicas de variables dependientes no negativas pueden dar lugar a interpretaciones engañosas.
+
+Si hay efectos en el margen extensivo, entonces los efectos estimados  sobre $\log(Y + 1)$ o $\text{arcsinh}(Y)$ dependen de la unidad de medida de $Y$.
+
+Sigo una de sus propuestas: reescalo $Y$ respecto a su valor mínimo $Y_{min}$ y asigno un valor explícito $\epsilon$ a los cambios en el márgen extensivo:
+
+$$
+y_{it} =
+\begin{cases}
+  \log(\frac{Y_{it}}{Y_{min}}) & \text{si } Y_{it}>0 \\
+  -\epsilon                 & \text{si } Y_{it} = 0
+\end{cases}
+$$
+
+\hyperlink{datos}{\beamergotobutton{Back}}
+
+## Robustez: Margen extensivo
+
+`\tiny{\input{../../out/tables/twfe.y.all.overall_att.cr23.tex}}`{=latex}
+
+\hyperlink{robustez}{\beamergotobutton{Back}}
+
+## Robustez: Callaway & Sant'Anna (2021)
+
+`\scriptsize{\input{../../out/tables/did.y.all.overall_att.all.tex}}`{=latex}
+
+\hyperlink{robustez}{\beamergotobutton{Back}}
+
+## DD Het: Importaciones
+
+`\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.by_imports.tex}}`{=latex}
+
+\hyperlink{efectos-heteroguxe9neos}{\beamergotobutton{Back}}
+
+## DD Het: Consumo final
+
+`\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.by_industry.tex}}`{=latex}
+
+\hyperlink{efectos-heteroguxe9neos}{\beamergotobutton{Back}}
+
+## DD Het: Nivel de activos
+
+`\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.by_size.tex}}`{=latex}
+
+\hyperlink{efectos-heteroguxe9neos}{\beamergotobutton{Back}}
