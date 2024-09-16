@@ -230,4 +230,18 @@
 \setbeamertemplate{footline}{}
 
 % Uncomment the line below to insert slide numbers
-\setbeamertemplate{footline}[frame number]
+% \setbeamertemplate{footline}[frame number]
+
+% ---- Additional packages ----
+
+\usepackage{tikz}
+\usepackage{appendixnumberbeamer}
+
+\newcommand{\backupbegin}{
+   \newcounter{finalframe}
+   \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \setcounter{framenumber}{\value{finalframe}}
+}
+

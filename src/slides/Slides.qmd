@@ -36,18 +36,18 @@ callout-icon: false
 ## Motivación
 
 - La tributación es clave para el desarrollo de las capacidades estatales y la provisión de bienes públicos.
-- Aumentar los ingresos fiscales es un objetivo central de los países en desarrollo, que requiere de inversiones específicas `\graycite{(Besley y Persson 2013)}`{=latex}
+- Países en desarrollo cobran menos impuestos que países desarrollados como proporción del PIB. `\graycite{(Besley y Persson 2013; Gordon y Li 2009)}`{=latex}
+- Aumentar la recaudación requiere de inversiones específicas `\graycite{(Besley y Persson 2014)}`{=latex}
 - Las nuevas tecnologías ofrecen vías prometedoras para mejorar la recaudación, a un costo potencialmente menor.
 
 . . .
 
-- Estudio la **facturación electrónica** en Uruguay, una nueva tecnología implementada en varios países, incluyendo 10 de ALC `\graycite{(Barreix y Zambrano 2018)}`{=latex}
+- Estudio la **facturación electrónica** en Uruguay, concentrándome en las transacciones entre empresas.
 
 
 ## e-Facturación
 
 ::: {.columns}
-
 ::: {.column width="40%"}
 
 ```{=latex}
@@ -60,118 +60,105 @@ callout-icon: false
 ```
 
 :::
-
 ::: {.column width="60%"}
 
 ```{=latex}
-\only<1-5>{
+\only<1-6>{
   \begin{itemize}
       \item<2-> La \textbf{e-facturación} crea un \textcolor<2->{YellowOrange}{registro digital} de cada transacción de una empresa \uncover<1,3->{y lo transmite a la autoridad tributaria.}
-      \item<4-> Evaluaciones de otros países muestran que reduce el incumplimiento tributario en las empresas que emiten comprobantes electrónicos \graycite{(Bellon et al. 2022, Fan et al. 2023, Eissa et al. 2015, ...)}
-      \item<5> En Uruguay: \alg[5]{\up 3.7\%} pagos de IVA \graycite{(Bérgolo et al. 2017)}
+      \item<4-> Beneficios potenciales para DGI y para contribuyentes.
+      \item<5-> Evaluaciones de otros países muestran que reduce el incumplimiento tributario en las empresas que emiten comprobantes electrónicos \graycite{(Bellon et al. 2022, Fan et al. 2023, Eissa et al. 2015, ...)}
+      \item<6> En Uruguay: \alg[6]{\up 3.7\%} pagos de IVA \graycite{(Bérgolo et al. 2017)}
   \end{itemize}
 }
 
-\only<6->{
+\only<7->{
   \begin{block}{En esta tesis}
     Cuantifico los \textbf{efectos indirectos} de la e-facturación sobre el cumplimiento fiscal de las empresas%, es decir, el impacto sobre las empresas que \al{reciben} e-facturas.
   \end{block}
 
   \begin{itemize}
-    \item<7-> Aspecto poco explorado, pero fundamental para cualquier evaluación de política \graycite{(Lopez-Luzuriaga y Scartascini 2019)}
-    \item<8> Trabajo reciente para Perú encuentra \alg[8]{\up 2.3\%} pagos de IVA en empresas receptoras cuando un socio comercial comienza a emitir e-facturas \graycite{(Bellon et al. 2023)}
+    \item<8-> Aspecto poco explorado, pero fundamental para cualquier evaluación de política \graycite{(Lopez-Luzuriaga y Scartascini 2019)}
+    \item<9> Trabajo reciente para Perú encuentra \alg[9]{\up 2.3\%} pagos de IVA en empresas receptoras cuando un socio comercial comienza a emitir e-facturas \graycite{(Bellon et al. 2023)}
   \end{itemize}
 }
 ```
 
 :::
-
 :::
-
-## Contribución
-
-```{=latex}
-\begin{block}{Pregunta de investigación}
-¿Cuál es el efecto de \textbf{recibir e-facturas} en el cumplimiento tributario?
-\end{block}
-```
-
-. . .
-
-- Me concentro en el Impuesto al Valor Agregado, en tanto es el que aparece directamente en los comprobantes electrónicos.
-- Conectado con literatura sobre...
-    - impacto de tecnologías en la administración pública `\graycite{(Lewis-Faupel et al 2016; Banerjee et al 2020, ...)}`{=latex}
-    - y en la administración tributaria `\graycite{(Okunogbe y Poulinquen 2022, Okunogbe y Tourek 2024, ...)}`{=latex} 
-    - evaluaciones de políticas usando datos de transacciones entre firmas `\graycite{(Pomeranz 2015, Lopez-Luzuriaga y Scartascini 2019, Boning et al. 2020)}`{=latex}
 
 
 ## Marco conceptual
 
-La facturación electrónica crea un nuevo registro sobre las ventas de las empresas emisoras y las compras de las empresas receptoras. La DGI puede usar esta información para reducir el **sobre-reporte de compras** de las empresas receptoras:
+```{=latex}
+\begin{figure}
+  \centering
+  \only<1>{\includegraphics[width=\textwidth]{../../resources/Marco1.jpg}}
+  \only<2>{\includegraphics[width=\textwidth]{../../resources/Marco2.jpg}}
+  \only<3>{\includegraphics[width=\textwidth]{../../resources/Marco3.jpg}}
+\end{figure}
+```
 
 
 ## Contexto
 
-- En Uruguay el IVA es el impuesto más cuantioso para las empresas y la principal fuente de ingresos tributarios (50% en 2019).
+- En Uruguay el IVA es el impuesto más cuantioso para las empresas y la principal fuente de ingresos tributarios para la DGI (50% en 2019).
 - La evasión de IVA se estimaba en 26% `\graycite{(Gomez-Sabaini y Jimenez 2012)}`{=latex}
 
 . . .
 
-**La e-facturación en Uruguay**
-
-- Implementación empieza en 2011 con un plan piloto, seguido por un período de fuertes incentivos fiscales entre 2012–2014.
-- En 2015 se anuncia un calendario de adhesión obligatoria, escalonada por ingresos.
-- En 2016 habían pocos emisores (~3000) pero por su posicionamiento en la red productiva y su volumen de facturación, una proporción importante de las empresas uruguayas habían recibido e-facturas para ese entonces.
-
-
-## La emisión de e-facturas
-
-![](../../out/figures/takeup.shareV2.png)
-
-Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016)
-
-## La estrategia
-
-::: {.columns}
-
-::: {.column}
-
-- **Desafío principal:** Emparejamiento no aleatorio de compradores y vendedores
-  <!-- - Evidencia de redes segmentadas por formalidad/informalidad `\graycite{(de Paula y Scheinkman 2010)}`{=latex} -->
-
-- **Como lo supero:** DD con tratamiento escalonado, usando la primera recepción de e-facturas como inicio del tratamiento y centrándome en empresas chicas.
-
-:::
-
-::: {.column}
-
 ```{=latex}
-\begin{figure}
-  \centering
-  \includegraphics[height=.8\textheight]{../../out/figures/takeup_reception.png}
-\end{figure}
+  \textbf{La e-facturación en Uruguay} \\~\\
+  \begin{figure}
+    \centering
+    \only<1>{\tikz{\node[opacity=0.15]{\includegraphics[width=\textwidth]{../../resources/Calendario.jpg}};}}
+    \only<2>{\tikz{\node{\includegraphics[width=\textwidth]{../../resources/Calendario.jpg}};}}
+  \end{figure}
 ```
 
-:::
+<!-- 
+## La emisión de e-facturas
+
+![](../../out/figures/takeup.shareV2.png){height=80%}
+
+Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016) -->
+
+
+## La recepción de e-facturas
+
+::: {.columns}
+::: {.column}
+
+- Número reducido de empresas emisoras (6%), pero responsables de gran parte de la producción (52% en 2016)
+
+- La recepción de e-facturas se extiende rápidamente
+
+. . .
+
+### Estrategia
+
+DD con tratamiento escalonado, usando la primera recepción de e-facturas como inicio del tratamiento y centrándome en empresas chicas.
 
 :::
+::: {.column}
 
+![](../../out/figures/takeup_reception.png)
+
+:::
+:::
 
 ## Datos
 
-- **Fuentes:** Registros administrativos sobre empresas 2009–2016
-  - Resumen mensual de transacciones para cada par comprador-vendedor
+- **Fuentes:** Microdatos administrativos de empresas entre 2009–2016
+  - Resumen mensual de transacciones para cada dupla de empresas
   - Declaraciones juradas de IVA e IRAE (2009–2016*)
+  - Matriz Insumo-Producto (BCU 2012)
 
 . . .
 
-- **Muestra:** Empresas pequeñas con regímenes imp. no simplificados (N = 1.8K)
+- **Muestra:** Empresas pequeñas que no pagan IVA mínimo (N = 1.8K) \hyperlink{descriptivas-de-la-muestra}{\beamergotobutton{Descriptivas}}
+  - Primer quintil de facturación (305000 a ~1M de UI/año)
   - No afectan cuando sus proveedores empiezan a emitir e-facturas \hyperlink{small-players}{\beamergotobutton{Small players}}
-
-. . .
-
-- **Variables de resultado:** IVA compras, IVA ventas, IVA adeudado neto \hyperlink{series-crudas}{\beamergotobutton{Series crudas}}
-  - Forma funcional: deflactadas + log + winsorizing p99 \hyperlink{logs-con-ceros}{\beamergotobutton{Chen y Roth (2023)}}
 
 . . .
 
@@ -183,27 +170,29 @@ Número reducido de empresas emisoras (6%) con gran pct de output (52% en 2016)
 
 . . .
 
+- **Variables de resultado:** IVA compras, IVA ventas, IVA adeudado neto \hyperlink{series-crudas}{\beamergotobutton{Series crudas}}
+  - Forma funcional: deflactadas + censuradas en p99 + log \hyperlink{logs-con-ceros}{\beamergotobutton{Chen y Roth (2023)}}
+
+. . .
+
 - **Covariables:** Deciles de activos pre-política, 22 secciones CIIU, cuartiles de edad.
 
-## Descriptivas de la muestra
 
-```{=latex}
-\small{\input{../../out/tables/sample_summary.tex}}
-```
 
 ## Método
 
+Estimo un diseño de diferencias en diferencias con TWFE y tratamiento escalonado
+
 $$
-y_{it} = \sum_{l\neq -1, l = -6}^{l = 3} \beta_{l}\cdot \mathbb{1}(R_{it} = l) + \alpha_{i} + \tau_{t} + u_{it}
+y_{it} = \sum_{l\neq -1, l = -6}^{l = 3} \al{\beta_{l}}\cdot \mathbb{1}(R_{it} = l) + \alpha_{i} + \tau_{t} + u_{it}
 $$
 
-- $R_{it}$ indica los años desde que la empresa $i$ recibió su primer e-factura
 - $y_{it}$ es el resultado de la empresa $i$ en el año $t$
 -  $\alpha_{i}$ y $\tau_{t}$ son efectos fijos de empresa y año
-- Excluyo $l = -1$, normalizando los $\beta_l$ a este evento
+- $R_{it}$ indica los años desde que la empresa $i$ recibió su primer e-factura
 - Errores estándar clusterizados a nivel de empresa (donde se define el tratamiento)
 
-Los coeficientes $\beta_l$ capturan el efecto de tratamiento dinámico, a $l$ períodos de recibir la primer e-factura.
+Los coeficientes $\al{\beta_l}$ capturan el efecto de tratamiento dinámico, a $l$ períodos de recibir la primer e-factura.
 
 
 ## Efecto de recibir e-facturas sobre cumplimiento tributario
@@ -211,55 +200,49 @@ Los coeficientes $\beta_l$ capturan el efecto de tratamiento dinámico, a $l$ pe
 ![](../../out/figures/es.twfe.y.all.png)
 
 
-<!--
-## Método II: Efecto agregado
-
-Estimo un diseño de diferencias en diferencias con TWFE y tratamiento escalonado
-
-$$
-y_{it} = \beta_{post}\ D_{it} + \alpha_{i} + \tau_{t} + u_{it}
-$$
-
-- $D_{it}$ toma valor uno si la empresa $i$ había recibido alguna e-factura en el período $t$
-- $y_{it}$ es el resultado de la empresa $i$ en el año $t$
--  $\alpha_{i}$ y $\tau_{t}$ son efectos fijos de empresa y año
-
-El impacto total de la política viene dado por el coeficiente $\beta_{post}$, que representa el efecto promedio de recibir e-facturas experimentado por todas las empresas que en algún momento recibieron una.
--->
-
 ## Efecto de recibir e-facturas sobre cumplimiento tributario (Agregado)
 
 ```{=latex}
-\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.all.tex}}
+\only<1>{$$y_{it} = \al{\beta_{post}}\ D_{it} + \alpha_{i} + \tau_{t} + u_{it}$$}
+\only<2>{
+  \scriptsize{\input{../../out/tables/twfe.y.all.overall_att.all.tex}}
+
+  No hay efectos significativos sobre ninguna variable. Efectos pequeños en el margen extensivo.
+}
 ```
 
-No hay efectos significativos sobre ninguna variable
 
 ## Robustez
 
-- Robusto a censurar resultados en p95 (outliers) y a incluir datos de 2016
-- Robusto a reestimar con Callaway & Sant'Anna (2021)
-\hyperlink{robustez-callaway--santanna-2021}{\beamergotobutton{Go}}
+- **Mediano plazo y outliers**
+  - Robusto a censurar resultados en p95 y a incluir datos (incompletos) de 2016
+
+. . .
+
+- **Heterogeneidad por tiempo y cohorte de tratamiento**
+  - Robusto a reestimar con Callaway & Sant'Anna (2021)
+\hyperlink{robustez-callaway-santanna-2021}{\beamergotobutton{Go}}
   - Problemas de estrategia TWFE son menores cuando hay un grupo relevante de nunca-tratados (26%).
-- Robusto a cambios en margen extensivo
-\hyperlink{robustez-margen-extensivo}{\beamergotobutton{Go}}
 
-<!-- 
-## Método III: Efectos heterogéneos
+<!-- . . .
 
-Por el tamaño reducido de la muestra, para ver efectos heterogéneos separo el tratamiento en dos:
- 
-$$
-y_{it} = \beta_{low}\cdot D_{it} \cdot BelowMedian_{i} + \beta_{high}\cdot D_{it} \cdot AboveMedian_{i} + \alpha_{i} + \tau_{t} + u_{it}
-$$
+- **Margen extensivo**
+  - Robusto a asignar distintos valores a los cambios en el margen extensivo
+\hyperlink{robustez-margen-extensivo}{\beamergotobutton{Go}} -->
 
-- $AboveMedian_i$ y $BelowMedian_i$ indican si la empresa $i$ está por encima o por debajo de la mediana en la variable que define grupos heterogéneos.
+. . .
 
-Comparo $\beta_{low}$ y $\beta_{high}$ para estudiar la existencia de efectos heterogeneos entre los grupos definidos. 
--->
+- **Variables instrumentales**
+  - Computo la probabilidad de recibir una e-factura por año y sector de actividad usando Matriz Insumo-Producto (BCU 2012) y *rollout* de e-facturación
+  - Uso la probabilidad de recepción como instrumento del monto de IVA compras que queda registrado en e-facturas (elasticidades)
+  - En especificación preferida: $\alg{\uparrow 10\%}$ en e-facturas $\Rightarrow$ $\alr{\downarrow 0.3\%}$ IVA compras 
 
 
 ## Efectos heterogéneos
+
+Permito que $\beta_{post}$ varíe de acuerdo a si las empresas están por encima o por debajo de la mediana de determinadas características.
+
+. . .
 
 - **Importaciones.** Solo las empresas locales emiten e-facturas
   - Sectores con alta utilización de insumos importados están menos expuestos
@@ -268,62 +251,49 @@ Comparo $\beta_{low}$ y $\beta_{high}$ para estudiar la existencia de efectos he
 
 . . .
 
-- **Consumo final de los hogares.** Mecanismos autorreforzantes del IVA desaparecen (ej: Pomeranz 2015; Naritomi 2019; Wassem 2023)
+- **Consumo final de los hogares.** Mecanismos autorreforzantes del IVA desaparecen en la etapa de consumo final `\graycite{(ej: Pomeranz 2015; Naritomi 2019; Wassem 2023)}`{=latex}
   - Sectores con alta proporción de ventas a hogares pueden reaccionar más
+  - No hay efectos
 \hyperlink{dd-het-consumo-final}{\beamergotobutton{Go}}
 
 . . .
 
 - **Tamaño de la empresa** es determinante en las posibilidades de evadir impuestos (ej: Kleven et al. 2016; Alm et al. 2021)
-  - Nivel de activos pre-política (a nivel de empresa)
-  - Hay efectos en IVA adeudado (ojo con interpretación) 
+  - Empresas con menor nivel de activos pre-política pueden reaccionar más
+  - Hay efectos en IVA adeudado, pero es dificil de interpretar
 \hyperlink{dd-het-nivel-de-activos}{\beamergotobutton{Go}}
-
-<!-- 
-## Método alternativo
-
-- En Apéndice pruebo estrategia alternativa que me permite incorporar más empresas a la estimación [[go]](#apéndice-b)
-  - Computo la probabilidad de recibir una e-factura por año y sector de actividad usando Matriz Insumo-Producto (BCU 2012) y *rollout* de e-facturación
-  - Uso la probabilidad de recepción como instrumento del monto de IVA compras que queda registrado en e-facturas (elasticidades)
-- En especificación preferida: $\uparrow$ 10% en e-facturas $\Rightarrow$ $\downarrow$ 0.3% IVA compras 
-- No hay efectos heterogéneos
--->
 
 
 ## ¿Por qué no hay efecto?
 
-::: {.columns}
-
-::: {.column width=60%}
-
-- Implementación incompleta de la política al momento de evaluar – rollout terminó año pasado 
-- Cobertura incompleta de costos – dificil reducir sobre-reporte
-  - Carrillo et al (2017) – asimetría
-- Estrategia puede tener problemas – empresas chicas, panel balanceado
-  - IV da resultados similares
-
-:::
-
-::: {.column width=40%}
-
-![](../../out/figures/reception_intensity_all.png)
-
-:::
-
-:::
-
-## Comentarios finales
-
-- Efectos nulos o muy pequeños 
-  - Coherentes con período de evaluación + métodos
-- Resultado local y de corto plazo 
-  - Evaluaciones de otros países sugieren mayores efectos en el mediano y largo plazo `\graycite{(Bellon et al. 2022, Fan et al. 2023)}`{=latex}
-- En el caso de Uruguay se necesitan datos más recientes
+- Implementación incompleta de la política al momento del estudio
+  - La DGI puede tener dificultades para detectar inconsistencias cuando el registro digital de transacciones entre empresas es parcial.
+  - Las empresas pueden justificar que compras no registradas son de proveedores que no emiten e-facturas.
+  - Cobertura aumenta en el período, pero en 2016 no alcanzaba el 50% de las compras para la gran mayoría de las empresas.
 
 . . .
 
-- Pasos a futuro
-  - Estrategias alternativos
+- Limitaciones del diseño seleccionado
+  - Empresas del primer quintil de facturación + panel balanceado
+  - Resultado casi nulo se mantiene con estrategia alternativa (VI)
+
+
+## Comentarios finales
+
+- Efectos nulos o muy pequeños de la política en el período analizado
+  - Coherentes con avance de la implementación + métodos
+
+- Es un resultado local y de corto plazo
+  - Evaluaciones de otros países sugieren mayores efectos en el mediano y largo plazo `\graycite{(Bellon et al. 2022, Fan et al. 2023)}`{=latex}
+
+- En el caso de Uruguay se necesitan datos más recientes para evaluar
+
+. . .
+
+**Pasos a futuro**
+
+- Efectos sobre otros impuestos (ej: IRAE)
+- Pre-rellenado de declaraciones con información de e-facturas desde 2020.
 
 ---
 
@@ -331,7 +301,11 @@ Comparo $\beta_{low}$ y $\beta_{high}$ para estudiar la existencia de efectos he
 \heading{¡Muchas gracias!}
 ```
 
----
+## Descriptivas de la muestra
+
+```{=latex}
+\small{\input{../../out/tables/sample_summary.tex}}
+```
 
 
 ## Small players
@@ -396,3 +370,4 @@ $$
 `\scriptsize{\input{../../out/tables/twfe.y.all.overall_att.by_size.tex}}`{=latex}
 
 \hyperlink{efectos-heteroguxe9neos}{\beamergotobutton{Back}}
+
