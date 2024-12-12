@@ -1,7 +1,9 @@
-library(groundhog)
-pkgs <- c("data.table", "magrittr", "ggplot2", "patchwork", "fst", "lubridate")
-date <- "2024-01-15"
-groundhog.library(pkgs, date)
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(patchwork)
+library(fst)
+library(lubridate)
 
 source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
@@ -21,8 +23,8 @@ p1 <- dts %>%
   scale_y_continuous(limits = c(0, 1), expand = c(0, 0.01)) +
   coord_cartesian(xlim = c(ymd("2009-01-01"), ymd("2016-11-30"))) +
   labs(
-    x = "Fecha de primera emisión", y = "Función de distribución acumulada",
-    subtitle = "(a) Primera emisión"
+    x = "Date of first e-invoice emission", y = "Cummulative distribution function",
+    subtitle = "(a) First emission"
   ) +
   theme(plot.subtitle = element_text(hjust = 0.5))
 p1

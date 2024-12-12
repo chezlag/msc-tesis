@@ -3,7 +3,7 @@
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-# Análisis adicionales
+# Additional analysis
 
 ::: {#tbl-policy-adoption-schedule}
 

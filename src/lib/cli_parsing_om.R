@@ -1,4 +1,4 @@
-groundhog.library("optparse", "2024-01-15")
+library(optparse)
 option_list <- list(
     make_option(c("-o", "--output"), type = "character"),
     make_option("--sample", type = "character"),

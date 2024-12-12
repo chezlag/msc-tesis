@@ -3,14 +3,14 @@ project:
   output-dir: "../../out/paper"
 
 book:
-  title: "Nuevas tecnologías y cumplimiento tributario"
-  subtitle: "La recepción de facturas electrónicas en Uruguay"
-  author: 
-  - name: "Guillermo Sánchez Laguardia"
-    orcid: 0000-0002-7511-6062
-    affiliations:
-      - name: "Universidad de la República"
-        department: "Facultad de Ciencias Económicas y Administración"
+  title: "New technologies and tax compliance spillovers"
+  subtitle: "Electronic invoicing in Uruguay"
+  author:
+    - name: "Guillermo Sánchez Laguardia"
+      orcid: 0000-0002-7511-6062
+      affiliations:
+        - name: "Universidad de la República"
+          department: "Facultad de Ciencias Económicas y Administración"
   date: today
   date-format: long
   chapters:
@@ -32,13 +32,15 @@ book:
 
 bibliography: references.bib
 
-lang: es
+lang: en
+language:
+  section-title-appendices: "Online Appendix"
 
 toc: true
 toc-depth: 2
 
 code-fold: true
-execute: 
+execute:
   echo: false
   warning: false
 
@@ -55,7 +57,7 @@ format:
   #     opts_chunk:
   #       dev: "ragg_png"
   pdf:
-    documentclass: scrreprt
+    documentclass: scrreport
     papersize: a4
     geometry:
       - inner=2.5cm
@@ -75,3 +77,4 @@ format:
     include-in-header:
       - file: packages.tex
     keep-tex: true
+    fontfamiily: libertinus

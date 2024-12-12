@@ -1,39 +1,43 @@
-# Preguntas de investigación e hipótesis {#sec-hypotheses}
+# Research questions and hypotheses {#sec-hypotheses}
 
-**¿Cómo evolucionó el registro de compras de las empresas receptoras a raíz de la e-facturación?**
+**How have registered purchases of recipient firms evolved throughout the rollout of e-invoicing?**
 
-Las e-facturas permiten una reconstrucción en tiempo real de las transacciones de las empresas. Crean un registro digital (prácticamente) completo de las ventas de las empresas emisoras, y un registro *parcial* de las compras de las empresas receptoras. A medida que más empresas emiten e-facturas, más completo es el registro de las compras de sus socios comerciales, y mayor la capacidad de la autoridad tributaria de detectar inconsistencias en los costos reportados por las empresas. Esto, a su vez, condiciona los efectos que podemos esperar de la política sobre las empresas receptoras. El primer paso de mi análisis será cuantificar el volumen de compras registradas en e-facturas a medida que se implementó la e-facturación. Dado que solo cuento con datos para los primeros años de la política, espero que la cobertura de las compras sea altamente parcial.
+E-invoicing enables the real-time tracking of firm transactions. They create a (virtually) complete digital record of issuing firms' sales and a _partial_ record of recipient firms' purchases. As more firms adopt e-invoicing, the recorded data on trading partners' purchases becomes more comprehensive, enhancing the tax authority's ability to identify discrepancies in reported costs. This, in turn, restricts (or enhances) the expected impact of the policy on recipient firms' reported tax liability. The initial step of my analysis is to measure how the share of purchases recorded in e-invoices evolved throughout the policy's rollout. Given my data only covers the first few years of the policy, I anticipate that the coverage of purchases will be limited.
 
-> **H1:** El porcentaje de compras de las empresas receptoras que queda registrado en e-facturas será limitado en el período estudiado.
+> **H1:** The proportion of purchases recorded in e-invoices by recipient firms will be relatively low during the study period.
 
-**¿Cuál es el efecto de recibir e-facturas sobre el cumplimiento tributario de las empresas?**
+**What is the effect of receiving e-invoices on firms' tax compliance?**
 
-En este estudio me concentro en el cumplimiento tributario de de las empresas en el IVA. El IVA adeudado por las empresas surge de la diferencia entre las ventas y las compras reportadas. Al declarar el IVA, las empresas pueden reducir su deuda tributaria sub-reportando ventas o sobre-reportando compras. Como mencioné, la recepción de e-facturas crea un registro digital de las compras de las empresas receptoras que puede ser utilizado por la autoridad tributaria para verificar declaraciones de impuestos. De hecho, la DGI desarrolló un nuevo conjunto de controles de incumplimiento explotando la información contenida en los comprobantes electrónicos [@canalesUruguayPerfilFactura2018].
+In this study I focus on VAT compliance. VAT liability arises from the difference between reported sales and purchases. Firms may lower their tax liability by underreporting sales or overreporting purchases.
 
-La principal variable que espero se vea afectada por la recepción de e-facturas, por lo tanto, son las compras reportadas. El efecto sobre las compras depende de la respuesta en el margen intensivo –las empresas que ya reportaban compras– y de la respuesta en el margen extensivo –las empresas que no reportaban compras–. En el margen intensivo, espero que la recepción de e-facturas reduzca las compras (sobre)reportadas, en tanto la DGI cuenta con más información para verificar lo declarado por las empresas. Por el contrario, en el margen extensivo espero que la recepción de e-facturas pueda empujar a ciertas empresas que no reportaban compras a empezar a hacerlo, en tanto la autoridad tributaria pasa a contar con un registro (parcial) de sus compras. El efecto agregado de la política sobre las compras es teóricamente ambiguo, y depende de la magnitud del efecto en el margen extensivo y en el margen intensivo. Pese a ello, en base a la implementación de la e-facturación en otros países [@fanDynamicEffectsComputerizing2023] espero que el efecto total sea una reducción en las compras reportadas, con el efecto negativo en el margen intensivo dominando al efecto positivo en el margen extensivo.[^china] Por razones que detallo en la [Sección @sec-results], solo voy a poder testear mis hipótesis respecto al efecto total y al efecto en el margen extensivo.
+As I mentioned, e-invoicing creates a digital record of recipient firms' purchases, which the tax authority could use to verify firm reports. For instance, a new set of non-compliance controls were implemented, which relied heavily on e-invoice data [@canalesUruguayPerfilFactura2018].
 
-Por otra parte, como la recepción de e-facturas no aporta ningún tipo de información nueva sobre las ventas de las empresas, no espero que tenga ningún efecto sobre las ventas (sub)reportadas. Considerando lo anterior, la recepción de e-facturas debería inducir un aumento del IVA adeudado por las empresas receptoras.
+The main variable that I expect to be affected by of e-invoice reception, therefore, is **reported purchases**. The impact on purchases depends on firm behaviour at two margins. In the intensive margin, I expect the receipt of e-invoices to reduce (over)reported purchases among firms that were already reporting purchases, as the tax authority exploits new third-party information to verify firms' reports.  In the extensive margin, e-invoices may encourage reporting among firms that were not previously reporting purchases, as the tax authority gains partial visibility of their transactions. 
 
-[^china]: En la evaluación de @fanDynamicEffectsComputerizing2023 de la digitalización de facturas en China encuentran que una de las formas principales en que la política mejoró el cumplimiento fue a través de la reducción del sobrerreporte de costos.
+The overall impact of e-invoicing on reported purchases is theoretically ambiguous, as it depends on the relative magnitude of the intensive and extensive margin effects.  Drawing on evidence from other countries [@fanDynamicEffectsComputerizing2023], I hypothesise that the overall effect will be a reduction in reported purchases, dominated by the intensive margin response. Despite this, based on the implementation of e-invoicing in other countries [@fanDynamicEffectsComputerizing2023] I expect the aggregate effect to be a reduction in reported purchases, with the negative effect on the intensive margin dominating the positive effect on the extensive margin.[^china] For reasons I detail in [Section @sec-results], I will only be able to test my hypotheses regarding the overall effect and the effect on the extensive margin.
 
-> **H2:** La recepción de e-facturas reduce las compras reportadas.
+Since receiving e-invoices does not provide any new information on firms' sales, I do not expect e-invoice reception to have any effect on (under)reported sales. Consequently, e-invoice reception is expected to increase VAT liability of receiving firms.
+
+[^china]: @fanDynamicEffectsComputerizing2023 evaluate invoice digitisation in China and find that one of the main ways the policy improved compliance was through reduced cost overreporting.
+
+> **H2:** Receiving e-invoices reduces reported purchases.
 >
-> 	*H2a:* La recepción de e-facturas tiene un efecto positivo en las compras reportadas en el margen extensivo 
+> *H2a:* Receiving e-invoices increases reported purchases at the extensive margin. 
 >
-> 	*H2b:* La recepción de e-facturas tiene un efecto negativo en las compras reportadas en el margen intensivo, que domina el efecto positivo en el margen intensivo.
+> *H2b:* Receiving e-invoices reduces reported purchases at the intensive margin, with this effect dominating the extensive margin.
 > 
-> **H3:** La recepción de e-facturas no tiene efecto sobre las ventas reportadas.
+> **H3:** Receiving e-invoices has no effect on reported sales.
 > 
-> **H4:** La recepción de e-facturas aumenta el IVA adeudado.
+> **H4:** Receiving e-invoices increases VAT liability.
 >
-> **H5:** Si se verifica que la política no captura un alto porcentaje de las compras de las empresas receptoras (H1), entonces cualquier efecto de la política sobre dichas empresas será de reducida magnitud.
+> **H5:** If e-invoices register a limited share of purchases of recipient firms (H1), the policy’s effect on recipient firms will be modest.
 
-**¿Hay heterogeneidades en el efecto de recibir e-facturas de acuerdo a algunas características de las empresas?**
+**Are the effects of receiving e-invoices heterogenous across firm characteristics?**
 
-Hay ciertas características de las empresas que se asocian con mayores niveles de incumplimiento. Por ejemplo, el modelo de @klevenWhyCanModern2016 sugiere que el tamaño de un empresa es determinante en sus posibilidades de evadir impuestos sin ser detectadas: las empresas más grandes guardan mejores registros de sus actividades –que pueden ser luego utilizados en una auditoría– y resulta más difícil asegurar una colusión efectiva dentro de la firma cuantos más empleados hay que involucrar para lograrlo. Por otra parte, varios estudios han mostrado que el cumplimiento tributario empeora en los sectores más cercanos a los consumidores finales, en tanto los mecanismos auto-reforzantes del IVA desaparecen en esta etapa [ej: @pomeranzNoTaxationInformation2015; @naritomiConsumersTaxAuditors2019; @waseemOverclaimedRefundsUndeclared2023]. Por último, también resulta de interés explorar si las empresas responden distinto de acuerdo a su utilización de insumos importados. Las empresas que realizan más importaciones –cuya adquisición no queda registrada en el sistema de e-facturación– están menos expuestas a la política y, por lo tanto, es de esperar que reaccionen en menor medida al convertirse en receptoras de e-facturas.
+Certain firm characteristics are associated with higher levels of non-compliance. For instance, according to @klevenWhyCanModern2016, larger firms may find it more difficult to avoid compliance without being detected: larger firms keep better records of their activities –which can then be used in an audit– and effective collusion may be more difficult to ensure as more people need to get involved in order to ensure effective non-compliance. On the other hand, compliance tends to worsen in industries closer to end consumers, where te self-enforcing mechanisms of the VAT are much weaker [e.g., @pomeranzNoTaxationInformation2015; @naritomiConsumersTaxAuditors2019; @waseemOverclaimedRefundsUndeclared2023]. Finally, firms with higher use of imported inputs are less exposed to the policy, because imports are not registered in the e-invoicing system. Therefore, they may be less sensitive to the policy when they eventually begin receiving e-invoices.
 
-> **H6:** Las empresas de menor tamaño responden más a la recepción e-facturas.
+>  **H6:** Smaller firms have stronger responses to receiving e-invoices.
 > 
-> **H7:** Las empresas con una mayor proporción de su producción destinada al consumo final de los hogares responden más a la recepción de e-facturas.
+> **H7:** Firms with a higher share of output destined to household consumption have stronger responses to receiving e-invoices.
 > 
-> **H8:** Las empresas con una mayor utilización de insumos importados responden menos a la recepción de e-facturas.
+> **H8:** Firms with greater use of imported inputs have weaker responses to receiving e-invoices.

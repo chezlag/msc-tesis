@@ -1,15 +1,12 @@
-library(groundhog)
-pkgs <- c(
-  "arsenal",
-  "fastverse",
-  "fixest",
-  "fst",
-  "jsonlite",
-  "modelsummary",
-  "purrr",
-  "stringr"
-)
-groundhog.library(pkgs, "2024-01-15")
+library(arsenal)
+library(fastverse)
+library(fixest)
+library(fst)
+library(jsonlite)
+library(modelsummary)
+library(purrr)
+library(stringr)
+
 set.seed(20240115)
 source("src/lib/cli_parsing_om.R")
 source("src/lib/winsorize.R")

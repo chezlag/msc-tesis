@@ -1,7 +1,9 @@
-library(groundhog)
-pkgs <- c("fastverse", "magrittr", "ggplot2", "ggsci", "patchwork", "fst", "lubridate")
-date <- "2024-01-15"
-groundhog.library(pkgs, date)
+library(data.table)
+library(magrittr)
+library(ggplot2)
+library(patchwork)
+library(fst)
+library(lubridate)
 
 source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
@@ -34,8 +36,8 @@ p3 <- tab |>
   scale_y_continuous(labels = scales::label_percent(), expand = c(0.01, 0), limits = c(0, 0.3)) +
   ggsci::scale_fill_igv() +
   labs(
-    x = "Trimestre de primera recepción de e-factura", y = "Empresas receptoras en la muestra", fill = NULL,
-    subtitle = "(c) Histograma de la primera recepción de e-factura"
+    x = "Quarter of first e-invoice reception", y = "Share of recepient firms in sample", fill = NULL,
+    subtitle = "(c) Histogram of first e-invoice reception"
   ) +
   theme(legend.position = "none", plot.subtitle = element_text(hjust = 0.5))
 

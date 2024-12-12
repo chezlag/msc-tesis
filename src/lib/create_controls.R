@@ -1,3 +1,4 @@
+library(BMisc)
 create_controls <- function(dt, balanced = TRUE) {
   `:=` <- birth_date <- ageQuartile <- assetsDecile <- sizeDecile <-
     Scaler1 <- Scaler3 <- industry <- seccion <- NULL # NSE evaluation

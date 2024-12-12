@@ -18,10 +18,9 @@
 \counterwithout{table}{chapter}
 \counterwithout{footnote}{chapter}
 \counterwithout{equation}{chapter}
-% Change name of chapter
-\makeatletter
-\renewcommand{\chaptername}{Sección}
-\makeatother
 % Make tables in smaller fonts by default
 \usepackage{etoolbox}
 \BeforeBeginEnvironment{tabular}{\small}
+% Avoid page break between chapters
+\usepackage{etoolbox}
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}

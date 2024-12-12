@@ -1,7 +1,9 @@
-library(groundhog)
-pkgs <- c("data.table", "collapse", "magrittr", "forcats", "ggplot2", "fst", "lubridate", "ggsci")
-date <- "2024-01-15"
-groundhog.library(pkgs, date)
+library(fastverse)
+library(forcats)
+library(ggplot2)
+library(fst)
+library(lubridate)
+library(ggsci)
 
 source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
@@ -28,6 +30,8 @@ tab[, variable := fcase(
   variable == "netVatLiabilityK", "(c) Net VAT liability"
 )]
 
+tab[, event := year - G1]
+
 # Plot ------------------------------------------------------------------------
 
 tab %>%
@@ -40,4 +44,5 @@ tab %>%
   scale_y_log10(limits = c(1000, NA), labels = scales::dollar_format()) +
   labs(x = "Year", y = NULL, color = "Year of first e-invoice reception")
 
+opt$output <- "out/figures/time_trends.png"
 ggsave(opt$output, width = 170, height = 100, units = "mm")

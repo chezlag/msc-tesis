@@ -1,71 +1,71 @@
-# Figuras y tablas {.unnumbered}
+# Figures and tables {.unnumbered}
 
 ::: {#fig-adoption}
 
 ![](../../out/figures/fig1.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la distribución de las fechas de la primera emisión de e-facturas (panel a), el porcentaje de producción comercializada con e-facturas por sector de actividad (panel b) y el histograma de la recepción de la primer factura en la muestra (panel c). En los dos primeros paneles, considero el universo de empresas en los microdatos de DGI; en el tercer panel incluyo únicamente las empresas de la muestra principal (ver [Sección @sec-data]). En el panel (b) se destacan tres sectores de actividad con fines ilustrativos, y se grafican los demás sectores anónimamente.
+> \scriptsize \textbf{Notes:} The figure shows the cdf of the dates when firms first issue e-invoices (panel a), the percentage of production traded with e-invoices by industry (panel b) and a histogram of the dates when firms in the sample first received e-invoices (panel c). In the first two panels, I consider the universe of firms in the DGI microdata; in the third panel I include only the firms in the main sample (see [Section @sec-data]). In panel (b) three industries are highlighted for illustrative purposes, and the other industries are plotted anonymously.
 
-Función de distribución acumulada de las fechas de primera emisión y primera recepción de e-facturas
+Cumulative distribution function of the dates of first issuance and first reception of e-invoices
 :::
 
 ::: {#tbl-data}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/available_data.tex}}
 
-Fuentes de datos y período de disponibilidad
+Data sources and period of availability
 :::
 
 ::: {#tbl-sample-summary}
 
 \input{../../out/tables/sample_summary.tex}
 
-> \scriptsize \textbf{Notas:} Esta tabla presenta estadísticas descriptivas de las variables relevantes para el análisis para las empresas de la muestra antes del inicio de la implementación de la facturación electrónica. La columna 2 presenta la misma información para todas las empresas, excluyendo a las que se amparan en regímenes simplificados de declaración y a las empresas CEDE (ver [Sección @sec-context]). Las variables monetarias están expresadas en pesos constantes de 2016.
+> \scriptsize \textbf{Notas:} This table presents descriptive statistics of the variables relevant to the analysis for the firms in the sample prior to the start of e-invoicing implementation. Column 2 presents the same information for all firms, excluding those under simplified reporting regimes (see [Section @sec-context]). Monetary variables are expressed in constant 2016 UYU.
 
-Estadísticas descriptivas de la muestra.
+Summary statistics for the anlysis sample
 :::
 
 ::: {#fig-reception-intensity}
 
 ![](../../out/figures/reception_intensity.all.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra la proporción del IVA compras declarado por las empresas que queda registrado en e-facturas cada año. Se presenta un boxplot por año, con la mediana y el rango interquartílico.
+> \scriptsize \textbf{Notes:} The figure shows the share of input VAT reported by firms that is recorded on e-invoices each year. A boxplot is presented by year, with the median and the interquartile range.
 
-Proporción de IVA compras registrado en e-facturas por año.
+Share of input VAT registered on e-invoices per year.
 :::
 
 ::: {#fig-time-trends}
 
 ![](../../out/figures/time_trends.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra los resultados promedio de las principales variables de cumplimiento tributario, por año y por cohorte de tratamiento. Los puntos indican el inicio de tratamiento de cada cohorte y la porción a rayas de cada línea señala el período en que las empresas de la cohorte recibieron e-facturas. Todos los resultados están deflactados a pesos de 2016 y el eje y está en logaritmos. La línea violeta –Inf– corresponde al grupo que nunca recibió una e-factura en el período analizado.
+> \scriptsize \textbf{Notes:} The figure shows the average results for the main tax compliance outcomes, by year and by treatment cohort. Dots indicate the start of treatment for each cohort and the dashed portion of each line indicates the period in which firms in the cohort received e-invoices. All results are expressed in deflated 2016 UYU and the y-axis is in logs. The purple line -Inf- corresponds to the group that never received an e-invoice in the analysis period.
 
-Promedio anual de las principales variables de cumplimiento tributario por cohorte de tratamiento.
+Annual average of main tax compliance outcomes by treatment cohort.
 :::
 
 ::: {#fig-twfe-es}
 
-![](../../out/figures/es.twfe.y.all.png)
+![](../../out/figures/Slides_1.png)
 
-> \scriptsize \textbf{Notas:} La figura muestra el efecto estimado de la recepción de e-facturas sobre IVA compras, IVA ventas, IVA adeudado y pagos de IVA de las empresas, expresadas en relación a la facturación promedio de la empresa en 2009–2010. Los efectos se estiman siguiendo la @eq-es y corresponden al efecto de tratamiento promedio $l$ períodos después de iniciado el tratamiento, para todas las empresas que recibieron e-facturas por al menos $l$ períodos. La muestra consiste de un panel balanceado de empresas que facturan menos de 1M de UI entre 2009–2015 y no pagan IVA en el régimen simplificado. Los resultados están censurados en el percentil 99. Las barras representan intervalos de confianza simultáneos y los errores estándar están clusterizados por empresa.
+> \scriptsize \textbf{Notes:} The figure shows the estimated effect of receiving e-invoices on input VAT, output VAT and net VAT liability, expressed in log-points. The effects are estimated following the @eq-es and correspond to the average treatment effect $l$ periods after the start of treatment, for all firms that received e-invoices for at least $l$ periods. The sample consists of a balanced panel of firms in the main analysis sample, with outcomes censored at the 99th percentile. Bands correspond to simultaneous confidence intervals and standard errors are clustered by firm.
 
-Efecto de la recepción de e-facturas sobre el cumplimiento tributario. Estudio de eventos.
+Effect of receiving e-invoices on tax compliance. Event study.
 :::
 
 ::: {#tbl-twfe-all}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.all.tex}}
 
-> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especificación principal de DD presentada en la sección @sec-method. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para los distintos resultados. Las columnas 1, 4 y 7 reproducen la especiﬁcación preferida (como se muestra en la @fig-twfe-es). Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (winsorizing en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016. Esta tabla se analiza en la sección [Sección @sec-results-effect]. 
+> \scriptsize \textbf{Notes:} This table documents the robustness of the main DD specification presented in [Section @sec-method]. The table shows the DD $\beta$ estimate of the @eq-twfe equation for each outcome. Columns 1, 4 and 7 reproduce the preferred speciﬁcation (as shown in the @fig-twfe-es). Columns 2, 5 and 8 show the robustness of the results with a more conservative upper censoring (winsorizing at p95). Finally, columns 3, 7 and 9 show the robustness of the results to an extended sample including observations for the year 2016. This table is discussed in [Section @sec-results-effect]. 
 
-Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias.
+Aggregate effect of receiving e-invoices on firms' tax compliance. Differences in differences.
 :::
 
 ::: {#tbl-twfe-ext}
 
 \resizebox{\textwidth}{!}{\input{../../out/tables/twfe.y.all.overall_att.ext.tex}}
 
-> \scriptsize \textbf{Notas:} Esta tabla documenta la robustez de la especificación principal de DD en el margen extenisvo y se analiza en la [Sección @sec-method]. La tabla muestra la estimación del $\beta$ de DD de la ecuación @eq-twfe para la probabilidad de que las variables de resultado sean mayores a cero. Las columnas 1, 4 y 7 reproducen la especificación preferida. Las columnas 2, 5 y 8 muestran la robustez de los resultados con una censura superior más conservadora (*winsorizing* en p95). Por último, las columnas 3, 7 y 9 muestran la robustez de los resultados a una muestra ampliada que incluye observaciones para el año 2016.
+> \scriptsize \textbf{Notes:} This table documents the robustness of the main DD specification at the extensive margin and is discussed in [Section @sec-method]. The table shows the DD $\beta$ estimate of the @eq-twfe equation for the probability that the outcome variables are greater than zero. Columns 1, 4 and 7 reproduce the preferred specification. Columns 2, 5 and 8 show the robustness of the results with a more conservative upper censoring (*winsorizing* on p95). Finally, columns 3, 7 and 9 show the robustness of the results to an extended sample including observations for the year 2016.
 
-Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario de las empresas. Diferencias en diferencias, margen extensivo.
+Aggregate effect of receiving e-invoices on firms' tax compliance. Differences in differences, extensive margin.
 :::

@@ -3,11 +3,11 @@
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-# Robustez: Variables Instrumentales {#sec-appendix-iv}
+# Robustness test: Instrumental Variables {#sec-appendix-iv}
 
 La estrategia principal de análisis sugiere que la e-facturación no genero una mejora estadísticamente significativa en el cumplimiento tributario de las empresas que comenzaron a recibir e-facturas. Como mencioné, hay que interpretar este resultado con dos advertencias. En primer lugar, se trata de un efecto de corto plazo, en un contexto en que la política. En segundo lugar, el análisis se centra en las empresas más pequeñas, ya que es lo que permite el diseño utilizado. Para expandir el análisis, en esta sección aplico un diseño de variable instrumental que me permite incorporar firmas de todo tamaño en las estimaciones. Los resultados, sin embargo, deben seguirse interpretando como un efecto de corto plazo.
 
-## Estrategia empírica
+## Empirical strategy
 
 Estimar directamente el efecto de recibir e-facturas sobre el IVA adeudado y sus componentes tiene dos problemas principales: la co-determinación y la causalidad reversa. En un intento de superar estas dificultades, aplico una estrategia de variable instrumental.
 
@@ -32,7 +32,7 @@ La variable dependiente $Y_{ijt}$ es IVA Compras, IVA ventas o IVA adeudado. $R_
 
 **Muestra.** Considero un panel balanceado de empresas que declaran IVA bajo el régimen no simplificado (ver [Sección @sec-context]) todos años entre 2009–2015. A diferencia del análisis principal, no restrinjo la muestra por el tamaño de las firmas. Por lo tanto, utilizo aprox. 12500 empresas en las estimaciones.
 
-## Estadísticas descriptivas {#sec-iv-desc}
+## Summary statistics {#sec-iv-desc}
 
 Construyo la probabilidad de recibir una e-factura a partir de la interacción entre los vínculos intersectoriales y la expansión de la emisión de e-facturas. La estrategia de variable instrumental luego explota la relación entre la probabilidad de recepción –exógena a las decisiones de las empresas receptoras– y el monto/número de compras registradas en e-facturas. 
 
@@ -49,7 +49,7 @@ Segundo, presento el instrumento. El panel (c) de la @fig-iv-desc muestra como v
 Probabilidad de recepción de e-facturas y sus componentes.
 :::
 
-## Resultados
+## Results
 
 **Resultados principales.** La @tbl-iv-all presenta los resultados principales. Las columnas 1, 4 y 7 presentan la especificación preferida, considerando un panel balanceado de empresa y censurando los resultados en el percentil 99. Encuentro que la recepción de e-facturas reduce el IVA compras reportado por las empresas y es significativo al 10%. La elasticidad estimada es de -0.03; en otras palabras, un aumento de 10% del IVA compras registrado en e-facturas genera una reducción de 0.3% en el IVA compras. Es un efecto coherente con las hipótesis planteadas en la [Sección @sec-hypotheses], a saber, que la política podría afectar el cumplimiento tributario de las empresas receptoras a partir de una reducción en el sobre-reporte de costos. Encuentro una asociación positiva entre la recepción de e-facturas y el IVA adeudado, pero no es estadísticamente distinta de cero. En cualquier caso, los efectos encontrados son pequeños y corroboran el efecto nulo hallado en el análisis principal.
 

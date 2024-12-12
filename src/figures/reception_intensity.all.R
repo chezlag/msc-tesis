@@ -1,22 +1,15 @@
-library(groundhog)
-pkgs <- c(
-  "arsenal",
-  "cowplot",
-  "collapse",
-  "data.table",
-  "forcats",
-  "fst",
-  "ggplot2",
-  "ggsci",
-  "lubridate",
-  "magrittr"
-)
-date <- "2024-01-15"
-groundhog.library(pkgs, date)
+library(arsenal)
+library(cowplot)
+library(collapse)
+library(data.table)
+library(forcats)
+library(fst)
+library(ggplot2)
+library(ggsci)
+library(lubridate)
+library(magrittr)
 
-source("src/lib/cli_parsing_o.R")
 source("src/lib/theme_set.R")
-source("src/lib/stata_helpers.R")
 
 samples <-
   read_fst("out/data/samples.fst", as.data.table = TRUE)

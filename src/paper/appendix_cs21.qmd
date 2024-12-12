@@ -3,7 +3,7 @@
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-# Robustez: Callaway & Sant'Anna (2021) {#sec-appendix-cs21}
+# Robustness test: Callaway & Sant'Anna (2021) {#sec-appendix-cs21}
 
 ::: {#fig-did-es}
 
@@ -40,4 +40,3 @@ Efecto agregado de la recepción de e-facturas sobre el cumplimiento tributario 
 
 Robustez de las estimaciones de diferencias en diferencias al variar el valor atribuido a los cambios del margen extensivo.
 :::
-
